@@ -36,18 +36,28 @@ namespace EffectDesigner
             
 
             ObservableNotifiableCollection<PatternPoint> pattern = new ObservableNotifiableCollection<PatternPoint>();
-            //pattern.Add(new PatternPoint(Color.Blue, 2) { LedCount = 1 });
-            //pattern.Add(new PatternPoint(Color.Red, 40) { LedCount = 30, Variant = 1 });
-            //pattern.Add(new PatternPoint(Color.Yellow, 120) { LedCount = 1 });
-            //pattern.Add(new PatternPoint(Color.Orange, 140) { LedCount = 1, Variant = 2 });
-            //pattern.Add(new PatternPoint(Color.Green, 170) { LedCount = 1 });
 
-            pattern.Add(new PatternPoint(Color.FromArgb(0, 0, 153), 1) { LedCount = 1 });
-            pattern.Add(new PatternPoint(Color.FromArgb(51, 51, 255), 5) { LedCount = 1, Variant = 2 });
-            pattern.Add(new PatternPoint(Color.FromArgb(0, 0, 255), 8) { LedCount = 1, Variant = 2 });
-            pattern.Add(new PatternPoint(Color.FromArgb(0, 0, 204), 11) { LedCount = 1, Variant = 2 });
-            pattern.Add(new PatternPoint(Color.FromArgb(0, 133, 153), 14) { LedCount = 1 });
-            multiSlider.Maximum = 14;
+            //pattern.Add(new PatternPoint(Color.Blue, 2) { LedCount = 1 });
+            //pattern.Add(new PatternPoint(Color.Red, 40) { LedCount = 30, Variant = PointVariant.Range });
+            //pattern.Add(new PatternPoint(Color.Yellow, 120) { LedCount = 1 });
+            //pattern.Add(new PatternPoint(Color.Orange, 140) { LedCount = 5, Variant = PointVariant.Range });
+            //pattern.Add(new PatternPoint(Color.Green, 170) { LedCount = 1 });
+            //multiSlider.Maximum = 170;
+
+            pattern.Add(new PatternPoint(Color.Blue, 2) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Color.Red, 40) { LedCount = 30, Variant = PointVariant.Range });
+            pattern.Add(new PatternPoint(Color.Yellow, 120) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Color.FromArgb(51, 105, 255), 140) { LedCount = 1, Variant = PointVariant.Lightness });
+            pattern.Add(new PatternPoint(Color.Green, 170) { LedCount = 1 });
+            multiSlider.Maximum = 170;
+
+            //pattern.Add(new PatternPoint(Color.FromArgb(0, 0, 153), 1) { LedCount = 1 });
+            //pattern.Add(new PatternPoint(Color.FromArgb(51, 105, 255), 5) { LedCount = 1, Variant = PointVariant.Lightness });
+            //pattern.Add(new PatternPoint(Color.FromArgb(0, 119, 255), 8) { LedCount = 1, Variant = PointVariant.Lightness });
+            //pattern.Add(new PatternPoint(Color.FromArgb(0, 136, 204), 11) { LedCount = 1, Variant = PointVariant.Lightness });
+            //pattern.Add(new PatternPoint(Color.FromArgb(0, 133, 153), 14) { LedCount = 1 });
+            //multiSlider.Maximum = 14;
+
             Pattern = pattern;
             
             LightMarkers = new ObservableNotifiableCollection<PatternPoint>();

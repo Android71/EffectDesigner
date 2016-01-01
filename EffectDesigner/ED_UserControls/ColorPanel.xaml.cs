@@ -43,10 +43,19 @@ namespace ED_UserControls
             ColorPanel panel = d as ColorPanel;
             PatternPoint pp = (PatternPoint)e.OldValue;
             panel.pointFromPattern = true;
-            
-            panel.hue.IsEnabled = true;
-            panel.sat.IsEnabled = true;
-            panel.bri.IsEnabled = true;
+
+            if (panel.SelectedPoint.Variant == PointVariant.Lightness)
+            {
+                panel.hue.IsEnabled = false;
+                panel.sat.IsEnabled = false;
+                panel.bri.IsEnabled = true;
+            }
+            else
+            {
+                panel.hue.IsEnabled = true;
+                panel.sat.IsEnabled = true;
+                panel.bri.IsEnabled = true;
+            }
             
             if (pp != null)
                 (pp as INotifyPropertyChanged).PropertyChanged -= panel.OnColorChanged;
@@ -167,13 +176,17 @@ namespace ED_UserControls
         private void BorderMouseLeftUp(object sender, MouseButtonEventArgs e)
         {
             newColorRange = sender as Border;
+
             if (SelectedPoint != null)
             {
-                if (newColorRange != null)
+                if (SelectedPoint.Variant != PointVariant.Lightness)
                 {
-                    pointFromPattern = false;
-                    //SetColorRange(colorSelector, newColorRange);
-                    SetColorRange();
+                    if (newColorRange != null)
+                    {
+                        pointFromPattern = false;
+                        //SetColorRange(colorSelector, newColorRange);
+                        SetColorRange();
+                    }
                 }
             }
         }

@@ -30,7 +30,7 @@ namespace ED_CustomControls
         // used internally to prevent re-entry into the ValueChanged handler
         private bool isInProgressValueChanged;
         // the multi slider that owns this instance
-        private MultiSlider owner;
+        //private MultiSlider owner;
 
         #endregion
 
@@ -162,7 +162,7 @@ namespace ED_CustomControls
         public SliderItem(MultiSlider owner, int position)
             : base()
         {
-            this.owner = owner;
+            //this.owner = owner;
             Position = position;
             lastValue = Double.NaN;
         }

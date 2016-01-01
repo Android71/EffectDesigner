@@ -5,6 +5,10 @@ using System.Drawing;
 
 namespace Lighting.Library
 {
+
+    public enum PointVariant { Gradient, Range, Lightness};
+
+
     public class PatternPoint : LightPoint
     {
         //public PatternPoint(Color color)
@@ -37,7 +41,7 @@ namespace Lighting.Library
         // 0 - GradientPoint
         // 1 - RangePoint
         // 2 - LightnessPoint
-        public int Variant { get; set; }
+        public PointVariant Variant { get; set; }
 
         double _pointLightness;
         public double PointLightness
