@@ -9,9 +9,12 @@
         Height="350"
         mc:Ignorable="d">
     <Grid>
+        <StackPanel Orientation="Horizontal">
         <ScrollBar x:Name="scrollBar"
                    Width="20"
                    HorizontalAlignment="Left" />
+            <UniformGrid Rows="10" Columns="1" Width="20"/>
+        </StackPanel>
 
     </Grid>
 </Window>
