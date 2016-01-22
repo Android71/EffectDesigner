@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Controls.Primitives;
 
 namespace EffectDesigner
 {
@@ -23,6 +24,23 @@ namespace EffectDesigner
         public MainWindow()
         {
             InitializeComponent();
+        }
+
+        private void Thumb_DragDelta(object sender, System.Windows.Controls.Primitives.DragDeltaEventArgs e)
+        {
+
+            Thumb thumb = e.Source as Thumb;
+
+            //thumb.Margin.Left += e.HorizontalChange;
+            horizDelta.Text = e.HorizontalChange.ToString();
+            Thickness th = new Thickness(thumb.Margin.Left, thumb.Margin.Top, thumb.Margin.Right, thumb.Margin.Bottom);
+            th.Left += e.HorizontalChange;
+
+            thumb.Margin = th;
+            //Canvas.SetLeft(thumb, Canvas.GetLeft(thumb) + e.HorizontalChange);
+            //Canvas.SetTop(thumb, Canvas.GetTop(thumb) + e.VerticalChange);
+
+
         }
     }
 }
