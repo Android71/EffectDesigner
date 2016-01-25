@@ -1,0 +1,11 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:core="clr-namespace:Xam.Wpf.Controls.Core">
+
+    <ResourceDictionary.MergedDictionaries>
+        <core:CoreResourceDictionary SourcePath="Controls/ImageButton/Themes/Generic.xaml"/>
+        <core:CoreResourceDictionary SourcePath="Controls/MultiSlider/Themes/Generic.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+</ResourceDictionary>
