@@ -43,9 +43,10 @@
                     BorderBrush="DarkGray"
                     BorderThickness="1"
                     CornerRadius="4" />
-            <Ellipse Name="CenterDot"
+            <Ellipse Name="CenterDot" 
                      Width="5"
                      Height="5"
+                     Grid.Row="1"
                      Fill="Blue" />
         </Grid>
         <ControlTemplate.Triggers>
@@ -105,7 +106,7 @@
                         VerticalAlignment="Center"
                         BorderBrush="{TemplateBinding TrackBrush}"
                         BorderThickness="2" />
-                <Grid x:Name="PART_SliderGrid" Grid.Row="1">
+                <Grid x:Name="PART_SliderGrid" Grid.Row="2">
                     <!--  SupportiveSlider instance get inserted here  -->
                 </Grid>
             </Grid>
@@ -129,12 +130,13 @@
                     <ColumnDefinition Width="Auto" MinWidth="{TemplateBinding MinWidth}" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                <Border Grid.Column="1"
+                
+                <Border Grid.Column="1" 
                         Width="4"
                         HorizontalAlignment="Center"
                         BorderBrush="{TemplateBinding TrackBrush}"
                         BorderThickness="2" />
-                <Grid x:Name="PART_SliderGrid" Grid.Column="1">
+                <Grid x:Name="PART_SliderGrid" Grid.Column="1" >
                     <!--  SupportiveSlider instance get inserted here  -->
                 </Grid>
             </Grid>
