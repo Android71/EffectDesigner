@@ -24,5 +24,17 @@ namespace PatternStops
         {
             InitializeComponent();
         }
+
+        private void MultiSlider_SliderSet(object sender, Xam.Wpf.Controls.MultiSliderSetRoutedEventArgs e)
+        {
+            if (listBox != null)
+                listBox.ItemsSource = e.SliderValues;
+        }
+
+        private void MultiSlider_ValueChanged(object sender, Xam.Wpf.Controls.MultiSliderRoutedEventArgs e)
+        {
+            //position.Text = e.Position.ToString();
+            position.Text = ((int)e.SliderValues[e.Position]).ToString();
+        }
     }
 }
