@@ -57,7 +57,7 @@ namespace Xam.Wpf.Controls
         /************************************************************************/
 
         #region Private Fields and Vars
-        private List<PatternSlider> sliders;
+        private List<SliderItem> sliders;
         #endregion
 
         /************************************************************************/
@@ -283,14 +283,14 @@ namespace Xam.Wpf.Controls
 
         public MultiSlider()
         {
-            sliders = new List<PatternSlider>();
+            sliders = new List<SliderItem>();
             for (int k = 0; k < MaxSliderCount; k++)
             {
-                sliders.Add(new PatternSlider(this, k));
+                sliders.Add(new SliderItem(this, k));
                 sliders[k].Minimum = Minimum;
                 sliders[k].Maximum = Maximum;
                 sliders[k].Cushion = Cushion;
-                sliders[k].IsParticipant = false;
+                //sliders[k].IsParticipant = false;
                 sliders[k].SupportiveValueChanged += new EventHandler(SupportiveSliderSupportiveValueChanged);
                 sliders[k].GotMouseCapture += new System.Windows.Input.MouseEventHandler(MultiSliderSliderGotMouseCapture);
                 sliders[k].Orientation = Orientation.Horizontal;
@@ -348,14 +348,21 @@ namespace Xam.Wpf.Controls
         /// <param name="totalSliderCount">The total number of possible sliders.</param>
         private void InsertSliders(int totalSliderCount)
         {
-            Grid sliderGrid = Template.FindName("PART_SliderGrid", this) as Grid;
-            if (sliderGrid == null) return;
+            Grid sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
+            Grid sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
+            if ((sliderGridDown == null)||(sliderGridUp == null)) return;
 
-            sliderGrid.Children.Clear();
+            sliderGridDown.Children.Clear();
+            sliderGridUp.Children.Clear();
 
             for (int k = 0; k < totalSliderCount; k++)
             {
-                sliderGrid.Children.Add(sliders[k]);
+                if ( k % 2 == 0)
+                    // чётный 
+                    sliderGridUp.Children.Add(sliders[k]);
+                else
+                    // нечётный
+                    sliderGridDown.Children.Add(sliders[k]);
             }
         }
 
@@ -378,22 +385,29 @@ namespace Xam.Wpf.Controls
 
         private void SupportiveSliderSupportiveValueChanged(object sender, EventArgs e)
         {
-            RaiseValueChangedEvent((PatternSlider)sender);
+            RaiseValueChangedEvent((SliderItem)sender);
+            SliderItem s = sender as SliderItem;
+            Grid controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+            Label label = controlBlock.Children[1] as Label;
+            label.Content = ((int)s.Value).ToString();
         }
 
         private void MultiSliderSliderGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            PatternSlider s = sender as PatternSlider;
+            SliderItem s = sender as SliderItem;
             if (s != null)
             {
                 SelectSlider(s.Position);
-                RaiseSliderSelectedEvent(s);
+                RaiseValueChangedEvent(s);
+                Grid controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+                Label label = controlBlock.Children[1] as Label;
+                label.Content = ((int)s.Value).ToString();
             }
         }
 
         private void SelectSlider(int position)
         {
-            foreach (PatternSlider s in sliders)
+            foreach (SliderItem s in sliders)
             {
                 s.IsSelected = s.Position == position;
             }
@@ -418,6 +432,7 @@ namespace Xam.Wpf.Controls
                 s.Minimum = Minimum;
                 s.Maximum = Maximum;
                 s.Cushion = Cushion;
+                s.Cushion = 0.001;
                 s.ResumeValueChanged();
             }
 
@@ -444,7 +459,7 @@ namespace Xam.Wpf.Controls
         /// Raises the ValueChanged event.
         /// </summary>
         /// <param name="s">The slider that changed its value.</param>
-        private void RaiseValueChangedEvent(PatternSlider s)
+        private void RaiseValueChangedEvent(SliderItem s)
         {
             var mve = new MultiSliderRoutedEventArgs(ValueChangedEvent, SliderValues, s.Position);
             RaiseEvent(mve);
@@ -454,7 +469,7 @@ namespace Xam.Wpf.Controls
         /// Raises the SliderSelected event.
         /// </summary>
         /// <param name="s">The slider that was selected.</param>
-        private void RaiseSliderSelectedEvent(PatternSlider s)
+        private void RaiseSliderSelectedEvent(SliderItem s)
         {
             var mve = new MultiSliderRoutedEventArgs(SliderSelectedEvent, SliderValues, s.Position);
             RaiseEvent(mve);

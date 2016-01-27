@@ -43,10 +43,10 @@
                     BorderBrush="DarkGray"
                     BorderThickness="1"
                     CornerRadius="4" />
-            <Ellipse Name="CenterDot" 
+            <Ellipse Name="CenterDot"
+                     Grid.Row="1"
                      Width="5"
                      Height="5"
-                     Grid.Row="1"
                      Fill="Blue" />
         </Grid>
         <ControlTemplate.Triggers>
@@ -58,7 +58,7 @@
                 <Setter TargetName="MainBorder" Property="Height" Value="17" />
                 <Setter TargetName="MainBorder" Property="Width" Value="17" />
             </Trigger>
-            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type lc:PatternSlider}}, Path=IsSelected}" Value="true">
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type lc:SliderItem}}, Path=IsSelected}" Value="true">
                 <Setter TargetName="MainBorder" Property="Background" Value="#0A0" />
                 <Setter TargetName="MainBorder" Property="Width" Value="20" />
                 <Setter TargetName="MainBorder" Property="Height" Value="20" />
@@ -68,7 +68,7 @@
         </ControlTemplate.Triggers>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="SupportiveSliderTemplate" TargetType="lc:PatternSlider">
+    <ControlTemplate x:Key="SupportiveSliderTemplate" TargetType="lc:SliderItem">
         <Grid>
             <Track x:Name="PART_Track"
                    Grid.Row="0"
@@ -88,28 +88,53 @@
         <Border Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}">
-
-            <Grid>
-                <Grid.Resources>
-                    <Style TargetType="lc:PatternSlider">
-                        <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
-                        <Setter Property="Grid.Row" Value="1" />
-                    </Style>
-                </Grid.Resources>
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto" />
-                    <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
-                    <RowDefinition Height="Auto" />
-                </Grid.RowDefinitions>
-                <Border Grid.Row="1"
-                        Height="4"
-                        VerticalAlignment="Center"
-                        BorderBrush="{TemplateBinding TrackBrush}"
-                        BorderThickness="2" />
-                <Grid x:Name="PART_SliderGrid" Grid.Row="2">
-                    <!--  SupportiveSlider instance get inserted here  -->
+            <StackPanel>
+                <Grid x:Name="PART_ControlBlock" HorizontalAlignment="Right">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="incrementBtn"
+                            Grid.Column="0"
+                            Content=" - " />
+                    <Label x:Name="valueLbl"
+                           Grid.Column="1"
+                           Width="50"
+                           HorizontalContentAlignment="Center"
+                           BorderBrush="Black"
+                           BorderThickness="1">
+                        1010
+                    </Label>
+                    <Button x:Name="decrementBtn"
+                            Grid.Column="2"
+                            Content=" + " />
                 </Grid>
-            </Grid>
+                <Grid>
+                    <Grid.Resources>
+                        <Style TargetType="lc:SliderItem">
+                            <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
+                            <Setter Property="Grid.Row" Value="1" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid x:Name="PART_SliderGrid_Up" Grid.Row="0">
+                        <!--  SupportiveSlider instance get inserted here  -->
+                    </Grid>
+                    <Border Grid.Row="1"
+                            Height="4"
+                            VerticalAlignment="Center"
+                            BorderBrush="{TemplateBinding TrackBrush}"
+                            BorderThickness="2" />
+                    <Grid x:Name="PART_SliderGrid_Down" Grid.Row="2">
+                        <!--  SupportiveSlider instance get inserted here  -->
+                    </Grid>
+                </Grid>
+            </StackPanel>
         </Border>
     </ControlTemplate>
 
@@ -120,7 +145,7 @@
 
             <Grid>
                 <Grid.Resources>
-                    <Style TargetType="lc:PatternSlider">
+                    <Style TargetType="lc:SliderItem">
                         <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
                         <Setter Property="Grid.Column" Value="1" />
                     </Style>
@@ -130,13 +155,13 @@
                     <ColumnDefinition Width="Auto" MinWidth="{TemplateBinding MinWidth}" />
                     <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
-                
-                <Border Grid.Column="1" 
+
+                <Border Grid.Column="1"
                         Width="4"
                         HorizontalAlignment="Center"
                         BorderBrush="{TemplateBinding TrackBrush}"
                         BorderThickness="2" />
-                <Grid x:Name="PART_SliderGrid" Grid.Column="1" >
+                <Grid x:Name="PART_SliderGrid" Grid.Column="1">
                     <!--  SupportiveSlider instance get inserted here  -->
                 </Grid>
             </Grid>

@@ -16,7 +16,7 @@ namespace Xam.Wpf.Controls
     /// <summary>
     /// Represents a slider within the MultiSlider control.
     /// </summary>
-    internal class PatternSlider : Slider
+    internal class SliderItem : Slider
     {
         #region Private vars
         // the percentage
@@ -42,7 +42,7 @@ namespace Xam.Wpf.Controls
         /// Registers a dependency property as backing store for the IsSelected property
         /// </summary>
         public static readonly DependencyProperty IsSelectedProperty =
-            DependencyProperty.Register("IsSelected", typeof(bool), typeof(PatternSlider),
+            DependencyProperty.Register("IsSelected", typeof(bool), typeof(SliderItem),
             new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None));
 
 
@@ -50,14 +50,14 @@ namespace Xam.Wpf.Controls
         /// Gets or sets a boolean value that indicates if this instance 
         /// is currently particpating in the multi-slider.
         /// </summary>
-        public bool IsParticipant
-        {
-            get { return Visibility == System.Windows.Visibility.Visible; }
-            set
-            {
-                Visibility = (value) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
-            }
-        }
+        //public bool IsParticipant
+        //{
+        //    get { return Visibility == System.Windows.Visibility.Visible; }
+        //    set
+        //    {
+        //        Visibility = (value) ? System.Windows.Visibility.Visible : System.Windows.Visibility.Collapsed;
+        //    }
+        //}
 
         /// <summary>
         /// Gets or sets a value that indicates if this slider is selected.
@@ -72,7 +72,7 @@ namespace Xam.Wpf.Controls
         /// <summary>
         /// Gets or sets the peer slider that is one lower in the multi-slider than this one.
         /// </summary>
-        public PatternSlider LowerPeer
+        public SliderItem LowerPeer
         {
             get;
             set;
@@ -81,7 +81,7 @@ namespace Xam.Wpf.Controls
         /// <summary>
         /// Gets or sets the peer slider that is one higher in the multi-slider than this one.
         /// </summary>
-        public PatternSlider UpperPeer
+        public SliderItem UpperPeer
         {
             get;
             set;
@@ -142,7 +142,7 @@ namespace Xam.Wpf.Controls
         /************************************************************************/
 
         #region Constructor
-        public PatternSlider(MultiSlider owner, int position)
+        public SliderItem(MultiSlider owner, int position)
             : base()
         {
             this.owner = owner;
