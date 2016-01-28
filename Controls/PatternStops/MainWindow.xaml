@@ -15,19 +15,28 @@
             <RowDefinition />
         </Grid.RowDefinitions>
 
-        <Controls:MultiSlider Grid.Row="0" SliderSet="MultiSlider_SliderSet" ValueChanged="MultiSlider_ValueChanged" Minimum="1" Maximum="1000" Margin="10,20" />
-        
+        <Controls:MultiSlider Grid.Row="0"
+                              Margin="10,20"
+                              Maximum="990" />
+        <!--
+            SliderSet="MultiSlider_SliderSet"
+            ValueChanged="MultiSlider_ValueChanged" />
+        -->
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="Auto"/>
+                <ColumnDefinition Width="Auto" />
                 <ColumnDefinition />
             </Grid.ColumnDefinitions>
             <ListBox x:Name="listBox"
-                 Grid.Column="0"
-                 MinWidth="150"
-                 HorizontalAlignment="Left" />
+                     Grid.Column="0"
+                     MinWidth="150"
+                     HorizontalAlignment="Left" />
             <StackPanel Grid.Column="1" Orientation="Vertical">
-                <TextBox Name="position" Width="100" HorizontalAlignment="Left" BorderBrush="Black"/>
+                <TextBox Name="position"
+                         Width="100"
+                         HorizontalAlignment="Left"
+                         BorderBrush="Black" />
             </StackPanel>
         </Grid>
     </Grid>

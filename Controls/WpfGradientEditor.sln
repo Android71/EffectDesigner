@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternStops", "PatternStop
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PatternControls", "PatternControls\PatternControls.csproj", "{74EC34A7-7AE9-4CA7-8093-4DDC42CF2340}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighting.Library", "Lighting.Library\Lighting.Library.csproj", "{9AD47C83-3588-45A6-AD24-0D5D72F401EC}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{74EC34A7-7AE9-4CA7-8093-4DDC42CF2340}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{74EC34A7-7AE9-4CA7-8093-4DDC42CF2340}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{74EC34A7-7AE9-4CA7-8093-4DDC42CF2340}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9AD47C83-3588-45A6-AD24-0D5D72F401EC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9AD47C83-3588-45A6-AD24-0D5D72F401EC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9AD47C83-3588-45A6-AD24-0D5D72F401EC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9AD47C83-3588-45A6-AD24-0D5D72F401EC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

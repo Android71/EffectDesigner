@@ -16,7 +16,7 @@ namespace Xam.Wpf.Controls
     /// <summary>
     /// Represents a slider within the MultiSlider control.
     /// </summary>
-    internal class SliderItem : Slider
+    public class SliderItem : Slider
     {
         #region Private vars
         // the percentage
@@ -251,11 +251,11 @@ namespace Xam.Wpf.Controls
 
         private void ConstrainToUpper()
         {
-            if (Position < owner.SliderCount - 1 && UpperPeer != null && Value > UpperPeer.Value - cushionValue)
-            {
+            //if (Position < owner.SliderCount - 1 && UpperPeer != null && Value > UpperPeer.Value - cushionValue)
+            //{
 
-                Value = UpperPeer.Value - cushionValue;
-            }
+            //    Value = UpperPeer.Value - cushionValue;
+            //}
         }
 
         private void RaiseSupportiveValueChangedEvent()

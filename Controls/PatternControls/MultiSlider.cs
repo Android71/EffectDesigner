@@ -19,50 +19,33 @@ namespace Xam.Wpf.Controls
     /// </summary>
     public class MultiSlider : Control
     {
-        #region Public Fields
-        /// <summary>
-        /// Gets the minimum number of sliders that the control supports.
-        /// </summary>
-        public const int MinSliderCount = 2;
-        /// <summary>
-        /// Gets the maximum number of sliders that the control suuports.
-        /// </summary>
-        public const int MaxSliderCount = 16;
-        /// <summary>
-        /// Gets the default number of sliders.
-        /// </summary>
-        public const int DefaultSliderCount = 4;
-        /// <summary>
-        /// Gets the default vale for the Minimum property.
-        /// </summary>
-        public const double DefaultMinimum = 0.0d;
-        /// <summary>
-        /// Gets the default value for the Maximum property.
-        /// </summary>
-        public const double DefaultMaximum = 1.0d;
-        /// <summary>
-        /// Gets the minimum allowed cushion value.
-        /// </summary>
-        public const double MinCushion = 0.005;
-        /// <summary>
-        /// Gets the maximum allowed cushion value.
-        /// </summary>
-        public const double MaxCushion = 0.100;
-        /// <summary>
-        /// Gets the default value for the Cushion property.
-        /// </summary>
-        public const double DefaultCushion = 0.020;
-        #endregion
 
         /************************************************************************/
 
         #region Private Fields and Vars
         private List<SliderItem> sliders;
+
+        Grid controlBlock;
+        Label valueLabel;
+
         #endregion
 
         /************************************************************************/
 
         #region Properties
+
+
+
+        public SliderItem SelectedItem
+        {
+            get { return (SliderItem)GetValue(SelectedItemProperty); }
+            set { SetValue(SelectedItemProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedItemProperty =
+            DependencyProperty.Register("SelectedItem", typeof(SliderItem), typeof(MultiSlider), new PropertyMetadata(null));
+
         ///// <summary>
         ///// Registers a dependency property as backing store for the SliderCount property
         ///// </summary>
@@ -86,7 +69,7 @@ namespace Xam.Wpf.Controls
         /// </summary>
         public static readonly DependencyProperty MinimumProperty =
             DependencyProperty.Register("Minimum", typeof(double), typeof(MultiSlider),
-            new FrameworkPropertyMetadata(DefaultMinimum, FrameworkPropertyMetadataOptions.None,
+            new FrameworkPropertyMetadata(1.0d, FrameworkPropertyMetadataOptions.None,
                 new PropertyChangedCallback(OnMinimumPropertyChanged),
                 new CoerceValueCallback(MinimumPropertyCoerce)
                 ), new ValidateValueCallback(IsValidMinimum));
@@ -105,7 +88,7 @@ namespace Xam.Wpf.Controls
         /// </summary>
         public static readonly DependencyProperty MaximumProperty =
             DependencyProperty.Register("Maximum", typeof(double), typeof(MultiSlider),
-            new FrameworkPropertyMetadata(DefaultMaximum, FrameworkPropertyMetadataOptions.None,
+            new FrameworkPropertyMetadata(1000.0d, FrameworkPropertyMetadataOptions.None,
                 new PropertyChangedCallback(OnMaximumPropertyChanged),
                 new CoerceValueCallback(MaximumPropertyCoerce)
                 ), new ValidateValueCallback(IsValidMaximum));
@@ -141,19 +124,19 @@ namespace Xam.Wpf.Controls
         /// <summary>
         /// Registers a dependency property as backing store for the Orientation property
         /// </summary>
-        //public static readonly DependencyProperty OrientationProperty =
-        //    DependencyProperty.Register("Orientation", typeof(Orientation), typeof(MultiSlider),
-        //    new FrameworkPropertyMetadata(Orientation.Horizontal, FrameworkPropertyMetadataOptions.None,
-        //        new PropertyChangedCallback(OnOrientationPropertyChanged)));
+        public static readonly DependencyProperty OrientationProperty =
+            DependencyProperty.Register("Orientation", typeof(Orientation), typeof(MultiSlider),
+            new FrameworkPropertyMetadata(Orientation.Horizontal, FrameworkPropertyMetadataOptions.None,
+                new PropertyChangedCallback(OnOrientationPropertyChanged)));
 
         /// <summary>
         /// Gets or sets the orientation of the multi-slider.
         /// </summary>
-        //public Orientation Orientation
-        //{
-        //    get { return (Orientation)GetValue(OrientationProperty); }
-        //    set { SetValue(OrientationProperty, value); }
-        //}
+        public Orientation Orientation
+        {
+            get { return (Orientation)GetValue(OrientationProperty); }
+            set { SetValue(OrientationProperty, value); }
+        }
 
         /// <summary>
         /// Registers a dependency property as backing store for the IsDirectionReversed property
@@ -188,21 +171,7 @@ namespace Xam.Wpf.Controls
             set { SetValue(TrackBrushProperty, value); }
         }
 
-        /// <summary>
-        /// Gets a snapshot list of current slider values.
-        /// </summary>
-        //public List<double> SliderValues
-        //{
-        //    get
-        //    {
-        //        List<double> values = new List<double>();
-        //        for (int k = 0; k < SliderCount; k++)
-        //        {
-        //            values.Add(sliders[k].Value);
-        //        }
-        //        return values;
-        //    }
-        //}
+        
         #endregion
 
         /************************************************************************/
@@ -283,53 +252,19 @@ namespace Xam.Wpf.Controls
 
         public MultiSlider()
         {
-            sliders = new List<SliderItem>();
-            for (int k = 0; k < MaxSliderCount; k++)
-            {
-                sliders.Add(new SliderItem(this, k));
-                sliders[k].Minimum = Minimum;
-                sliders[k].Maximum = Maximum;
-                //sliders[k].Cushion = Cushion;
-                //sliders[k].IsParticipant = false;
-                sliders[k].SupportiveValueChanged += new EventHandler(SupportiveSliderSupportiveValueChanged);
-                sliders[k].GotMouseCapture += new System.Windows.Input.MouseEventHandler(MultiSliderSliderGotMouseCapture);
-                sliders[k].Orientation = Orientation.Horizontal;
-                sliders[k].IsDirectionReversed = false;
-            }
-            for (int k = 0; k < MaxSliderCount; k++)
-            {
-                if (k > 0) sliders[k].LowerPeer = sliders[k - 1];
-                if (k < MaxSliderCount - 1) sliders[k].UpperPeer = sliders[k + 1];
-            }
+            
         }
         #endregion
 
         /************************************************************************/
 
         #region Public Methods
-        /// <summary>
-        /// Places the first slider at Minimum, the last slider at Maximum
-        /// and the others spread evenly between.
-        /// </summary>
-        //public void SpreadSliders()
-        //{
-        //    double increment = (Maximum - Minimum) / (SliderCount - 1);
-        //    double value = Minimum;
-        //    for (int k = 0; k < SliderCount; k++)
-        //    {
-        //        sliders[k].SuspendValueChanged();
-        //        sliders[k].Value = value;
-        //        sliders[k].ResumeValueChanged();
-        //        value += increment;
-        //    }
-        //    RaiseSliderSetEvent();
-        //}
 
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
             InsertSliders(4);
-            InitializeSliders(SliderCount);
+            
         }
         #endregion
 
@@ -348,48 +283,36 @@ namespace Xam.Wpf.Controls
         /// <param name="sliderCount">The total number of possible sliders.</param>
         private void InsertSliders(int sliderCount)
         {
+            double[] values = new double[] { Minimum, 330, 660, Maximum };
+            sliders = new List<SliderItem>();
+            controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+            valueLabel = controlBlock.Children[1] as Label;
+
             Grid sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
             Grid sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
-            if ((sliderGridDown == null)||(sliderGridUp == null)) return;
-
+            if ((sliderGridDown == null) || (sliderGridUp == null)) return;
             sliderGridDown.Children.Clear();
             sliderGridUp.Children.Clear();
 
             for (int k = 0; k < sliderCount; k++)
             {
-                if ( k % 2 == 0)
+                SliderItem s = new SliderItem(this, k);
+                sliders.Add(s);
+                s.Minimum = Minimum;
+                s.Maximum = Maximum;
+                s.Value = values[k];
+                s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(MultiSliderSliderGotMouseCapture);
+                s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderValueChanged);
+
+                s.Orientation = Orientation.Horizontal;
+                s.IsDirectionReversed = false;
+                if (k % 2 == 0)
                     // чётный 
                     sliderGridUp.Children.Add(sliders[k]);
                 else
                     // нечётный
                     sliderGridDown.Children.Add(sliders[k]);
-            }
-        }
-
-        /// <summary>
-        /// Initializes the sliders. This method is called when the template
-        /// is applied and each time the SliderCount property changes.
-        /// Sets the IsParticipant property of each active slider,
-        /// spreads the slider values evenly, and selects the first slider.
-        /// </summary>
-        /// <param name="sliderCount">The number of active sliders.</param>
-        private void InitializeSliders(int sliderCount)
-        {
-            for (int k = 0; k < MaxSliderCount; k++)
-            {
-                //sliders[k].IsParticipant = (k < sliderCount);
-            }
-            SpreadSliders();
-            SelectSlider(0);
-        }
-
-        private void SupportiveSliderSupportiveValueChanged(object sender, EventArgs e)
-        {
-            RaiseValueChangedEvent((SliderItem)sender);
-            SliderItem s = sender as SliderItem;
-            Grid controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
-            Label label = controlBlock.Children[1] as Label;
-            label.Content = ((int)s.Value).ToString();
+            }            
         }
 
         private void MultiSliderSliderGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
@@ -397,100 +320,47 @@ namespace Xam.Wpf.Controls
             SliderItem s = sender as SliderItem;
             if (s != null)
             {
-                SelectSlider(s.Position);
-                RaiseValueChangedEvent(s);
-                Grid controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
-                Label label = controlBlock.Children[1] as Label;
-                label.Content = ((int)s.Value).ToString();
+                if (SelectedItem != null)
+                {
+                    SelectedItem.IsSelected = false;
+                    s.IsSelected = true;
+                }
+                else
+                    s.IsSelected = true;
+                SelectedItem = s;
+                valueLabel.Content = ((int)s.Value).ToString();
             }
         }
 
-        private void SelectSlider(int position)
+        private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            foreach (SliderItem s in sliders)
+            SliderItem s = sender as SliderItem;
+            int ix = sliders.IndexOf(s);
+            if (e.NewValue > e.OldValue)
             {
-                s.IsSelected = s.Position == position;
+                if (ix != sliders.Count - 1)
+                {
+                    if (e.NewValue >= sliders[ix + 1].Value - 1)
+                        s.Value = sliders[ix + 1].Value - 1;
+                }
             }
-        }
-
-        /// <summary>
-        /// Recalibrate the sliders in response to parameter change, Minimum, Maximum, or Cushion.
-        /// TODO: Support Cushion change. Currently, if the cushion is increased while two sliders
-        /// are within a smaller cushion value, they don't spread apart.
-        /// </summary>
-        private void RecalibrateSliders()
-        {
-            List<double> percent = new List<double>();
-            for (int j = 0; j < SliderCount; j++)
+            else
             {
-                percent.Add(sliders[j].ValuePercentage);
+                if (ix != 0)
+                {
+                    if (e.NewValue <= sliders[ix - 1].Value + 1)
+                        s.Value = sliders[ix - 1].Value + 1;
+                }
             }
-
-            foreach (var s in sliders)
-            {
-                s.SuspendValueChanged();
-                s.Minimum = Minimum;
-                s.Maximum = Maximum;
-                s.Cushion = Cushion;
-                s.Cushion = 0.001;
-                s.ResumeValueChanged();
-            }
-
-            for (int j = 0; j < SliderCount; j++)
-            {
-                sliders[j].SuspendValueChanged();
-                sliders[j].ValuePercentage = percent[j];
-                sliders[j].ResumeValueChanged();
-            }
-
-            RaiseSliderSetEvent();
+            valueLabel.Content = ((int)s.Value).ToString();
         }
-
-        /// <summary>
-        /// Raises the SliderSet event.
-        /// </summary>
-        private void RaiseSliderSetEvent()
-        {
-            var mve = new MultiSliderSetRoutedEventArgs(SliderSetEvent, SliderValues);
-            RaiseEvent(mve);
-        }
-
-        /// <summary>
-        /// Raises the ValueChanged event.
-        /// </summary>
-        /// <param name="s">The slider that changed its value.</param>
-        private void RaiseValueChangedEvent(SliderItem s)
-        {
-            var mve = new MultiSliderRoutedEventArgs(ValueChangedEvent, SliderValues, s.Position);
-            RaiseEvent(mve);
-        }
-
-        /// <summary>
-        /// Raises the SliderSelected event.
-        /// </summary>
-        /// <param name="s">The slider that was selected.</param>
-        private void RaiseSliderSelectedEvent(SliderItem s)
-        {
-            var mve = new MultiSliderRoutedEventArgs(SliderSelectedEvent, SliderValues, s.Position);
-            RaiseEvent(mve);
-        }
+        
         #endregion
 
         /************************************************************************/
 
-        #region Dependency Property methods (private)
+        #region Dependency Property Metadata methods (private static)
 
-        private static bool IsValidSliderCount(object value)
-        {
-            int v = (int)value;
-            return v >= MinSliderCount && v <= MaxSliderCount;
-        }
-
-        private static void OnSliderCountPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            ms.InitializeSliders((int)e.NewValue);
-        }
 
         private static bool IsValidMinimum(object value)
         {
@@ -501,7 +371,7 @@ namespace Xam.Wpf.Controls
         {
             MultiSlider ms = (MultiSlider)d;
             ms.CoerceValue(MaximumProperty);
-            ms.RecalibrateSliders();
+            //ms.RecalibrateSliders();
         }
 
         private static object MinimumPropertyCoerce(DependencyObject d, object value)
@@ -520,7 +390,7 @@ namespace Xam.Wpf.Controls
         {
             MultiSlider ms = (MultiSlider)d;
             ms.CoerceValue(MinimumProperty);
-            ms.RecalibrateSliders();
+            //ms.RecalibrateSliders();
         }
 
         private static object MaximumPropertyCoerce(DependencyObject d, object value)
@@ -530,22 +400,10 @@ namespace Xam.Wpf.Controls
             return Math.Max(max, min);
         }
 
-        private static bool IsValidCushion(object value)
-        {
-            Double v = (Double)value;
-            return (v >= MinCushion && v <= MaxCushion);
-        }
-
         private static bool IsValidDouble(object value)
         {
             Double v = (Double)value;
             return !Double.IsInfinity(v) && !Double.IsNaN(v);
-        }
-
-        private static void OnCushionPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            ms.RecalibrateSliders();
         }
 
         private static void OnOrientationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

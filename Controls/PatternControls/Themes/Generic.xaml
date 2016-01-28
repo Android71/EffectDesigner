@@ -103,9 +103,7 @@
                            Width="50"
                            HorizontalContentAlignment="Center"
                            BorderBrush="Black"
-                           BorderThickness="1">
-                        1010
-                    </Label>
+                           BorderThickness="1" />
                     <Button x:Name="decrementBtn"
                             Grid.Column="2"
                             Content=" + " />
