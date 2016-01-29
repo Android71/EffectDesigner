@@ -26,6 +26,8 @@ namespace Xam.Wpf.Controls
         #region Private Fields and Vars
         private List<SliderItem> sliders;
 
+        SliderItem selectedSliderItem = null;
+
         Grid controlBlock;
         Label valueLabel;
 
@@ -37,21 +39,21 @@ namespace Xam.Wpf.Controls
 
 
 
-        public SliderItem SelectedSliderItem
-        {
-            get { return (SliderItem)GetValue(SelectedSliderItemProperty); }
-            set { SetValue(SelectedSliderItemProperty, value); }
-        }
+        //public SliderItem SelectedSliderItem
+        //{
+        //    get { return (SliderItem)GetValue(SelectedSliderItemProperty); }
+        //    set { SetValue(SelectedSliderItemProperty, value); }
+        //}
 
-        // Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty SelectedSliderItemProperty =
-                                DependencyProperty.Register("SelectedItem", typeof(SliderItem), typeof(MultiSlider), 
-                                new PropertyMetadata(null, OnSelectedSliderItemChanged));
+        //// Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty SelectedSliderItemProperty =
+        //                        DependencyProperty.Register("SelectedItem", typeof(SliderItem), typeof(MultiSlider), 
+        //                        new PropertyMetadata(null, OnSelectedSliderItemChanged));
 
-        private static void OnSelectedSliderItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
+        //private static void OnSelectedSliderItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
             
-        }
+        //}
 
         public PatternPoint SelectedPoint
         {
@@ -62,13 +64,22 @@ namespace Xam.Wpf.Controls
         // Using a DependencyProperty as the backing store for SelectedPoint.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty SelectedPointProperty =
                                 DependencyProperty.Register("SelectedPoint", typeof(PatternPoint), typeof(MultiSlider), 
-                                    new PropertyMetadata(null, OnSelectedPointChanged));
+                                    new FrameworkPropertyMetadata(null, OnSelectedPointChanged));
 
         private static void OnSelectedPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-
+            MultiSlider ms = d as MultiSlider;
+            ms.SetSelection(ms.Pattern.IndexOf((PatternPoint)e.NewValue));
         }
 
+        private void SetSelection(int index)
+        {
+            if (selectedSliderItem != null)
+                selectedSliderItem.IsSelected = false;
+            sliders[index].IsSelected = true;
+            selectedSliderItem = sliders[index];
+            valueLabel.Content = ((int)sliders[index].Value).ToString();
+        }
 
         public ObservableNotifiableCollection<PatternPoint> Pattern
         {
@@ -78,7 +89,35 @@ namespace Xam.Wpf.Controls
 
         // Using a DependencyProperty as the backing store for Pattern.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty PatternProperty =
-            DependencyProperty.Register("Pattern", typeof(ObservableNotifiableCollection<PatternPoint>), typeof(MultiSlider), new PropertyMetadata(null));
+                                DependencyProperty.Register("Pattern", typeof(ObservableNotifiableCollection<PatternPoint>), typeof(MultiSlider),
+                                    new PropertyMetadata(null, OnPatternChanged));
+
+        private static void OnPatternChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSlider ms = d as MultiSlider;
+            ms.InsertSliders();
+        }
+
+        //public int SelectedPatternIx
+        //{
+        //    get { return (int)GetValue(SelectedPatternIxProperty); }
+        //    set { SetValue(SelectedPatternIxProperty, value); }
+        //}
+
+        //// Using a DependencyProperty as the backing store for SelectedPatternIx.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty SelectedPatternIxProperty =
+        //    DependencyProperty.Register("SelectedPatternIx", typeof(int), typeof(MultiSlider), new PropertyMetadata(-1, OnSelectedPatternIxChanged));
+
+        //private static void OnSelectedPatternIxChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    MultiSlider ms = d as MultiSlider;
+
+        //    SliderItem s = ms.sliders[(int)e.NewValue];
+        //    if (ms.selectedSliderItem != null)
+        //        ms.selectedSliderItem.IsSelected = false;
+        //    s.IsSelected = true;
+        //    ms.selectedSliderItem = s;
+        //}
 
 
 
@@ -119,9 +158,7 @@ namespace Xam.Wpf.Controls
             set { SetValue(MinimumProperty, value); }
         }
 
-        /// <summary>
-        /// Registers a dependency property as backing store for the Maximum property
-        /// </summary>
+        
         public static readonly DependencyProperty MaximumProperty =
             DependencyProperty.Register("Maximum", typeof(double), typeof(MultiSlider),
             new FrameworkPropertyMetadata(1000.0d, FrameworkPropertyMetadataOptions.None,
@@ -191,16 +228,10 @@ namespace Xam.Wpf.Controls
         //    set { SetValue(IsDirectionReversedProperty, value); }
         //}
 
-        /// <summary>
-        /// Registers a dependency property as backing store for the TrackBrush property
-        /// </summary>
         public static readonly DependencyProperty TrackBrushProperty =
             DependencyProperty.Register("TrackBrush", typeof(Brush), typeof(MultiSlider),
             new FrameworkPropertyMetadata(Brushes.LightGray, FrameworkPropertyMetadataOptions.None));
 
-        /// <summary>
-        /// Gets or sets the track brush of the multi-slider,
-        /// </summary>
         public Brush TrackBrush
         {
             get { return (Brush)GetValue(TrackBrushProperty); }
@@ -320,7 +351,7 @@ namespace Xam.Wpf.Controls
         private void InsertSliders()
         {
             int sliderCount = Pattern.Count;
-            double[] values = new double[] { Minimum, 330, 660, Maximum };
+            //double[] values = new double[] { Minimum, 330, 660, Maximum };
             sliders = new List<SliderItem>();
             controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
             valueLabel = controlBlock.Children[1] as Label;
@@ -337,10 +368,9 @@ namespace Xam.Wpf.Controls
                 sliders.Add(s);
                 s.Minimum = Minimum;
                 s.Maximum = Maximum;
-                s.Value = values[k];
+                s.Value = Pattern[k].LedPos;
                 s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(MultiSliderSliderGotMouseCapture);
                 s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderValueChanged);
-
                 s.Orientation = Orientation.Horizontal;
                 s.IsDirectionReversed = false;
                 if (k % 2 == 0)
@@ -355,18 +385,8 @@ namespace Xam.Wpf.Controls
         private void MultiSliderSliderGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
             SliderItem s = sender as SliderItem;
-            if (s != null)
-            {
-                if (SelectedSliderItem != null)
-                {
-                    SelectedSliderItem.IsSelected = false;
-                    s.IsSelected = true;
-                }
-                else
-                    s.IsSelected = true;
-                SelectedSliderItem = s;
-                valueLabel.Content = ((int)s.Value).ToString();
-            }
+            SelectedPoint = Pattern[sliders.IndexOf(s)];
+            SelectedPoint.LedPos = (int)s.Value;
         }
 
         private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
@@ -390,6 +410,7 @@ namespace Xam.Wpf.Controls
                 }
             }
             valueLabel.Content = ((int)s.Value).ToString();
+            SelectedPoint.LedPos = (int)s.Value;
         }
         
         #endregion
