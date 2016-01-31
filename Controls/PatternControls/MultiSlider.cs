@@ -24,6 +24,7 @@ namespace Xam.Wpf.Controls
         /************************************************************************/
 
         #region Private Fields and Vars
+
         private List<SliderItem> sliders;
 
         SliderItem selectedSliderItem = null;
@@ -37,24 +38,7 @@ namespace Xam.Wpf.Controls
 
         #region Properties
 
-
-
-        //public SliderItem SelectedSliderItem
-        //{
-        //    get { return (SliderItem)GetValue(SelectedSliderItemProperty); }
-        //    set { SetValue(SelectedSliderItemProperty, value); }
-        //}
-
-        //// Using a DependencyProperty as the backing store for SelectedItem.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty SelectedSliderItemProperty =
-        //                        DependencyProperty.Register("SelectedItem", typeof(SliderItem), typeof(MultiSlider), 
-        //                        new PropertyMetadata(null, OnSelectedSliderItemChanged));
-
-        //private static void OnSelectedSliderItemChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-            
-        //}
-
+        #region SelectedPoint DP
         public PatternPoint SelectedPoint
         {
             get { return (PatternPoint)GetValue(SelectedPointProperty); }
@@ -81,6 +65,10 @@ namespace Xam.Wpf.Controls
             valueLabel.Content = ((int)sliders[index].Value).ToString();
         }
 
+        #endregion
+
+        #region Pattern DP
+
         public ObservableNotifiableCollection<PatternPoint> Pattern
         {
             get { return (ObservableNotifiableCollection<PatternPoint>)GetValue(PatternProperty); }
@@ -98,50 +86,10 @@ namespace Xam.Wpf.Controls
             ms.InsertSliders();
         }
 
-        //public int SelectedPatternIx
-        //{
-        //    get { return (int)GetValue(SelectedPatternIxProperty); }
-        //    set { SetValue(SelectedPatternIxProperty, value); }
-        //}
+        #endregion
 
-        //// Using a DependencyProperty as the backing store for SelectedPatternIx.  This enables animation, styling, binding, etc...
-        //public static readonly DependencyProperty SelectedPatternIxProperty =
-        //    DependencyProperty.Register("SelectedPatternIx", typeof(int), typeof(MultiSlider), new PropertyMetadata(-1, OnSelectedPatternIxChanged));
+        #region Minimum DP
 
-        //private static void OnSelectedPatternIxChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        //{
-        //    MultiSlider ms = d as MultiSlider;
-
-        //    SliderItem s = ms.sliders[(int)e.NewValue];
-        //    if (ms.selectedSliderItem != null)
-        //        ms.selectedSliderItem.IsSelected = false;
-        //    s.IsSelected = true;
-        //    ms.selectedSliderItem = s;
-        //}
-
-
-
-        ///// <summary>
-        ///// Registers a dependency property as backing store for the SliderCount property
-        ///// </summary>
-        //public static readonly DependencyProperty SliderCountProperty =
-        //    DependencyProperty.Register("SliderCount", typeof(int), typeof(MultiSlider),
-        //    new FrameworkPropertyMetadata(DefaultSliderCount, FrameworkPropertyMetadataOptions.None,
-        //        new PropertyChangedCallback(OnSliderCountPropertyChanged)
-        //        ), new ValidateValueCallback(IsValidSliderCount));
-
-        ///// <summary>
-        ///// Gets or sets the slider count.
-        ///// </summary>
-        //public int SliderCount
-        //{
-        //    get { return (int)GetValue(SliderCountProperty); }
-        //    set { SetValue(SliderCountProperty, value); }
-        //}
-
-        /// <summary>
-        /// Registers a dependency property as backing store for the Minimum property
-        /// </summary>
         public static readonly DependencyProperty MinimumProperty =
             DependencyProperty.Register("Minimum", typeof(double), typeof(MultiSlider),
             new FrameworkPropertyMetadata(1.0d, FrameworkPropertyMetadataOptions.None,
@@ -158,7 +106,17 @@ namespace Xam.Wpf.Controls
             set { SetValue(MinimumProperty, value); }
         }
 
-        
+        private static void OnMinimumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSlider ms = (MultiSlider)d;
+            ms.CoerceValue(MaximumProperty);
+            //ms.RecalibrateSliders();
+        }
+
+        #endregion
+
+        #region Maximum DP
+
         public static readonly DependencyProperty MaximumProperty =
             DependencyProperty.Register("Maximum", typeof(double), typeof(MultiSlider),
             new FrameworkPropertyMetadata(1000.0d, FrameworkPropertyMetadataOptions.None,
@@ -175,28 +133,17 @@ namespace Xam.Wpf.Controls
             set { SetValue(MaximumProperty, value); }
         }
 
-        /// <summary>
-        /// Registers a dependency property as backing store for the Cushion property
-        /// </summary>
-        //public static readonly DependencyProperty CushionProperty =
-        //    DependencyProperty.Register("Cushion", typeof(double), typeof(MultiSlider),
-        //    new FrameworkPropertyMetadata(DefaultCushion, FrameworkPropertyMetadataOptions.None,
-        //        new PropertyChangedCallback(OnCushionPropertyChanged)
-        //        ), new ValidateValueCallback(IsValidCushion));
+        private static void OnMaximumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSlider ms = (MultiSlider)d;
+            ms.CoerceValue(MinimumProperty);
+            //ms.RecalibrateSliders();
+        }
 
-        /// <summary>
-        /// Gets or sets the cushion value (MinCushion - MaxCushion),
-        /// a percentage that indicates how close one slider can get to another.
-        /// </summary>
-        //public double Cushion
-        //{
-        //    get { return (double)GetValue(CushionProperty); }
-        //    set { SetValue(CushionProperty, value); }
-        //}
+        #endregion
 
-        /// <summary>
-        /// Registers a dependency property as backing store for the Orientation property
-        /// </summary>
+        #region Orientation DP
+
         public static readonly DependencyProperty OrientationProperty =
             DependencyProperty.Register("Orientation", typeof(Orientation), typeof(MultiSlider),
             new FrameworkPropertyMetadata(Orientation.Horizontal, FrameworkPropertyMetadataOptions.None,
@@ -211,22 +158,45 @@ namespace Xam.Wpf.Controls
             set { SetValue(OrientationProperty, value); }
         }
 
-        /// <summary>
-        /// Registers a dependency property as backing store for the IsDirectionReversed property
-        /// </summary>
-        //public static readonly DependencyProperty IsDirectionReversedProperty =
-        //    DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(MultiSlider),
-        //    new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None,
-        //        new PropertyChangedCallback(OnIsDirectionReversedPropertyChanged)));
+        private static void OnOrientationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSlider ms = (MultiSlider)d;
+            foreach (var s in ms.sliders)
+            {
+                s.Orientation = (Orientation)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region  IsDirectionReversed DP
+
+        public static readonly DependencyProperty IsDirectionReversedProperty =
+            DependencyProperty.Register("IsDirectionReversed", typeof(bool), typeof(MultiSlider),
+            new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None,
+                new PropertyChangedCallback(OnIsDirectionReversedPropertyChanged)));
 
         /// <summary>
         /// Gets or sets the direction of increasing value.
         /// </summary>
-        //public bool IsDirectionReversed
-        //{
-        //    get { return (bool)GetValue(IsDirectionReversedProperty); }
-        //    set { SetValue(IsDirectionReversedProperty, value); }
-        //}
+        public bool IsDirectionReversed
+        {
+            get { return (bool)GetValue(IsDirectionReversedProperty); }
+            set { SetValue(IsDirectionReversedProperty, value); }
+        }
+
+        private static void OnIsDirectionReversedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            MultiSlider ms = (MultiSlider)d;
+            foreach (var s in ms.sliders)
+            {
+                s.IsDirectionReversed = (bool)e.NewValue;
+            }
+        }
+
+        #endregion
+
+        #region TrackBrush DP
 
         public static readonly DependencyProperty TrackBrushProperty =
             DependencyProperty.Register("TrackBrush", typeof(Brush), typeof(MultiSlider),
@@ -238,7 +208,8 @@ namespace Xam.Wpf.Controls
             set { SetValue(TrackBrushProperty, value); }
         }
 
-        
+        #endregion
+
         #endregion
 
         /************************************************************************/
@@ -330,8 +301,8 @@ namespace Xam.Wpf.Controls
         public override void OnApplyTemplate()
         {
             base.OnApplyTemplate();
-            if (Pattern != null)
-                InsertSliders();            
+            //if (Pattern != null)
+            //    InsertSliders();            
         }
         #endregion
 
@@ -344,10 +315,8 @@ namespace Xam.Wpf.Controls
 
         #region Other Methods (private)
         /// <summary>
-        /// Inserts the sliders into the template. This method is called
-        /// when the template is applied.
+        /// Inserts the sliders into the template. 
         /// </summary>
-        /// <param name="sliderCount">The total number of possible sliders.</param>
         private void InsertSliders()
         {
             int sliderCount = Pattern.Count;
@@ -369,10 +338,8 @@ namespace Xam.Wpf.Controls
                 s.Minimum = Minimum;
                 s.Maximum = Maximum;
                 s.Value = Pattern[k].LedPos;
-                s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(MultiSliderSliderGotMouseCapture);
-                s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderValueChanged);
-                s.Orientation = Orientation.Horizontal;
-                s.IsDirectionReversed = false;
+                s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
+                s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
                 if (k % 2 == 0)
                     // чётный 
                     sliderGridUp.Children.Add(sliders[k]);
@@ -382,14 +349,14 @@ namespace Xam.Wpf.Controls
             }            
         }
 
-        private void MultiSliderSliderGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
+        private void SliderItemGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
             SliderItem s = sender as SliderItem;
             SelectedPoint = Pattern[sliders.IndexOf(s)];
             SelectedPoint.LedPos = (int)s.Value;
         }
 
-        private void OnSliderValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void OnSliderItemValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             SliderItem s = sender as SliderItem;
             int ix = sliders.IndexOf(s);
@@ -425,13 +392,6 @@ namespace Xam.Wpf.Controls
             return IsValidDouble(value);
         }
 
-        private static void OnMinimumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            ms.CoerceValue(MaximumProperty);
-            //ms.RecalibrateSliders();
-        }
-
         private static object MinimumPropertyCoerce(DependencyObject d, object value)
         {
             double max = ((MultiSlider)d).Maximum;
@@ -442,13 +402,6 @@ namespace Xam.Wpf.Controls
         private static bool IsValidMaximum(object value)
         {
             return IsValidDouble(value);
-        }
-
-        private static void OnMaximumPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            ms.CoerceValue(MinimumProperty);
-            //ms.RecalibrateSliders();
         }
 
         private static object MaximumPropertyCoerce(DependencyObject d, object value)
@@ -463,26 +416,6 @@ namespace Xam.Wpf.Controls
             Double v = (Double)value;
             return !Double.IsInfinity(v) && !Double.IsNaN(v);
         }
-
-        private static void OnOrientationPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            foreach (var s in ms.sliders)
-            {
-                s.Orientation = (Orientation)e.NewValue;
-            }
-        }
-
-        private static void OnIsDirectionReversedPropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
-        {
-            MultiSlider ms = (MultiSlider)d;
-            foreach (var s in ms.sliders)
-            {
-                s.IsDirectionReversed = (bool)e.NewValue;
-            }
-        }
-
-        
 
         #endregion
     }
