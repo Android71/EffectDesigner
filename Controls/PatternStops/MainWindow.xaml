@@ -9,37 +9,47 @@
         Title="MainWindow"
         Width="1205.082"
         Height="462.163"
-        mc:Ignorable="d">
+        mc:Ignorable="d" Background="#FF686868">
     <Grid>
         <StackPanel Orientation="Horizontal">
-                <PatternControls:ColorPanel />
+            <PatternControls:ColorPanel Background="#FF686868" />
             <StackPanel>
-                <StackPanel Height="255" Width="960" Background="#FF595656">
-                    
+                <StackPanel Width="960"
+                            Height="275"
+                            Background="#FF595656">
+                    <UniformGrid  Margin="10" Height="255" Background="#FF686868"/>
                 </StackPanel>
-               <Controls:MultiSlider 
-                              Margin="10,20"
-                              Maximum="990"
-                              Pattern="{Binding Pattern}"
-                              SelectedPoint="{Binding SelectedPoint,Mode=TwoWay}" /> 
+                <Controls:MultiSlider Margin="10,20"
+                                      Maximum="1200"
+                                      TrackBrush="#FFC8C9C9"
+                                      Pattern="{Binding Pattern}"
+                                      SelectedPoint="{Binding SelectedPoint,
+                                                              Mode=TwoWay}" Background="#FF686868" />
+                <ListBox x:Name="listBox"
+                         MinWidth="800"
+                         HorizontalAlignment="Left"
+                         ItemsSource="{Binding Pattern}"
+                         SelectedIndex="{Binding SelectedPatternIx}"
+                         SelectedItem="{Binding SelectedPoint}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Visible" Background="#FFC8C9C9">
+                    <ListBox.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ListBox.ItemsPanel>
+
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Label Width="50"
+                                   HorizontalContentAlignment="Center"
+                                   Background="{Binding PointBrush}"
+                                   BorderBrush="Black"
+                                   BorderThickness="1"
+                                   Content="{Binding LedPos}" />
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
             </StackPanel>
-            <ListBox x:Name="listBox"
-                     MinWidth="10"
-                     HorizontalAlignment="Left"
-                     ItemsSource="{Binding Pattern}"
-                     SelectedIndex="{Binding SelectedPatternIx}"
-                     SelectedItem="{Binding SelectedPoint}">
-                <ListBox.ItemTemplate>
-                    <DataTemplate>
-                        <Label Width="50"
-                               HorizontalContentAlignment="Center"
-                               Background="{Binding PointBrush}"
-                               BorderBrush="Black"
-                               BorderThickness="1"
-                               Content="{Binding LedPos}" />
-                    </DataTemplate>
-                </ListBox.ItemTemplate>
-            </ListBox>
+
         </StackPanel>
     </Grid>
 </Window>
