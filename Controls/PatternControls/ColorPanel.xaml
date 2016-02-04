@@ -5,25 +5,13 @@
              xmlns:local="clr-namespace:PatternControls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              Background="LightGray"
-             d:DesignHeight="300"
+             d:DesignHeight="363"
              d:DesignWidth="300"
              mc:Ignorable="d">
-    <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition Height="25*" />
-            <RowDefinition Height="127*" />
-        </Grid.RowDefinitions>
-        <Grid>
-            <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />
-                <RowDefinition Height="33" />
-            </Grid.RowDefinitions>
 
-            <TextBlock Grid.Row="0" Text="R(2555 G(255) B(255)" />
-            <Border Grid.Row="1"
-                    Margin="50,0,0,0"
-                    Background="#FFE25656" />
-        </Grid>
+    <Grid>
+
+
         <Grid Grid.Row="1">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="7*" />
@@ -39,23 +27,34 @@
             <StackPanel Grid.Column="1" Orientation="Horizontal">
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0"
-                           HorizontalContentAlignment="Center"
-                           Content="H"
-                           FontWeight="Bold" />
+                    <TextBlock Grid.Row="1"
+                           Text="H"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
                     <Slider x:Name="hue"
-                            Grid.Row="1"
-                            Margin="0,0,0,10"
+                            Grid.Row="0"
+                            
                             HorizontalAlignment="Center"
-                            Orientation="Vertical" />
+                            Orientation="Vertical" Margin="10,10,10,0" Height="255" />
                     <Border Grid.Row="2"
-                            BorderBrush="Black"
-                            BorderThickness="1">
-                        <TextBlock Margin="3,0"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
+                                   HorizontalAlignment="Center"
+                                   Text="325" />
+                    </Border>
+                    <TextBlock Grid.Row="3"
+                           Text="R"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
+                    <Border Grid.Row="4"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
                                    HorizontalAlignment="Center"
                                    Text="325" />
                     </Border>
@@ -63,49 +62,72 @@
                 </Grid>
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0"
-                           HorizontalContentAlignment="Center"
-                           Content="S"
-                           FontWeight="Bold" />
+                    <TextBlock Grid.Row="1"
+                           Text="H"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
                     <Slider x:Name="sat"
-                            Grid.Row="1"
-                            Margin="0,0,0,10"
+                            Grid.Row="0"
                             HorizontalAlignment="Center"
-                            Orientation="Vertical" />
-                    <Label Grid.Row="2"
-                           Width="35"
-                           Margin="3,0"
-                           HorizontalContentAlignment="Center"
-                           BorderBrush="Black"
-                           BorderThickness="1"
-                           Content="100" />
+                            Orientation="Vertical" Margin="10,10,10,0" Height="255"/>
+                    <Border Grid.Row="2"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
+                                   HorizontalAlignment="Center"
+                                   Text="325" />
+                    </Border>
+                    <TextBlock Grid.Row="3"
+                           Text="R"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
+                    <Border Grid.Row="4"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
+                                   HorizontalAlignment="Center"
+                                   Text="325" />
+                    </Border>
+
                 </Grid>
                 <Grid>
                     <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
                         <RowDefinition Height="Auto" />
-                        <RowDefinition />
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Label Grid.Row="0"
-                           HorizontalContentAlignment="Center"
-                           Content="B"
-                           FontWeight="Bold" />
+                    <TextBlock Grid.Row="1"
+                           Text="H"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
                     <Slider x:Name="bri"
-                            Grid.Row="1"
-                            Margin="0,0,0,10"
+                            Grid.Row="0"
+                            
                             HorizontalAlignment="Center"
-                            Orientation="Vertical" />
-                    <Label Grid.Row="2"
-                           Width="35"
-                           Margin="3,0"
-                           HorizontalContentAlignment="Center"
-                           BorderBrush="Black"
-                           BorderThickness="1"
-                           Content="100" />
+                            Orientation="Vertical" Margin="10,10,10,0" Height="255"/>
+                    <Border Grid.Row="2"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
+                                   HorizontalAlignment="Center"
+                                   Text="325" />
+                    </Border>
+                    <TextBlock Grid.Row="3"
+                           Text="R"
+                           FontWeight="Bold" HorizontalAlignment="Center" Margin="0,5" />
+                    <Border Grid.Row="4"
+                            BorderBrush="#FF595656"
+                            BorderThickness="1" Margin="5,0">
+                        <TextBlock Margin="0"
+                                   HorizontalAlignment="Center"
+                                   Text="325" />
+                    </Border>
+
                 </Grid>
             </StackPanel>
         </Grid>
