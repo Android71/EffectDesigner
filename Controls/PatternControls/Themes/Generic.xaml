@@ -89,30 +89,51 @@
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}">
             <StackPanel>
-                <Grid x:Name="PART_ControlBlock" HorizontalAlignment="Right">
-                    <Grid.ColumnDefinitions>
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                        <ColumnDefinition />
-                    </Grid.ColumnDefinitions>
-                    <Button x:Name="incrementBtn"
-                            Grid.Column="0"
-                            Content=" - " />
-                    <Label x:Name="valueLbl"
-                           Grid.Column="1"
-                           Width="50"
-                           HorizontalContentAlignment="Center"
-                           BorderBrush="Black"
-                           BorderThickness="1" />
-                    <Button x:Name="decrementBtn"
-                            Grid.Column="2"
-                            Content=" + " />
-                </Grid>
-                <Grid>
+                <StackPanel Height="275" Background="#FF595656">
+                    <UniformGrid x:Name="PART_StripGrid"
+                                 Height="255"
+                                 Margin="10"
+                                 Background="#FF686868"
+                                 Columns="288"
+                                 Rows="1">
+                        <Rectangle Width="5"
+                                   Height="255"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="220"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="190"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="160"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="130"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="100"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="70"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+
+                    </UniformGrid>
+                </StackPanel>
+
+                <Grid Margin="10,0">
                     <Grid.Resources>
                         <Style TargetType="lc:SliderItem">
                             <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
                             <Setter Property="Grid.Row" Value="1" />
+
                         </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
@@ -120,8 +141,8 @@
                         <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
                         <RowDefinition Height="Auto" />
                     </Grid.RowDefinitions>
-                    <Grid x:Name="PART_SliderGrid_Up" Grid.Row="0">
-                        <!--  SupportiveSlider instance get inserted here  -->
+                    <Grid Name="PART_SliderGrid_Up" Grid.Row="0">
+                        <!--  Odd SliderItem instance get inserted here  -->
                     </Grid>
                     <Border Grid.Row="1"
                             Height="4"
@@ -129,14 +150,73 @@
                             BorderBrush="{TemplateBinding TrackBrush}"
                             BorderThickness="2" />
                     <Grid x:Name="PART_SliderGrid_Down" Grid.Row="2">
-                        <!--  SupportiveSlider instance get inserted here  -->
+                        <!--  Even SliderItem instance get inserted here  -->
                     </Grid>
                 </Grid>
+
+                <DockPanel Margin="0,10,0,0">
+                    <Grid Width="30" DockPanel.Dock="Left">
+                        <Grid.RowDefinitions>
+                            <RowDefinition />
+                            <RowDefinition />
+                        </Grid.RowDefinitions>
+                        <Button Content=" + " />
+                        <Button Grid.Row="1" Content=" - " />
+                    </Grid>
+                    <!--<StackPanel Width="100"
+                                Background="#FFF58888"
+                                DockPanel.Dock="Left" />-->
+                    <Grid x:Name="PART_ControlBlock" DockPanel.Dock="Right">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                            <ColumnDefinition />
+                        </Grid.ColumnDefinitions>
+                        <Button x:Name="incrementBtn"
+                                Grid.Column="0"
+                                Content=" - " />
+                        <Label x:Name="valueLbl"
+                               Grid.Column="1"
+                               Width="50"
+                               HorizontalContentAlignment="Center"
+                               BorderBrush="Black"
+                               BorderThickness="1" />
+                        <Button x:Name="decrementBtn"
+                                Grid.Column="2"
+                                Content=" + " />
+                    </Grid>
+
+                    <ListBox x:Name="listBox"
+                             Background="#FFC8C9C9"
+                             ItemsSource="{Binding Pattern,
+                                                   RelativeSource={RelativeSource TemplatedParent}}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Visible"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             SelectedIndex="{Binding SelectedPatternIx}"
+                             SelectedItem="{Binding SelectedPoint}">
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <Label Width="50"
+                                       HorizontalContentAlignment="Center"
+                                       Background="{Binding PointBrush}"
+                                       BorderBrush="Black"
+                                       BorderThickness="1"
+                                       Content="{Binding LedPos}" />
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+
+                </DockPanel>
             </StackPanel>
         </Border>
     </ControlTemplate>
 
-    <ControlTemplate x:Key="MultiSliderVertical" TargetType="lc:MultiSlider">
+    <!--<ControlTemplate x:Key="MultiSliderVertical" TargetType="lc:MultiSlider">
         <Border Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}">
@@ -160,16 +240,19 @@
                         BorderBrush="{TemplateBinding TrackBrush}"
                         BorderThickness="2" />
                 <Grid x:Name="PART_SliderGrid" Grid.Column="1">
-                    <!--  SupportiveSlider instance get inserted here  -->
+    -->
+    <!--  SliderItem instance get inserted here  -->
+    <!--
                 </Grid>
             </Grid>
         </Border>
-    </ControlTemplate>
+    </ControlTemplate>-->
 
     <Style TargetType="lc:MultiSlider">
         <Setter Property="HorizontalAlignment" Value="Stretch" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="Template" Value="{StaticResource MultiSliderHorizontal}" />
+
         <Style.Triggers>
             <Trigger Property="Orientation" Value="Vertical">
                 <Setter Property="Template" Value="{StaticResource MultiSliderVertical}" />
