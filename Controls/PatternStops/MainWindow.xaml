@@ -7,49 +7,28 @@
         xmlns:local="clr-namespace:PatternStops"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         Title="MainWindow"
-        Width="1205.082"
+        Width="997.298"
         Height="462.163"
-        mc:Ignorable="d" Background="#FF686868">
+        Background="#FF686868"
+        mc:Ignorable="d">
     <Grid>
-        <StackPanel Orientation="Horizontal">
-            <PatternControls:ColorPanel Background="#FF686868" />
-            <StackPanel>
-                <StackPanel Width="960"
-                            Height="275"
-                            Background="#FF595656">
-                    <UniformGrid  Margin="10" Height="255" Background="#FF686868"/>
-                </StackPanel>
-                <Controls:MultiSlider Margin="10,20"
-                                      Maximum="1200"
-                                      TrackBrush="#FFC8C9C9"
-                                      Pattern="{Binding Pattern}"
-                                      SelectedPoint="{Binding SelectedPoint,
-                                                              Mode=TwoWay}" Background="#FF686868" />
-                <ListBox x:Name="listBox"
-                         MinWidth="800"
-                         HorizontalAlignment="Left"
-                         ItemsSource="{Binding Pattern}"
-                         SelectedIndex="{Binding SelectedPatternIx}"
-                         SelectedItem="{Binding SelectedPoint}" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.HorizontalScrollBarVisibility="Visible" Background="#FFC8C9C9">
-                    <ListBox.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <StackPanel Orientation="Horizontal" />
-                        </ItemsPanelTemplate>
-                    </ListBox.ItemsPanel>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="Auto" />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
 
-                    <ListBox.ItemTemplate>
-                        <DataTemplate>
-                            <Label Width="50"
-                                   HorizontalContentAlignment="Center"
-                                   Background="{Binding PointBrush}"
-                                   BorderBrush="Black"
-                                   BorderThickness="1"
-                                   Content="{Binding LedPos}" />
-                        </DataTemplate>
-                    </ListBox.ItemTemplate>
-                </ListBox>
-            </StackPanel>
-
+        <PatternControls:ColorPanel Grid.Column="0" Background="#FF686868" SelectedPoint="{Binding SelectedPoint,
+                                                          Mode=TwoWay}"/>
+        <StackPanel Grid.Column="1">
+            <Controls:MultiSlider Margin="10"
+                                  Background="#FF686868"
+                                  Maximum="1200"
+                                  Pattern="{Binding Pattern}"
+                                  SelectedPoint="{Binding SelectedPoint,
+                                                          Mode=TwoWay}"
+                                  TrackBrush="#FFC8C9C9" />
         </StackPanel>
+
+
     </Grid>
 </Window>
