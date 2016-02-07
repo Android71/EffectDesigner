@@ -418,5 +418,25 @@ namespace Xam.Wpf.Controls
         }
 
         #endregion
+
+        #region TODO
+
+        // ContrastColor value converter
+        //http://andora.us/blog/2011/03/03/choosing-foreground-using-luminosity-contrast-ratio/
+        Color ContrastColor(Color color)
+        {
+            int d = 0;
+
+            // Counting the perceptive luminance - human eye favors green color... 
+            double a = 1 - (0.299 * color.R + 0.587 * color.G + 0.114 * color.B) / 255;
+
+            if (a < 0.5)
+                d = 0; // bright colors - black font
+            else
+                d = 255; // dark colors - white font
+
+            return Color.FromArgb(0, (byte)d, (byte)d, (byte)d);
+        }
+        #endregion
     }
 }

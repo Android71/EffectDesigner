@@ -7,7 +7,7 @@
              Background="LightGray"
              d:DesignHeight="363"
              d:DesignWidth="300"
-             mc:Ignorable="d" Loaded="UserControl_Loaded">
+             mc:Ignorable="d">
 
     <Grid>
 
@@ -38,8 +38,10 @@
                             Height="255"
                             Margin="10,10,10,0"
                             HorizontalAlignment="Center"
+                            IsEnabled="False"
                             Orientation="Vertical"
-                            SmallChange="1" ValueChanged="hue_ValueChanged" />
+                            SmallChange="1"
+                            ValueChanged="hsb_ValuesChanged" />
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"
@@ -67,8 +69,7 @@
                             BorderThickness="1">
                         <TextBlock x:Name="rValue"
                                    Margin="0"
-                                   HorizontalAlignment="Center"
-                                   Text="325" />
+                                   HorizontalAlignment="Center" />
                     </Border>
 
                 </Grid>
@@ -85,9 +86,11 @@
                             Height="255"
                             Margin="10,10,10,0"
                             HorizontalAlignment="Center"
+                            IsEnabled="False"
                             Maximum="100"
                             Orientation="Vertical"
-                            SmallChange="1" ValueChanged="hue_ValueChanged"/>
+                            SmallChange="1"
+                            ValueChanged="hsb_ValuesChanged" />
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"
@@ -115,8 +118,7 @@
                             BorderThickness="1">
                         <TextBlock x:Name="gValue"
                                    Margin="0"
-                                   HorizontalAlignment="Center"
-                                   Text="325" />
+                                   HorizontalAlignment="Center" />
                     </Border>
 
                 </Grid>
@@ -133,9 +135,11 @@
                             Height="255"
                             Margin="10,10,10,0"
                             HorizontalAlignment="Center"
+                            IsEnabled="False"
                             Maximum="100"
                             Orientation="Vertical"
-                            SmallChange="1" ValueChanged="hue_ValueChanged"/>
+                            SmallChange="1"
+                            ValueChanged="hsb_ValuesChanged" />
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"
@@ -163,8 +167,7 @@
                             BorderThickness="1">
                         <TextBlock x:Name="bValue"
                                    Margin="0"
-                                   HorizontalAlignment="Center"
-                                   Text="325" />
+                                   HorizontalAlignment="Center" />
                     </Border>
 
                 </Grid>

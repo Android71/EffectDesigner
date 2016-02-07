@@ -17,8 +17,10 @@
             <ColumnDefinition />
         </Grid.ColumnDefinitions>
 
-        <PatternControls:ColorPanel Grid.Column="0" Background="#FF686868" SelectedPoint="{Binding SelectedPoint,
-                                                          Mode=TwoWay}"/>
+        <PatternControls:ColorPanel Grid.Column="0"
+                                    Background="#FF686868"
+                                    SelectedPoint="{Binding SelectedPoint,
+                                                            Mode=TwoWay}" />
         <StackPanel Grid.Column="1">
             <Controls:MultiSlider Margin="10"
                                   Background="#FF686868"

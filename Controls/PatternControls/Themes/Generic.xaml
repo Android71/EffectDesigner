@@ -33,40 +33,63 @@
         </Setter>
     </Style>
 
-    <!--  Thumb Template  -->
-    <ControlTemplate x:Key="ThumbTemplate" TargetType="{x:Type Thumb}">
+    <!--  Thumb Templates  -->
+    <ControlTemplate x:Key="ThumbTemplate1" TargetType="{x:Type Thumb}">
         <Grid>
             <Border Name="MainBorder"
                     Width="15"
                     Height="15"
-                    Background="#070"
+                    Margin="2"
+                    Background="#FFC7C7C7"
                     BorderBrush="DarkGray"
                     BorderThickness="1"
-                    CornerRadius="4" />
-            <Ellipse Name="CenterDot"
-                     Grid.Row="1"
-                     Width="5"
-                     Height="5"
-                     Fill="Blue" />
+                    CornerRadius="4">
+                <Ellipse Name="CenterDot"
+                         Width="5"
+                         Height="5"
+                         Fill="DarkGray" />
+            </Border>
         </Grid>
         <ControlTemplate.Triggers>
             <Trigger Property="IsMouseOver" Value="True">
-                <Setter TargetName="CenterDot" Property="Fill" Value="#B00" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
             </Trigger>
-            <Trigger Property="IsMouseCaptureWithin" Value="True">
-                <Setter TargetName="CenterDot" Property="Fill" Value="Yellow" />
-                <Setter TargetName="MainBorder" Property="Height" Value="17" />
-                <Setter TargetName="MainBorder" Property="Width" Value="17" />
-            </Trigger>
+
             <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type lc:SliderItem}}, Path=IsSelected}" Value="true">
-                <Setter TargetName="MainBorder" Property="Background" Value="#0A0" />
-                <Setter TargetName="MainBorder" Property="Width" Value="20" />
-                <Setter TargetName="MainBorder" Property="Height" Value="20" />
-                <Setter TargetName="CenterDot" Property="Width" Value="8" />
-                <Setter TargetName="CenterDot" Property="Height" Value="8" />
+                <Setter TargetName="MainBorder" Property="BorderBrush" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+
+    <ControlTemplate x:Key="ThumbTemplate" TargetType="{x:Type Thumb}">
+        <Grid Margin="0,3">
+            <Path Name="MainBorder"
+                  Width="19"
+                  Height="19"
+                  Data="M13.25,6.25 L111.75,55.5 13.5,104.5 z"
+                  Fill="#FFC7C7C7"
+                  Stretch="Fill"
+                  Stroke="DarkGray" />
+            <Ellipse Name="CenterDot"
+                     Width="5"
+                     Height="5"
+                     Margin="4,7,10,7"
+                     Fill="#FF3165EE" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </Trigger>
+
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type lc:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="Stroke" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
 
     <ControlTemplate x:Key="SupportiveSliderTemplate" TargetType="lc:SliderItem">
         <Grid>
@@ -133,7 +156,6 @@
                         <Style TargetType="lc:SliderItem">
                             <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
                             <Setter Property="Grid.Row" Value="1" />
-
                         </Style>
                     </Grid.Resources>
                     <Grid.RowDefinitions>
@@ -163,9 +185,7 @@
                         <Button Content=" + " />
                         <Button Grid.Row="1" Content=" - " />
                     </Grid>
-                    <!--<StackPanel Width="100"
-                                Background="#FFF58888"
-                                DockPanel.Dock="Left" />-->
+
                     <Grid x:Name="PART_ControlBlock" DockPanel.Dock="Right">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition />
@@ -240,9 +260,11 @@
                         BorderBrush="{TemplateBinding TrackBrush}"
                         BorderThickness="2" />
                 <Grid x:Name="PART_SliderGrid" Grid.Column="1">
+
     -->
     <!--  SliderItem instance get inserted here  -->
     <!--
+
                 </Grid>
             </Grid>
         </Border>

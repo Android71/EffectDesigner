@@ -14,10 +14,13 @@ namespace PatternControls
 
         #region Private fields
 
-        Border selectedColorRange = null;
+        Border selectedColorRange = null;   // В свойстве Tag находится Point с диапазоном Hue
+        Border pointColorRange = null;
+        //int selectedColorIx = -1;
         Brush[] brushArray;
         Point[] rangeArray;
-        bool colorFromPattern = true;
+        bool colorFromPattern = true;       // управление режимами hsb_ValuesChanged
+        bool suspendUpdate = false;
 
         #endregion
 
@@ -36,55 +39,16 @@ namespace PatternControls
         private static void OnSelectedPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             ColorPanel panel = d as ColorPanel;
-            int ix = 0;
-            PatternPoint pp = (PatternPoint)e.NewValue;
-            HSBcolor hsb = HSBcolor.RgbToHsb(pp.PointColor);
-            if ((hsb.Hue >= 0) && (hsb.Hue < 30)) { ix = 11; goto M1; }
-            if ((hsb.Hue >= 30) && (hsb.Hue < 60)) { ix = 10; goto M1; }
-            if ((hsb.Hue >= 60) && (hsb.Hue < 90)) { ix = 9; goto M1; }
-            if ((hsb.Hue >= 90) && (hsb.Hue < 120)) { ix = 8; goto M1; }
-            if ((hsb.Hue >= 120) && (hsb.Hue < 150)) { ix = 7; goto M1; }
-            if ((hsb.Hue >= 150) && (hsb.Hue < 180)) { ix = 6; goto M1; }
-            if ((hsb.Hue >= 180) && (hsb.Hue < 210)) { ix = 5; goto M1; }
-            if ((hsb.Hue >= 210) && (hsb.Hue < 240)) { ix = 4; goto M1; }
-            if ((hsb.Hue >= 240) && (hsb.Hue < 270)) { ix = 3; goto M1; }
-            if ((hsb.Hue >= 270) && (hsb.Hue < 300)) { ix = 2; goto M1; }
-            if ((hsb.Hue >= 300) && (hsb.Hue < 330)) { ix = 1; goto M1; }
-            if ((hsb.Hue >= 330) && (hsb.Hue < 360)) { ix = 0; goto M1; }
-            M1:
+            HSBcolor hsb = HSBcolor.RgbToHsb(panel.SelectedPoint.PointColor);
+            int ix = panel.colorSelector.Children.Count - 2 - (int)(hsb.Hue / 30);
+            panel.pointColorRange = (Border)panel.colorSelector.Children[ix];
+            panel.hue.IsEnabled = true;
+            panel.sat.IsEnabled = true;
+            panel.bri.IsEnabled = true;
             panel.colorFromPattern = true;
-            panel.SetSelection(ix, hsb, pp.PointColor);
+            panel.SetColorRange(panel.pointColorRange);
             panel.colorFromPattern = false;
         }
-
-        private void SetSelection(int index, HSBcolor hsb, Color rgb)
-        {
-            if (selectedColorRange != colorSelector.Children[index])
-            {
-                Border border = colorSelector.Children[index] as Border;
-                if (selectedColorRange != null)
-                {
-                    selectedColorRange.Margin = new Thickness(3);
-                    selectedColorRange.BorderThickness = new Thickness(0);
-                }
-                border.Margin = new Thickness(0);
-                border.BorderBrush = new SolidColorBrush(Colors.Black);
-                border.BorderThickness = new Thickness(1);
-                selectedColorRange = border;
-                hue.Minimum = ((Point)selectedColorRange.Tag).X;
-                hue.Maximum = ((Point)selectedColorRange.Tag).Y - 0.1d;
-                hue.IsEnabled = true;
-                sat.IsEnabled = true;
-                bri.IsEnabled = true;
-                hue.Value = hsb.Hue;
-                sat.Value = hsb.Saturation * 100;
-                bri.Value = hsb.Brightness * 100;
-                rValue.Text = rgb.R.ToString();
-                gValue.Text = rgb.G.ToString();
-                bValue.Text = rgb.B.ToString();
-            }
-        }
-
         #endregion
 
         public ColorPanel()
@@ -104,7 +68,7 @@ namespace PatternControls
                 new SolidColorBrush(Color.FromRgb(255, 255, 0)),    /* Yellow */
                 new SolidColorBrush(Color.FromRgb(255, 128, 0)),    /* Red */
                 new SolidColorBrush(Color.FromRgb(255, 0, 0)),      /* Red */
-                new SolidColorBrush(Color.FromRgb(0, 0, 0)),
+                new SolidColorBrush(Color.FromRgb(0, 0, 0)),        /* Black */
             };
 
             rangeArray = new Point[]
@@ -129,66 +93,92 @@ namespace PatternControls
             {
                 border = new Border();
                 border.Margin = new Thickness(3);
+                border.BorderBrush = new SolidColorBrush(Colors.Black);
+                border.BorderThickness = new Thickness(0);
                 border.Background = brushArray[i];
                 border.Tag = rangeArray[i];
                 border.MouseLeftButtonUp += new MouseButtonEventHandler(BorderMouseLeftUp);
                 colorSelector.Children.Add(border);
             }
 
+            // устанавливаем выбор на черном цвете
+
             selectedColorRange = colorSelector.Children[brushArray.Length - 1] as Border;
             selectedColorRange.Margin = new Thickness(0);
-            selectedColorRange.BorderBrush = new SolidColorBrush(Colors.Black);
             selectedColorRange.BorderThickness = new Thickness(1);
-            hue.IsEnabled = false;
-            sat.IsEnabled = false;
-            bri.IsEnabled = false;
         }
-
-        private void BorderMouseLeftUp(object sender, MouseButtonEventArgs e)
+        
+        private void SetColorRange(Border colorRange)
         {
-            Border border = sender as Border;
-            if (border != null)
+            if (selectedColorRange != colorRange)
             {
                 if (selectedColorRange != null)
                 {
                     selectedColorRange.Margin = new Thickness(3);
                     selectedColorRange.BorderThickness = new Thickness(0);
                 }
-                border.Margin = new Thickness(0);
-                border.BorderBrush = new SolidColorBrush(Colors.Black);
-                border.BorderThickness = new Thickness(1);
-                selectedColorRange = border;
+                colorRange.Margin = new Thickness(0);
+                colorRange.BorderThickness = new Thickness(1);
+                selectedColorRange = colorRange;
+                suspendUpdate = true;
+                hue.Minimum = ((Point)selectedColorRange.Tag).X;
+                hue.Maximum = ((Point)selectedColorRange.Tag).Y;
+                suspendUpdate = false;
+                SetValues();
             }
         }
 
-        private void UserControl_Loaded(object sender, RoutedEventArgs e)
+        private void SetValues()
         {
-            hue.GotFocus += Hue_GotFocus;
+            suspendUpdate = true;       // для единовременного обновления
+            if (colorFromPattern)
+            {
+                
+                hue.Value = SelectedPoint.HSB.Hue;
+                sat.Value = SelectedPoint.HSB.Saturation * 100;
+                bri.Value = SelectedPoint.HSB.Brightness * 100;
+            }
+            else
+            {
+                suspendUpdate = true;
+                hue.Value = hue.Minimum + 15;
+                sat.Value = 100;
+                bri.Value = 100;
+            }
+            suspendUpdate = false;
+            hsb_ValuesChanged(null, null);
         }
 
-        private void Hue_GotFocus(object sender, RoutedEventArgs e)
+        private void BorderMouseLeftUp(object sender, MouseButtonEventArgs e)
         {
-            var x = sender;
+            Border newColorRange = sender as Border;
+            if (SelectedPoint != null)
+            {
+                if (newColorRange != null)
+                {
+                    colorFromPattern = false;
+                    SetColorRange(newColorRange);
+                }
+            }
         }
 
-        private void hue_ValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
+        private void hsb_ValuesChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
             HSBcolor hsb;
             Color rgb;
-            if (!colorFromPattern)
+            if (!suspendUpdate)
             {
                 hsb = new HSBcolor();
                 hsb.Hue = (int)hue.Value;
                 hsb.Saturation = (int)sat.Value / 100.0d;
                 hsb.Brightness = (int)bri.Value / 100.0d;
                 rgb = hsb.HsbToRgb();
-                SelectedPoint.PointColor = rgb;
+                if (!colorFromPattern)
+                    SelectedPoint.PointColor = rgb;
                 rValue.Text = rgb.R.ToString();
                 gValue.Text = rgb.G.ToString();
                 bValue.Text = rgb.B.ToString();
             }
-            //HSBcolor hsb = new HSBcolor(hue.Value, sat.Value, bri.Value);
-            
         }
     }
 }

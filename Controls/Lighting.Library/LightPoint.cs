@@ -52,8 +52,12 @@ namespace Lighting.Library
             }
         }
 
-
-        public HSBcolor HSB { get; set; }
+        HSBcolor hsb;
+        public virtual HSBcolor HSB
+        {
+            get { hsb = HSBcolor.RgbToHsb(PointColor); return hsb; }
+            private set { }
+        }
 
         public double DeltaHue { get; set; }
 
