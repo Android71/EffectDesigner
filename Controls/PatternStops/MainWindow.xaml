@@ -11,6 +11,16 @@
         Height="462.163"
         Background="#FF686868"
         mc:Ignorable="d">
+    <Window.Resources>
+        <!--<DataTemplate x:Key="gradientPoint">
+                                <Label Width="50"
+                                       HorizontalContentAlignment="Center"
+                                       Background="{Binding PointBrush}"
+                                       BorderBrush="Black"
+                                       BorderThickness="1"
+                                       Content="{Binding LedPos}" />
+                            </DataTemplate>-->
+    </Window.Resources>
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto" />

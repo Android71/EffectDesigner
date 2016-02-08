@@ -16,5 +16,13 @@ namespace Lighting.Library
 
             set { if (_ledPos != value) { _ledPos = value; OnPropertyChanged("LedPos"); } }
         }
+
+        private int _ledCount = 0;
+        public int LedCount
+        {
+            get { return _ledCount; }
+
+            set { if (_ledCount != value) { _ledCount = value; OnPropertyChanged("LedCount"); } }
+        }
     }
 }

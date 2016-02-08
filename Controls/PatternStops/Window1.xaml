@@ -111,7 +111,7 @@
                          Margin="4,7,10,7"
                          Fill="#FF3165EE" />
             </Grid>
-            <Grid Width="50" Height="30">
+            <Grid Width="50" Height="20">
                 <Path Margin="0"
                       Data="M0.5,0.5 L119.769,0.5 105.496,31.426 119.769,62.249 0.24600001,62.426001 18.496,31.926 z"
                       Fill="#FFE27C7C"

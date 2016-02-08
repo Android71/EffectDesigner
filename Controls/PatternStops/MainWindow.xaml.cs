@@ -24,7 +24,7 @@ namespace PatternStops
             DataContext = this;
             ObservableNotifiableCollection<PatternPoint> pattern = new ObservableNotifiableCollection<PatternPoint>();
             pattern.Add(new PatternPoint(Colors.Blue, 2));
-            pattern.Add(new PatternPoint(Colors.Red, 254));
+            pattern.Add(new PatternPoint(Colors.Red, 254) { LedCount = 2 });
             pattern.Add(new PatternPoint(Colors.Yellow, 607));
             pattern.Add(new PatternPoint(Colors.Green, 903));
             Pattern = pattern;

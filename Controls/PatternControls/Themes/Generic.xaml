@@ -106,6 +106,26 @@
             </Track>
         </Grid>
     </ControlTemplate>
+    
+    <lc:PatternPointDataTemplateSelector x:Key="dataTemplateSelector"/>
+    <DataTemplate x:Key="gradientPoint">
+        <Label Width="50"
+        HorizontalContentAlignment="Center"
+        Background="{Binding PointBrush}"
+        BorderBrush="Black"
+        BorderThickness="1"
+        Content="{Binding LedPos}" />
+    </DataTemplate>
+
+    <DataTemplate x:Key="rangePoint">
+        <Grid Width="50" Height="20">
+                <Path Margin="0"
+                      Data="M0.5,0.5 L119.769,0.5 105.496,31.426 119.769,62.249 0.24600001,62.426001 18.496,31.926 z"
+                      Fill="{Binding PointBrush}"
+                      Stretch="Fill"
+                      Stroke="Black" />
+            </Grid>
+    </DataTemplate>
 
     <ControlTemplate x:Key="MultiSliderHorizontal" TargetType="lc:MultiSlider">
         <Border Background="{TemplateBinding Background}"
@@ -210,25 +230,18 @@
                              Background="#FFC8C9C9"
                              ItemsSource="{Binding Pattern,
                                                    RelativeSource={RelativeSource TemplatedParent}}"
+                             ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                             
                              ScrollViewer.HorizontalScrollBarVisibility="Visible"
                              ScrollViewer.VerticalScrollBarVisibility="Disabled"
                              SelectedIndex="{Binding SelectedPatternIx}"
                              SelectedItem="{Binding SelectedPoint}">
+                        
                         <ListBox.ItemsPanel>
                             <ItemsPanelTemplate>
                                 <StackPanel Orientation="Horizontal" />
                             </ItemsPanelTemplate>
                         </ListBox.ItemsPanel>
-                        <ListBox.ItemTemplate>
-                            <DataTemplate>
-                                <Label Width="50"
-                                       HorizontalContentAlignment="Center"
-                                       Background="{Binding PointBrush}"
-                                       BorderBrush="Black"
-                                       BorderThickness="1"
-                                       Content="{Binding LedPos}" />
-                            </DataTemplate>
-                        </ListBox.ItemTemplate>
                     </ListBox>
 
                 </DockPanel>

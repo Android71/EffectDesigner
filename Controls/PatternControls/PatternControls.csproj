@@ -68,6 +68,9 @@
     <Compile Include="MultiSliderRoutedEventArgs.cs" />
     <Compile Include="MultiSliderRoutedEventHandler.cs" />
     <Compile Include="MultiSliderSetRoutedEventArgs.cs" />
+    <Compile Include="PatternPointDataTemplateSelector.cs">
+      <DependentUpon>MultiSlider.cs</DependentUpon>
+    </Compile>
     <Compile Include="SliderItem.cs" />
     <Compile Include="SlidersSetRoutedEventHandler.cs" />
     <Compile Include="UserControl1.xaml.cs">
