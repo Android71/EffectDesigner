@@ -72,25 +72,8 @@
             </DataTrigger>-->
             </ControlTemplate.Triggers>
         </ControlTemplate>
-
-        <Style TargetType="Thumb">
-            <Setter Property="HorizontalAlignment" Value="Stretch" />
-            <Setter Property="VerticalAlignment" Value="Center" />
-            <Setter Property="Template" Value="{StaticResource ThumbTemplate}" />
-
-            <Style.Triggers>
-                <Trigger Property="Opacity" Value="0.5">
-                    <Setter Property="Template" Value="{StaticResource ThumbTemplate1}" />
-                    <Setter Property="HorizontalAlignment" Value="Center" />
-                    <Setter Property="VerticalAlignment" Value="Stretch" />
-                </Trigger>
-            </Style.Triggers>
-        </Style>
-    </Window.Resources>
-    <Grid Width="100" Height="100">
-        <StackPanel>
-            <Thumb />
-            <Thumb Opacity="0.5" />
+        
+        <ControlTemplate x:Key="ThumbTemplate2" TargetType="{x:Type Thumb}">
             <Grid Width="19" RenderTransformOrigin="0.5,0.5">
                 <Grid.RenderTransform>
                     <TransformGroup>
@@ -105,11 +88,77 @@
                       Data="M13.25,6.25 L111.75,55.5 13.5,104.5 z"
                       Fill="#FFC7C7C7"
                       Stretch="Fill"
-                      Stroke="DarkGray" />
+                      Stroke="#FF686868" />
+                <Ellipse Name="CenterDot" Width="5"
+                         Height="5"
+                         Margin="4,7,10,7"
+                         Fill="#FF3165EE" />
+                
+            </Grid>
+
+            <ControlTemplate.Triggers>
+                <Trigger Property="IsMouseOver" Value="True">
+                    <Setter TargetName="CenterDot" Property="Fill" Value="#B00" />
+                </Trigger>
+                <!--<Trigger Property="IsMouseCaptureWithin" Value="True">
+                    <Setter TargetName="CenterDot" Property="Fill" Value="Yellow" />
+                    <Setter TargetName="MainBorder" Property="Height" Value="17" />
+                    <Setter TargetName="MainBorder" Property="Width" Value="17" />
+                </Trigger>-->
+                <!--<DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type lc:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="Background" Value="#0A0" />
+                <Setter TargetName="MainBorder" Property="Width" Value="20" />
+                <Setter TargetName="MainBorder" Property="Height" Value="20" />
+                <Setter TargetName="CenterDot" Property="Width" Value="8" />
+                <Setter TargetName="CenterDot" Property="Height" Value="8" />
+            </DataTrigger>-->
+            </ControlTemplate.Triggers>
+        </ControlTemplate>
+
+        <Style TargetType="Thumb">
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="Template" Value="{StaticResource ThumbTemplate}" />
+
+            <Style.Triggers>
+                <Trigger Property="Opacity" Value="0.99">
+                    <Setter Property="Template" Value="{StaticResource ThumbTemplate1}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                </Trigger>
+                <Trigger Property="Opacity" Value="0.98">
+                    <Setter Property="Template" Value="{StaticResource ThumbTemplate2}" />
+                    <Setter Property="HorizontalAlignment" Value="Center" />
+                    <Setter Property="VerticalAlignment" Value="Stretch" />
+                </Trigger>
+            </Style.Triggers>
+        </Style>
+    </Window.Resources>
+    <Grid Width="100" Height="100">
+        <StackPanel>
+            <Thumb />
+            <Thumb Opacity="0.99" />
+            <Thumb Opacity="0.98" Margin="0,10" />
+            <Grid Width="19" RenderTransformOrigin="0.5,0.5">
+                <Grid.RenderTransform>
+                    <TransformGroup>
+                        <ScaleTransform />
+                        <SkewTransform />
+                        <RotateTransform Angle="180" />
+                        <TranslateTransform />
+                    </TransformGroup>
+                </Grid.RenderTransform>
+                <Path Width="19"
+                      Height="19"
+                      Data="M13.25,6.25 L111.75,55.5 13.5,104.5 z"
+                      Fill="#FFC7C7C7"
+                      Stretch="Fill"
+                      Stroke="#FF3E3E42" />
                 <Ellipse Width="5"
                          Height="5"
                          Margin="4,7,10,7"
                          Fill="#FF3165EE" />
+                
             </Grid>
             <Grid Width="50" Height="20">
                 <Path Margin="0"
