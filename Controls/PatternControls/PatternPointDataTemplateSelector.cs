@@ -13,7 +13,7 @@ namespace Xam.Wpf.Controls
             PatternPoint pp = item as PatternPoint;
             var myResourceDictionary = new ResourceDictionary();
             myResourceDictionary.Source = new Uri("/PatternControls;component/Themes/Generic.xaml", UriKind.RelativeOrAbsolute);
-            if (pp.LedCount == 0)
+            if (pp.LedCount == 1)
             {
                 return myResourceDictionary["gradientPoint"] as DataTemplate;
             }

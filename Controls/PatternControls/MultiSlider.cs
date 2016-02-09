@@ -28,9 +28,12 @@ namespace Xam.Wpf.Controls
         private List<SliderItem> sliders;
 
         SliderItem selectedSliderItem = null;
+        int clickedIx = -1;
 
         Grid controlBlock;
         Label valueLabel;
+        Grid sliderGridDown;
+        Grid sliderGridUp;
 
         #endregion
 
@@ -59,10 +62,36 @@ namespace Xam.Wpf.Controls
         private void SetSelection(int index)
         {
             if (selectedSliderItem != null)
+            {
                 selectedSliderItem.IsSelected = false;
-            sliders[index].IsSelected = true;
-            selectedSliderItem = sliders[index];
-            valueLabel.Content = ((int)sliders[index].Value).ToString();
+                if (selectedSliderItem.Variant != 0)
+                    if (selectedSliderItem.Variant == 1)
+                        sliders[selectedSliderItem.Position + 1].IsSelected = false;
+                    else
+                        sliders[selectedSliderItem.Position - 1].IsSelected = false;
+
+            }
+
+            selectedSliderItem = sliders[clickedIx];
+            selectedSliderItem.IsSelected = true;
+            if (selectedSliderItem.Variant != 0)
+                if (selectedSliderItem.Variant == 1)
+                    sliders[selectedSliderItem.Position + 1].IsSelected = true;
+                else
+                    sliders[selectedSliderItem.Position - 1].IsSelected = true;
+
+
+            //SliderItem si = sliders.FirstOrDefault(p => p.PatternIx == index);
+            //int siIx = sliders.IndexOf(si);
+            //selectedSliderItem = si;
+            //si.IsSelected = true;
+            //if (si.Variant != 0)
+            //    sliders[siIx + 1].IsSelected = true;
+            
+
+            //sliders[index].IsSelected = true;
+            //selectedSliderItem = sliders[index];
+            valueLabel.Content = ((int)sliders[clickedIx].Value).ToString();
         }
 
         #endregion
@@ -302,7 +331,11 @@ namespace Xam.Wpf.Controls
         {
             base.OnApplyTemplate();
             //if (Pattern != null)
-            //    InsertSliders();            
+            //    InsertSliders(); 
+            sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
+            sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
+            controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+            valueLabel = controlBlock.Children[1] as Label;
         }
         #endregion
 
@@ -319,27 +352,59 @@ namespace Xam.Wpf.Controls
         /// </summary>
         private void InsertSliders()
         {
-            int sliderCount = Pattern.Count;
-            //double[] values = new double[] { Minimum, 330, 660, Maximum };
+            //int sliderCount = Pattern.Count;
             sliders = new List<SliderItem>();
-            controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
-            valueLabel = controlBlock.Children[1] as Label;
-
-            Grid sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
-            Grid sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
             if ((sliderGridDown == null) || (sliderGridUp == null)) return;
             sliderGridDown.Children.Clear();
             sliderGridUp.Children.Clear();
 
-            for (int k = 0; k < sliderCount; k++)
+            int i = 0;
+
+            for (int k = 0; k < Pattern.Count; k++)
             {
-                SliderItem s = new SliderItem(this, k);
-                sliders.Add(s);
-                s.Minimum = Minimum;
-                s.Maximum = Maximum;
-                s.Value = Pattern[k].LedPos;
-                s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
-                s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                SliderItem s;
+                if (Pattern[k].LedCount != 1)
+                {
+                    s = new SliderItem(this, i);
+                    sliders.Add(s);
+                    s.Minimum = Minimum;
+                    s.Maximum = Maximum;
+                    s.PatternIx = k;
+                    s.Value = Pattern[k].LedPos;
+                    s.Variant = 1;      //LeftLimit
+                    s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
+                    s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                    i++;
+                //if (Pattern[k].LedCount != 1)
+                //{
+                        s = new SliderItem(this, i);
+                    sliders.Add(s);
+                    s.Minimum = Minimum;
+                    s.Maximum = Maximum;
+                    s.PatternIx = k;
+                    s.Value = Pattern[k].LedPos + Pattern[k].LedCount - 1;
+                    s.Variant = 2;      //RightLimit
+                    s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
+                    s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                    i++;
+                }
+                else
+                {
+                    s = new SliderItem(this, i);
+                    sliders.Add(s);
+                    s.Minimum = Minimum;
+                    s.Maximum = Maximum;
+                    s.PatternIx = k;
+                    s.Value = Pattern[k].LedPos;
+                    s.Variant = 0;      //Normal
+                    s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
+                    s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                    i++;
+                }
+            }
+
+            for (int k = 0; k < sliders.Count; k++)
+            { 
                 if (k % 2 == 0)
                     // чётный 
                     sliderGridUp.Children.Add(sliders[k]);
@@ -351,9 +416,10 @@ namespace Xam.Wpf.Controls
 
         private void SliderItemGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
-            SliderItem s = sender as SliderItem;
-            SelectedPoint = Pattern[sliders.IndexOf(s)];
-            SelectedPoint.LedPos = (int)s.Value;
+            SliderItem si = sender as SliderItem;
+            clickedIx = si.Position;
+            SelectedPoint = Pattern[si.PatternIx];
+            SelectedPoint.LedPos = (int)si.Value;
         }
 
         private void OnSliderItemValueChanged(object sender, RoutedPropertyChangedEventArgs<double> e)

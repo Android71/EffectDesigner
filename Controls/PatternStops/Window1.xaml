@@ -134,7 +134,7 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid Width="100" Height="100">
+    <Grid Width="100" Height="150">
         <StackPanel>
             <Thumb />
             <Thumb Opacity="0.99" />
@@ -160,7 +160,7 @@
                          Fill="#FF3165EE" />
                 
             </Grid>
-            <Grid Width="50" Height="20">
+            <Grid Width="20" Height="20">
                 <Path Margin="0"
                       Data="M0.5,0.5 L119.769,0.5 105.496,31.426 119.769,62.249 0.24600001,62.426001 18.496,31.926 z"
                       Fill="#FFE27C7C"

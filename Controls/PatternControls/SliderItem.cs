@@ -45,7 +45,15 @@ namespace Xam.Wpf.Controls
             DependencyProperty.Register("IsSelected", typeof(bool), typeof(SliderItem),
             new FrameworkPropertyMetadata(false, FrameworkPropertyMetadataOptions.None));
 
-
+        /// <summary>
+        /// Gets or sets a value that indicates if this slider is selected.
+        /// A slider remains selected until another silder is selected.
+        /// </summary>
+        public bool IsSelected
+        {
+            get { return (bool)GetValue(IsSelectedProperty); }
+            set { SetValue(IsSelectedProperty, value); }
+        }
         /// <summary>
         /// Gets or sets a boolean value that indicates if this instance 
         /// is currently particpating in the multi-slider.
@@ -59,15 +67,22 @@ namespace Xam.Wpf.Controls
         //    }
         //}
 
-        /// <summary>
-        /// Gets or sets a value that indicates if this slider is selected.
-        /// A slider remains selected until another silder is selected.
-        /// </summary>
-        public bool IsSelected
+
+
+        public int Variant
         {
-            get { return (bool)GetValue(IsSelectedProperty); }
-            set { SetValue(IsSelectedProperty, value); }
+            get { return (int)GetValue(VariantProperty); }
+            set { SetValue(VariantProperty, value); }
         }
+
+        // Using a DependencyProperty as the backing store for Variant.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty VariantProperty =
+            DependencyProperty.Register("Variant", typeof(int), typeof(SliderItem), new FrameworkPropertyMetadata(0));
+
+
+        public int PatternIx
+        { get; set; }
+        
 
         /// <summary>
         /// Gets or sets the peer slider that is one lower in the multi-slider than this one.
