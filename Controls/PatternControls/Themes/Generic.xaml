@@ -274,7 +274,7 @@
                     </Grid>
 
                     <ListBox x:Name="listBox"
-                             Background="#FFC8C9C9"
+                             Background="#FF686868"
                              ItemTemplateSelector="{StaticResource dataTemplateSelector}"
                              ItemsSource="{Binding Pattern,
                                                    RelativeSource={RelativeSource TemplatedParent}}"
