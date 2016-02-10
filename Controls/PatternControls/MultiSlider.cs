@@ -121,7 +121,7 @@ namespace Xam.Wpf.Controls
 
         private static void OnStripModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            throw new NotImplementedException();
+            //throw new NotImplementedException();
         }
 
 
@@ -370,8 +370,52 @@ namespace Xam.Wpf.Controls
 
         private void AddButton_Click(object sender, RoutedEventArgs e)
         {
-            if (SelectedPoint != null)
-                AddPatternItem();
+            //if (SelectedPoint != null)
+            //    AddPatternItem();
+            FillStripModel();
+        }
+
+        private void FillStripModel()
+        {
+            double deltaHue = 0.0;
+            double deltaSat = 0.0;
+            double deltaBri = 0.0;
+            int stepCount = 0;
+            HSBcolor hsb;
+            Color rgb;
+
+            PatternPoint previousPoint = null;
+            
+            foreach(PatternPoint pp in Pattern)
+            {
+                if (previousPoint != null)
+                {
+                    if (pp.LedCount == 1)
+                    {
+                        // какая бы не была предыдуяя точка строим градиент
+                        stepCount = pp.LedPos - previousPoint.LedPos - 1;
+                        deltaHue = (pp.HSB.Hue - previousPoint.HSB.Hue) / stepCount;
+                        deltaSat = (pp.HSB.Saturation - previousPoint.HSB.Saturation) / stepCount;
+                        deltaBri = (pp.HSB.Brightness - previousPoint.HSB.Brightness) / stepCount;
+                        StripModel[previousPoint.LedPos-1].PointColor = previousPoint.PointColor;
+                        StripModel[pp.LedPos-1].PointColor = pp.PointColor;
+                        for ( int i = previousPoint.LedPos + 1; i < stepCount; i++)
+                        {
+                            hsb = new HSBcolor(previousPoint.HSB.Hue + i * deltaHue,
+                                               previousPoint.HSB.Saturation + i * deltaSat,
+                                               previousPoint.HSB.Brightness + i * deltaBri);
+                            StripModel[previousPoint.LedPos + i].PointColor = hsb.HsbToRgb();
+                        }
+                        previousPoint = pp;
+                    }
+                    else
+                    {
+                        //
+                    }
+                }
+                else
+                    previousPoint = pp;
+            }
         }
 
         private void AddPatternItem()

@@ -197,11 +197,11 @@
                 <StackPanel Height="275" Background="#FF595656">
                     <ItemsControl Height="255"
                                   Margin="10"
-                                  ItemsSource="{Binding Pattern,
+                                  ItemsSource="{Binding StripModel,
                                                         RelativeSource={RelativeSource TemplatedParent}}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid x:Name="PART_StripDisplay" Rows="1" />
+                                <UniformGrid x:Name="PART_StripDisplay" Rows="1" SnapsToDevicePixels="False"/>
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>

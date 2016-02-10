@@ -22,11 +22,12 @@ namespace PatternStops
         {
             InitializeComponent();
             DataContext = this;
+
             ObservableNotifiableCollection<PatternPoint> pattern = new ObservableNotifiableCollection<PatternPoint>();
             pattern.Add(new PatternPoint(Colors.Blue, 2) { LedCount = 1 });
-            pattern.Add(new PatternPoint(Colors.Red, 254) { LedCount = 23 });
-            pattern.Add(new PatternPoint(Colors.Yellow, 607) { LedCount = 1 });
-            pattern.Add(new PatternPoint(Colors.Green, 903) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Colors.Red, 27) { LedCount = 23 });
+            pattern.Add(new PatternPoint(Colors.Yellow, 80) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Colors.Green, 120) { LedCount = 1 });
             Pattern = pattern;
 
             ObservableNotifiableCollection<ColorTablePoint> colorTable = new ObservableNotifiableCollection<ColorTablePoint>();

@@ -34,8 +34,9 @@
         <StackPanel Grid.Column="1">
             <Controls:MultiSlider Margin="10"
                                   Background="#FF686868"
-                                  Maximum="1200"
+                                  Maximum="120"
                                   Pattern="{Binding Pattern}"
+                                  StripModel="{Binding StripModel}"
                                   SelectedPoint="{Binding SelectedPoint,
                                                           Mode=TwoWay}"
                                   TrackBrush="#FFC8C9C9" />
