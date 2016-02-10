@@ -43,6 +43,11 @@ namespace PatternStops
             colorTable.Add(new ColorTablePoint(Color.FromRgb(255, 128, 0), new Point(30, 60)));
             colorTable.Add(new ColorTablePoint(Color.FromRgb(255, 0, 0), new Point(0, 30)));
             ColorTable = colorTable;
+
+            ObservableNotifiableCollection<PatternPoint> stripModel = new ObservableNotifiableCollection<PatternPoint>();
+            for (int i = 0; i < 120; i++)
+                stripModel.Add(new PatternPoint(Colors.Black, i));
+            StripModel = stripModel;
         }
 
         private ObservableNotifiableCollection<PatternPoint> _pattern;
@@ -50,6 +55,13 @@ namespace PatternStops
         {
             get { return _pattern; }
             set { if (value != _pattern) _pattern = value; OnPropertyChanged("Pattern"); }
+        }
+
+        private ObservableNotifiableCollection<PatternPoint> _stripModel;
+        public ObservableNotifiableCollection<PatternPoint> StripModel
+        {
+            get { return _stripModel; }
+            set { if (value != _stripModel) _stripModel = value; OnPropertyChanged("StripModel"); }
         }
 
         private PatternPoint _selectedPoint;

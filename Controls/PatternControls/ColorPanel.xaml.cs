@@ -110,8 +110,8 @@ namespace PatternControls
         
         private void SetColorRange(Border colorRange)
         {
-            if (selectedColorRange != colorRange)
-            {
+            //if (selectedColorRange != colorRange)
+            //{
                 if (selectedColorRange != null)
                 {
                     selectedColorRange.Margin = new Thickness(3);
@@ -125,7 +125,7 @@ namespace PatternControls
                 hue.Maximum = ((Point)selectedColorRange.Tag).Y;
                 suspendUpdate = false;
                 SetValues();
-            }
+            //}
         }
 
         private void SetValues()

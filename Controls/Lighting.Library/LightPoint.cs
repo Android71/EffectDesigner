@@ -16,7 +16,7 @@ namespace Lighting.Library
         
 
         private Color _pointColor = Colors.Black;
-        public Color PointColor
+        public virtual Color PointColor
         {
             get
             {

@@ -9,6 +9,16 @@ namespace Lighting.Library
 {
     public class HSBcolor
     {
+
+        public HSBcolor() { }
+
+        public HSBcolor(double hue, double sat, double bri) : this()
+        {
+            Hue = hue;
+            Saturation = sat;
+            Brightness = bri;
+        }
+
         double _hue;
         public double Hue
         {

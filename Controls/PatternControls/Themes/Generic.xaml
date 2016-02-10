@@ -1,6 +1,8 @@
-<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
                     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-                    xmlns:lc="clr-namespace:Xam.Wpf.Controls">
+                    xmlns:lc="clr-namespace:Xam.Wpf.Controls"
+                    xmlns:lib="clr-namespace:Lighting.Library;assembly=Lighting.Library">
+
 
     <LinearGradientBrush x:Key="NormalThumbFillBackground" StartPoint="0.5,0" EndPoint="0.5,1">
         <GradientStop Offset="0" Color="White" />
@@ -159,7 +161,7 @@
     <DataTemplate x:Key="gradientPoint">
         <Grid Width="30" Height="20">
             <Rectangle Margin="2"
-                       Fill="{Binding PointBrush}"
+                       Fill="{Binding PureBrush}"
                        Stroke="Black" />
         </Grid>
     </DataTemplate>
@@ -168,19 +170,50 @@
         <Grid Width="30" Height="20">
             <Path Margin="2"
                   Data="M0.5,0.5 L119.769,0.5 105.496,31.426 119.769,62.249 0.24600001,62.426001 18.496,31.926 z"
-                  Fill="{Binding PointBrush}"
+                  Fill="{Binding PureBrush}"
                   Stretch="Fill"
                   Stroke="Black" />
         </Grid>
     </DataTemplate>
+
+    <lib:BrightnessConverter x:Key="converter" />
 
     <ControlTemplate x:Key="MultiSliderHorizontal" TargetType="lc:MultiSlider">
         <Border Background="{TemplateBinding Background}"
                 BorderBrush="{TemplateBinding BorderBrush}"
                 BorderThickness="{TemplateBinding BorderThickness}">
             <StackPanel>
+                <GroupBox>
+                    <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                        <RadioButton x:Name="PART_PointBtn"
+                                     Margin="0,5,20,0"
+                                     Content="Точка"
+                                     IsChecked="True" />
+                        <RadioButton x:Name="PART_RangeBtn"
+                                     Margin="0,5,20,0"
+                                     Content="Диапазон" />
+                    </StackPanel>
+                </GroupBox>
                 <StackPanel Height="275" Background="#FF595656">
-                    <UniformGrid x:Name="PART_StripGrid"
+                    <ItemsControl Height="255"
+                                  Margin="10"
+                                  ItemsSource="{Binding Pattern,
+                                                        RelativeSource={RelativeSource TemplatedParent}}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid x:Name="PART_StripDisplay" Rows="1" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Height="{Binding PointBrightness,
+                                                            Converter={StaticResource converter}}"
+                                           VerticalAlignment="Bottom"
+                                           Fill="{Binding PureBrush}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <!--<UniformGrid x:Name="PART_StripGrid"
                                  Height="255"
                                  Margin="10"
                                  Background="#FF686868"
@@ -215,7 +248,7 @@
                                    VerticalAlignment="Bottom"
                                    Fill="#FFF39090" />
 
-                    </UniformGrid>
+                    </UniformGrid>-->
                 </StackPanel>
 
                 <Grid Margin="10,0">
@@ -249,8 +282,10 @@
                             <RowDefinition />
                             <RowDefinition />
                         </Grid.RowDefinitions>
-                        <Button Content=" + " />
-                        <Button Grid.Row="1" Content=" - " />
+                        <Button x:Name="PART_AddBtn" Content=" + " />
+                        <Button x:Name="PART_RemoveBtn"
+                                Grid.Row="1"
+                                Content=" - " />
                     </Grid>
 
                     <Grid x:Name="PART_ControlBlock" DockPanel.Dock="Right">

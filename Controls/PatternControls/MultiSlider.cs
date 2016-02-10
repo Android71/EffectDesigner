@@ -23,7 +23,7 @@ namespace Xam.Wpf.Controls
 
         /************************************************************************/
 
-        #region Private Fields and Vars
+        #region Private Fields Vars Enums
 
         private List<SliderItem> sliders;
 
@@ -34,6 +34,15 @@ namespace Xam.Wpf.Controls
         Label valueLabel;
         Grid sliderGridDown;
         Grid sliderGridUp;
+
+        enum Mode { Point, Range};
+
+        Mode workMode = Mode.Point;
+        RadioButton pointBtn;
+        RadioButton rangeBtn;
+
+        Button addButton;
+        Button removeButton;
 
         #endregion
 
@@ -57,53 +66,21 @@ namespace Xam.Wpf.Controls
         {
             int ix;
             MultiSlider ms = d as MultiSlider;
-            if (ms.clickedIx == -1)
-            {
+            //if (ms.clickedIx == -1)
+            //{
                 ix = ms.Pattern.IndexOf(ms.SelectedPoint);
                 if (ms.selectedSliderItem != null)
                     ms.selectedSliderItem.IsSelected = false;
-                ms.selectedSliderItem = ms.sliders[ix];
+                if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == 2))
+                    ms.selectedSliderItem = ms.sliders[ix + 1];
+                else
+                    ms.selectedSliderItem = ms.sliders.FirstOrDefault(p=>p.PatternIx == ix);
                 ms.selectedSliderItem.IsSelected = true;
-            }
+            //}
             ms.clickedIx = -1;
             ms.valueLabel.Content = ((int)ms.selectedSliderItem.Value).ToString();
-            //ms.SetSelection(ms.Pattern.IndexOf((PatternPoint)e.NewValue));
         }
 
-        private void SetSelection(int index)
-        {
-            //if (selectedSliderItem != null)
-            //{
-            //    selectedSliderItem.IsSelected = false;
-            //    if (selectedSliderItem.Variant != 0)
-            //        if (selectedSliderItem.Variant == 1)
-            //            sliders[selectedSliderItem.Position + 1].IsSelected = false;
-            //        else
-            //            sliders[selectedSliderItem.Position - 1].IsSelected = false;
-
-            //}
-
-            //selectedSliderItem = sliders[clickedIx];
-            //selectedSliderItem.IsSelected = true;
-            //if (selectedSliderItem.Variant != 0)
-            //    if (selectedSliderItem.Variant == 1)
-            //        sliders[selectedSliderItem.Position + 1].IsSelected = true;
-            //    else
-            //        sliders[selectedSliderItem.Position - 1].IsSelected = true;
-
-
-            //SliderItem si = sliders.FirstOrDefault(p => p.PatternIx == index);
-            //int siIx = sliders.IndexOf(si);
-            //selectedSliderItem = si;
-            //si.IsSelected = true;
-            //if (si.Variant != 0)
-            //    sliders[siIx + 1].IsSelected = true;
-            
-
-            //sliders[index].IsSelected = true;
-            //selectedSliderItem = sliders[index];
-            valueLabel.Content = ((int)sliders[clickedIx].Value).ToString();
-        }
 
         #endregion
 
@@ -125,6 +102,29 @@ namespace Xam.Wpf.Controls
             MultiSlider ms = d as MultiSlider;
             ms.InsertSliders();
         }
+
+        #endregion
+
+        #region StripModel DP
+
+
+
+        public ObservableNotifiableCollection<PatternPoint> StripModel
+        {
+            get { return (ObservableNotifiableCollection<PatternPoint>)GetValue(StripModelProperty); }
+            set { SetValue(StripModelProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StripModel.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StripModelProperty =
+            DependencyProperty.Register("StripModel", typeof(ObservableNotifiableCollection<PatternPoint>), typeof(MultiSlider), new PropertyMetadata(null, OnStripModelChanged));
+
+        private static void OnStripModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            throw new NotImplementedException();
+        }
+
+
 
         #endregion
 
@@ -346,7 +346,47 @@ namespace Xam.Wpf.Controls
             sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
             sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
             controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+            pointBtn = Template.FindName("PART_PointBtn", this) as RadioButton;
+            pointBtn.Checked += PointBtn_Checked;
+            rangeBtn = Template.FindName("PART_RangeBtn", this) as RadioButton;
+            rangeBtn.Checked += RangeBtn_Checked;
+            addButton = Template.FindName("PART_AddBtn", this) as Button;
+            addButton.Click += AddButton_Click;
+            removeButton = Template.FindName("PART_RemoveBtn", this) as Button;
+            removeButton.Click += RemoveButton_Click;
             valueLabel = controlBlock.Children[1] as Label;
+        }
+
+        private void RemoveButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedPoint != null)
+                RemovePatternItem();
+        }
+
+        private void RemovePatternItem()
+        {
+            
+        }
+
+        private void AddButton_Click(object sender, RoutedEventArgs e)
+        {
+            if (SelectedPoint != null)
+                AddPatternItem();
+        }
+
+        private void AddPatternItem()
+        {
+            
+        }
+
+        private void RangeBtn_Checked(object sender, RoutedEventArgs e)
+        {
+            workMode = Mode.Range;
+        }
+
+        private void PointBtn_Checked(object sender, RoutedEventArgs e)
+        {
+            workMode = Mode.Point;
         }
         #endregion
 

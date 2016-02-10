@@ -72,7 +72,7 @@
             </DataTrigger>-->
             </ControlTemplate.Triggers>
         </ControlTemplate>
-        
+
         <ControlTemplate x:Key="ThumbTemplate2" TargetType="{x:Type Thumb}">
             <Grid Width="19" RenderTransformOrigin="0.5,0.5">
                 <Grid.RenderTransform>
@@ -89,11 +89,12 @@
                       Fill="#FFC7C7C7"
                       Stretch="Fill"
                       Stroke="#FF686868" />
-                <Ellipse Name="CenterDot" Width="5"
+                <Ellipse Name="CenterDot"
+                         Width="5"
                          Height="5"
                          Margin="4,7,10,7"
                          Fill="#FF3165EE" />
-                
+
             </Grid>
 
             <ControlTemplate.Triggers>
@@ -134,11 +135,23 @@
             </Style.Triggers>
         </Style>
     </Window.Resources>
-    <Grid Width="100" Height="150">
+    <Grid Width="250" Height="150">
         <StackPanel>
+            <GroupBox>
+                <StackPanel HorizontalAlignment="Right" Orientation="Horizontal">
+                    <RadioButton Name="point"
+                                 Margin="0,5,20,0"
+                                 Content="Точка"
+                                 IsChecked="True" />
+                    <RadioButton Name="range"
+                                 Margin="0,5,20,0"
+                                 Content="Диапазон" />
+                </StackPanel>
+            </GroupBox>
+
             <Thumb />
             <Thumb Opacity="0.99" />
-            <Thumb Opacity="0.98" Margin="0,10" />
+            <Thumb Margin="0,10" Opacity="0.98" />
             <Grid Width="19" RenderTransformOrigin="0.5,0.5">
                 <Grid.RenderTransform>
                     <TransformGroup>
@@ -158,7 +171,7 @@
                          Height="5"
                          Margin="4,7,10,7"
                          Fill="#FF3165EE" />
-                
+
             </Grid>
             <Grid Width="20" Height="20">
                 <Path Margin="0"
