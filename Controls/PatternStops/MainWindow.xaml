@@ -31,14 +31,16 @@
                                     Background="#FF686868"
                                     SelectedPoint="{Binding SelectedPoint,
                                                             Mode=TwoWay}" />
+        <!--  StripModel="{Binding StripModel}"  -->
         <StackPanel Grid.Column="1">
             <Controls:MultiSlider Margin="10"
                                   Background="#FF686868"
-                                  Maximum="120"
+                                  Maximum="1440"
                                   Pattern="{Binding Pattern}"
-                                  StripModel="{Binding StripModel}"
+                                  
                                   SelectedPoint="{Binding SelectedPoint,
                                                           Mode=TwoWay}"
+                                  StripModel="{Binding StripModel}"
                                   TrackBrush="#FFC8C9C9" />
         </StackPanel>
 

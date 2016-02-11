@@ -194,14 +194,22 @@
                                      Content="Диапазон" />
                     </StackPanel>
                 </GroupBox>
+
+                <!--
+                    ItemsSource="{Binding StripModel,
+                    RelativeSource={RelativeSource TemplatedParent}}">
+                -->
                 <StackPanel Height="275" Background="#FF595656">
                     <ItemsControl Height="255"
                                   Margin="10"
                                   ItemsSource="{Binding StripModel,
                                                         RelativeSource={RelativeSource TemplatedParent}}">
+
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid x:Name="PART_StripDisplay" Rows="1" SnapsToDevicePixels="False"/>
+                                <UniformGrid x:Name="PART_StripDisplay"
+                                             Rows="1"
+                                             SnapsToDevicePixels="False" />
                             </ItemsPanelTemplate>
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
@@ -251,7 +259,7 @@
                     </UniformGrid>-->
                 </StackPanel>
 
-                <Grid Margin="10,0">
+                <Grid x:Name="PART_Sliders" Margin="10,0">
                     <Grid.Resources>
                         <Style TargetType="lc:SliderItem">
                             <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
@@ -266,10 +274,12 @@
                     <Grid Name="PART_SliderGrid_Up" Grid.Row="0">
                         <!--  Odd SliderItem instance get inserted here  -->
                     </Grid>
-                    <Border Grid.Row="1"
-                            Height="4"
+                    <!--Background="{TemplateBinding TrackBrush}"-->
+                    <Border Grid.Row="1" x:Name="PART_Track"
+                            Height="6"
                             VerticalAlignment="Center"
-                            BorderBrush="{TemplateBinding TrackBrush}"
+                            BorderBrush="#FF35DCDC"
+                            Background="#FF35DCDC"
                             BorderThickness="2" />
                     <Grid x:Name="PART_SliderGrid_Down" Grid.Row="2">
                         <!--  Even SliderItem instance get inserted here  -->

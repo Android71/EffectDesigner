@@ -24,10 +24,10 @@ namespace PatternStops
             DataContext = this;
 
             ObservableNotifiableCollection<PatternPoint> pattern = new ObservableNotifiableCollection<PatternPoint>();
-            pattern.Add(new PatternPoint(Colors.Blue, 2) { LedCount = 1 });
-            pattern.Add(new PatternPoint(Colors.Red, 27) { LedCount = 23 });
-            pattern.Add(new PatternPoint(Colors.Yellow, 80) { LedCount = 1 });
-            pattern.Add(new PatternPoint(Colors.Green, 120) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Colors.Blue, 20) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Colors.Red, 90) { LedCount = 230 });
+            pattern.Add(new PatternPoint(Colors.Yellow, 800) { LedCount = 1 });
+            pattern.Add(new PatternPoint(Colors.Green, 1440) { LedCount = 1 });
             Pattern = pattern;
 
             ObservableNotifiableCollection<ColorTablePoint> colorTable = new ObservableNotifiableCollection<ColorTablePoint>();
@@ -46,7 +46,7 @@ namespace PatternStops
             ColorTable = colorTable;
 
             ObservableNotifiableCollection<PatternPoint> stripModel = new ObservableNotifiableCollection<PatternPoint>();
-            for (int i = 0; i < 120; i++)
+            for (int i = 0; i < 1440; i++)
                 stripModel.Add(new PatternPoint(Colors.Black, i));
             StripModel = stripModel;
         }
@@ -86,6 +86,13 @@ namespace PatternStops
             set { if (value != _colorTable) _colorTable = value; OnPropertyChanged("ColorTable"); }
         }
 
-        
+        private void MultiSlider_PreviewMouseDoubleClick(object sender, System.Windows.Input.MouseButtonEventArgs e)
+        {
+            // Retrieve the coordinate of the mouse position.
+            Point pt = e.GetPosition((UIElement)sender);
+
+            //// Perform the hit test against a given portion of the visual object tree.
+            //HitTestResult result = VisualTreeHelper.HitTest(slidersAre, pt);
+        }
     }
 }

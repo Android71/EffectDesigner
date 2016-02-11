@@ -12,6 +12,9 @@ using System.Windows;
 using System.Diagnostics;
 using System.Windows.Media;
 using Lighting.Library;
+using System.Windows.Input;
+using System.Windows.Controls.Primitives;
+using System.Runtime.InteropServices;
 
 namespace Xam.Wpf.Controls
 {
@@ -34,6 +37,8 @@ namespace Xam.Wpf.Controls
         Label valueLabel;
         Grid sliderGridDown;
         Grid sliderGridUp;
+        Grid sliderArea;
+        //Border track;
 
         enum Mode { Point, Range};
 
@@ -345,6 +350,17 @@ namespace Xam.Wpf.Controls
             //    InsertSliders(); 
             sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
             sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
+            sliderArea = Template.FindName("PART_Sliders", this) as Grid;
+            //track = Template.FindName("PART_Track", this) as Border;
+
+    //        sliderArea.AddHandler(
+    //Grid.PreviewMouseLeftButtonDownEvent,
+    //(MouseButtonEventHandler)OnSliderClick,
+    //true
+    //);
+
+
+            sliderArea.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(OnSliderClick);
             controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
             pointBtn = Template.FindName("PART_PointBtn", this) as RadioButton;
             pointBtn.Checked += PointBtn_Checked;
@@ -377,44 +393,63 @@ namespace Xam.Wpf.Controls
 
         private void FillStripModel()
         {
-            double deltaHue = 0.0;
-            double deltaSat = 0.0;
-            double deltaBri = 0.0;
-            int stepCount = 0;
-            HSBcolor hsb;
-            Color rgb;
-
             PatternPoint previousPoint = null;
-            
-            foreach(PatternPoint pp in Pattern)
+
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
+
+
+            for (int i = 0; i < StripModel.Count; i++)
+                StripModel[i].PointColor = Colors.Black;
+
+            foreach (PatternPoint pp in Pattern)
             {
                 if (previousPoint != null)
                 {
                     if (pp.LedCount == 1)
                     {
                         // какая бы не была предыдуяя точка строим градиент
-                        stepCount = pp.LedPos - previousPoint.LedPos - 1;
-                        deltaHue = (pp.HSB.Hue - previousPoint.HSB.Hue) / stepCount;
-                        deltaSat = (pp.HSB.Saturation - previousPoint.HSB.Saturation) / stepCount;
-                        deltaBri = (pp.HSB.Brightness - previousPoint.HSB.Brightness) / stepCount;
-                        StripModel[previousPoint.LedPos-1].PointColor = previousPoint.PointColor;
-                        StripModel[pp.LedPos-1].PointColor = pp.PointColor;
-                        for ( int i = previousPoint.LedPos + 1; i < stepCount; i++)
-                        {
-                            hsb = new HSBcolor(previousPoint.HSB.Hue + i * deltaHue,
-                                               previousPoint.HSB.Saturation + i * deltaSat,
-                                               previousPoint.HSB.Brightness + i * deltaBri);
-                            StripModel[previousPoint.LedPos + i].PointColor = hsb.HsbToRgb();
-                        }
-                        previousPoint = pp;
+                        MakeGradient( previousPoint, pp );
+                        previousPoint = pp; 
                     }
                     else
                     {
-                        //
+                        // диапазон
+                        MakeGradient(previousPoint, pp);
+                        for (int i = 0; i < pp.LedCount; i++)
+                            StripModel[pp.LedPos + i].PointColor = pp.PointColor;
+                        previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
                     }
                 }
                 else
+                {
+                    // первая точка
+                    for (int i = 0; i < pp.LedPos; i++)
+                        StripModel[i].PointColor = Colors.Black;
                     previousPoint = pp;
+                }
+            }
+
+            watch.Stop();
+            Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
+        }
+
+        private void MakeGradient(PatternPoint from, PatternPoint to)
+        {
+            HSBcolor hsb;
+            int stepCount = to.LedPos - from.LedPos; ;
+            double deltaHue = (to.HSB.Hue - from.HSB.Hue) / stepCount; ;
+            double deltaSat = (to.HSB.Saturation - from.HSB.Saturation) / stepCount; ;
+            double deltaBri = (to.HSB.Brightness - from.HSB.Brightness) / stepCount; ;
+            StripModel[from.LedPos - 1].PointColor = from.PointColor;
+            StripModel[to.LedPos - 1].PointColor = to.PointColor;
+
+            for (int i = 0; i < stepCount; i++)
+            {
+                hsb = new HSBcolor(from.HSB.Hue + i * deltaHue,
+                                   from.HSB.Saturation + i * deltaSat,
+                                   from.HSB.Brightness + i * deltaBri);
+                StripModel[from.LedPos + i].PointColor = hsb.HsbToRgb();
             }
         }
 
@@ -484,6 +519,7 @@ namespace Xam.Wpf.Controls
                     }
                     s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
                     s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                    //s.MouseDoubleClick += new MouseButtonEventHandler(OnSliderDoubleClick);
                     i++;
                 }
                 
@@ -551,6 +587,63 @@ namespace Xam.Wpf.Controls
             }            
         }
 
+        private void OnSliderClick(object sender, MouseButtonEventArgs e)
+        {
+            if (e.ClickCount == 2)
+            {
+
+                //Color clr = GetColorAtMouse();
+
+                Point pt = e.GetPosition((UIElement)sender);
+                //Console.WriteLine("X: {0} Y: {1}", pt.X, pt.Y);
+                //Console.WriteLine("ActualWidth: {0}", sliderArea.ActualWidth);
+                int ledPos = (int)(pt.X * Maximum / sliderArea.ActualWidth);
+                //Console.WriteLine("LedPos: {0}", ledPos);
+                PatternPoint leftPoint = null;
+                PatternPoint rightPoint = null;
+                foreach (PatternPoint pp in Pattern)
+                {
+                    if (ledPos > pp.LedPos)
+                        leftPoint = pp;
+                    //if (ledPos < pp.LedPos)
+                    //    rightPos = pp;
+                }
+                for (int i = Pattern.Count - 1; i >= 0; i--)
+                {
+                    if (ledPos < Pattern[i].LedPos)
+                        rightPoint = Pattern[i];
+                }
+                
+                // первая точка
+                if (leftPoint == null)
+                { 
+                    Pattern.Insert(0, new PatternPoint(Colors.Aquamarine, ledPos) { LedCount = 1 });
+                    InsertSliders();
+                    return;
+                }
+
+                // последняя точка
+                if (rightPoint == null)
+                {
+                    Pattern.Add(new PatternPoint(Colors.Aquamarine, ledPos) { LedCount = 1 });
+                    InsertSliders();
+                    return;
+                }
+
+                // елси внутри диапазона
+                if ( leftPoint.LedCount != 1)
+                {
+                    if (ledPos <= leftPoint.LedPos + leftPoint.LedCount - 1)
+                        return;
+                }
+
+                int ix = Pattern.IndexOf(rightPoint);
+                Pattern.Insert(ix, new PatternPoint(Colors.Aquamarine, ledPos) { LedCount = 1 });
+
+                InsertSliders();
+            }
+        }       
+
         private void SliderItemGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
         {
             if (selectedSliderItem != null)
@@ -591,7 +684,8 @@ namespace Xam.Wpf.Controls
                 SelectedPoint.LedCount = (int)(sliders[ix + 1].Value - s.Value + 1);
             if(s.Variant == 2)
                 SelectedPoint.LedCount = (int)s.Value - (int)sliders[ix - 1].Value  + 1;
-            Console.WriteLine("LedPos: {0}   LedCount:  {1}", SelectedPoint.LedPos, SelectedPoint.LedCount);
+            //Console.WriteLine("LedPos: {0}   LedCount:  {1}", SelectedPoint.LedPos, SelectedPoint.LedCount);
+            FillStripModel();
             
         }
         
@@ -653,5 +747,50 @@ namespace Xam.Wpf.Controls
             return Color.FromArgb(0, (byte)d, (byte)d, (byte)d);
         }
         #endregion
+
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetDesktopWindow();
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern IntPtr GetWindowDC(IntPtr window);
+        [DllImport("gdi32.dll", SetLastError = true)]
+        public static extern uint GetPixel(IntPtr dc, int x, int y);
+        [DllImport("user32.dll", SetLastError = true)]
+        public static extern int ReleaseDC(IntPtr window, IntPtr dc);
+
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        static extern bool GetCursorPos(out POINT lpPoint);
+
+        [StructLayout(LayoutKind.Sequential)]
+        public struct POINT
+        {
+            public int X;
+            public int Y;
+
+            public POINT(int x, int y)
+            {
+                this.X = x;
+                this.Y = y;
+            }
+        }
+
+
+        public Color GetColorAtMouse()
+        {
+            POINT p;
+            if (GetCursorPos(out p))
+            {
+
+                IntPtr desk = GetDesktopWindow();
+                IntPtr dc = GetWindowDC(desk);
+                int a = (int)GetPixel(dc, p.X, p.Y);
+                ReleaseDC(desk, dc);
+                return Color.FromArgb(255, (byte)((a >> 0) & 0xff), (byte)((a >> 8) & 0xff), (byte)((a >> 16) & 0xff));
+            }
+            else
+                return Colors.Black;
+        }
+
+        
     }
 }
