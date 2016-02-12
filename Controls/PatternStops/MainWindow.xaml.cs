@@ -94,5 +94,6 @@ namespace PatternStops
             //// Perform the hit test against a given portion of the visual object tree.
             //HitTestResult result = VisualTreeHelper.HitTest(slidersAre, pt);
         }
+
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Windows.Media;
+﻿using System;
+using System.Windows.Media;
 
 namespace Lighting.Library
 {
@@ -72,6 +73,11 @@ namespace Lighting.Library
             get { return _ledCount; }
 
             set { if (_ledCount != value) { _ledCount = value; OnPropertyChanged("LedCount"); } }
+        }
+
+        public void PropertyChanged(object onPointPropertuesChanged)
+        {
+            throw new NotImplementedException();
         }
     }
 }

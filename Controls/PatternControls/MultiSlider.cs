@@ -15,6 +15,7 @@ using Lighting.Library;
 using System.Windows.Input;
 using System.Windows.Controls.Primitives;
 using System.Runtime.InteropServices;
+using System.ComponentModel;
 
 namespace Xam.Wpf.Controls
 {
@@ -33,21 +34,19 @@ namespace Xam.Wpf.Controls
         SliderItem selectedSliderItem = null;
         int clickedIx = -1;
 
-        Grid controlBlock;
-        Label valueLabel;
+        //Grid controlBlock;
+        //Label valueLabel;
         Grid sliderGridDown;
         Grid sliderGridUp;
         Grid sliderArea;
         //Border track;
+        TextBlock valueLabel;
 
         enum Mode { Point, Range};
 
         Mode workMode = Mode.Point;
-        RadioButton pointBtn;
-        RadioButton rangeBtn;
-
-        Button addButton;
-        Button removeButton;
+        Button modeBtn;
+        
 
         #endregion
 
@@ -70,22 +69,33 @@ namespace Xam.Wpf.Controls
         private static void OnSelectedPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             int ix;
+            PatternPoint pp = (PatternPoint)e.OldValue;
             MultiSlider ms = d as MultiSlider;
             //if (ms.clickedIx == -1)
             //{
-                ix = ms.Pattern.IndexOf(ms.SelectedPoint);
-                if (ms.selectedSliderItem != null)
-                    ms.selectedSliderItem.IsSelected = false;
-                if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == 2))
-                    ms.selectedSliderItem = ms.sliders[ix + 1];
-                else
-                    ms.selectedSliderItem = ms.sliders.FirstOrDefault(p=>p.PatternIx == ix);
-                ms.selectedSliderItem.IsSelected = true;
+            ix = ms.Pattern.IndexOf(ms.SelectedPoint);
+            if (ms.selectedSliderItem != null)
+                ms.selectedSliderItem.IsSelected = false;
+            if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == 2))
+                ms.selectedSliderItem = ms.sliders[ix + 1];
+            else
+                ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ix);
+            ms.selectedSliderItem.IsSelected = true;
             //}
             ms.clickedIx = -1;
-            ms.valueLabel.Content = ((int)ms.selectedSliderItem.Value).ToString();
+            ms.valueLabel.Text = ((int)ms.selectedSliderItem.Value).ToString();
+            
+            if (pp != null)
+                (pp as INotifyPropertyChanged).PropertyChanged -= ms.OnPointColorChanged;
+            (ms.SelectedPoint as INotifyPropertyChanged).PropertyChanged += ms.OnPointColorChanged;
+
         }
 
+        private void OnPointColorChanged(object sender, PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == "PointColor")
+                UpdateModel();
+        }
 
         #endregion
 
@@ -253,6 +263,8 @@ namespace Xam.Wpf.Controls
             set { SetValue(TrackBrushProperty, value); }
         }
 
+    
+
         #endregion
 
         #endregion
@@ -339,6 +351,44 @@ namespace Xam.Wpf.Controls
         }
         #endregion
 
+        protected override void OnMouseWheel(MouseWheelEventArgs e)
+        {
+            HSBcolor hsb = null;
+            base.OnMouseWheel(e);
+            if (SelectedPoint != null)
+            {
+                int bri = (int)(SelectedPoint.HSB.Brightness * 100);
+                if (e.Delta > 0)
+                {
+                    if (bri + 5 > 100)
+                    {
+                        SelectedPoint.HSB.Brightness = 1;
+                        hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, 1);
+                        SelectedPoint.PointColor = hsb.HsbToRgb();
+                    }
+                    else
+                    {
+                        hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, (bri + 5.0) / 100.0);
+                        SelectedPoint.PointColor = hsb.HsbToRgb();
+                    }
+                }
+                else
+                {
+                    if (bri - 5 < 1)
+                    {
+                        SelectedPoint.HSB.Brightness = 0;
+                        hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, 0.01);
+                        SelectedPoint.PointColor = hsb.HsbToRgb();
+                    }
+                    else
+                    {
+                        hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, (bri - 5.0) / 100.0);
+                        SelectedPoint.PointColor = hsb.HsbToRgb();
+                    }
+                }
+            }
+        }
+
         /************************************************************************/
 
         #region Public Methods
@@ -351,26 +401,28 @@ namespace Xam.Wpf.Controls
             sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
             sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
             sliderArea = Template.FindName("PART_Sliders", this) as Grid;
+            valueLabel = Template.FindName("PART_CurrentPosition", this) as TextBlock;
+            modeBtn = Template.FindName("PART_ModeBtn", this) as Button;
             //track = Template.FindName("PART_Track", this) as Border;
 
-    //        sliderArea.AddHandler(
-    //Grid.PreviewMouseLeftButtonDownEvent,
-    //(MouseButtonEventHandler)OnSliderClick,
-    //true
-    //);
+            //        sliderArea.AddHandler(
+            //Grid.PreviewMouseLeftButtonDownEvent,
+            //(MouseButtonEventHandler)OnSliderClick,
+            //true
+            //);
 
 
             sliderArea.PreviewMouseLeftButtonDown += new MouseButtonEventHandler(OnSliderClick);
-            controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
-            pointBtn = Template.FindName("PART_PointBtn", this) as RadioButton;
-            pointBtn.Checked += PointBtn_Checked;
-            rangeBtn = Template.FindName("PART_RangeBtn", this) as RadioButton;
-            rangeBtn.Checked += RangeBtn_Checked;
-            addButton = Template.FindName("PART_AddBtn", this) as Button;
-            addButton.Click += AddButton_Click;
-            removeButton = Template.FindName("PART_RemoveBtn", this) as Button;
-            removeButton.Click += RemoveButton_Click;
-            valueLabel = controlBlock.Children[1] as Label;
+            //controlBlock = Template.FindName("PART_ControlBlock", this) as Grid;
+            //pointBtn = Template.FindName("PART_PointBtn", this) as RadioButton;
+            //pointBtn.Checked += PointBtn_Checked;
+            //rangeBtn = Template.FindName("PART_RangeBtn", this) as RadioButton;
+            //rangeBtn.Checked += RangeBtn_Checked;
+            //addButton = Template.FindName("PART_AddBtn", this) as Button;
+            modeBtn.Click += ModeButton_Click;
+            //removeButton = Template.FindName("PART_RemoveBtn", this) as Button;
+            //removeButton.Click += RemoveButton_Click;
+            //valueLabel = controlBlock.Children[1] as Label;
         }
 
         private void RemoveButton_Click(object sender, RoutedEventArgs e)
@@ -384,14 +436,21 @@ namespace Xam.Wpf.Controls
             
         }
 
-        private void AddButton_Click(object sender, RoutedEventArgs e)
+        private void ModeButton_Click(object sender, RoutedEventArgs e)
         {
-            //if (SelectedPoint != null)
-            //    AddPatternItem();
-            FillStripModel();
+            if (workMode == Mode.Point)
+            {
+                workMode = Mode.Range;
+                modeBtn.Content = "Диапазон";
+            }
+            else
+            {
+                workMode = Mode.Point;
+                modeBtn.Content = "Точка";
+            }
         }
 
-        private void FillStripModel()
+        private void UpdateModel()
         {
             PatternPoint previousPoint = null;
 
@@ -653,7 +712,7 @@ namespace Xam.Wpf.Controls
             selectedSliderItem = si;
             selectedSliderItem.IsSelected = true;
             SelectedPoint = Pattern[si.PatternIx];
-            valueLabel.Content = ((int)selectedSliderItem.Value).ToString();
+            valueLabel.Text = ((int)selectedSliderItem.Value).ToString();
             //SelectedPoint.LedPos = (int)selectedSliderItem.Value;
         }
 
@@ -677,7 +736,7 @@ namespace Xam.Wpf.Controls
                         s.Value = sliders[ix - 1].Value + 1;
                 }
             }
-            valueLabel.Content = ((int)s.Value).ToString();
+            valueLabel.Text = ((int)s.Value).ToString();
             if (( s.Variant == 1)||(s.Variant == 0))
                 SelectedPoint.LedPos = (int)s.Value;
             if (s.Variant == 1)
@@ -685,7 +744,7 @@ namespace Xam.Wpf.Controls
             if(s.Variant == 2)
                 SelectedPoint.LedCount = (int)s.Value - (int)sliders[ix - 1].Value  + 1;
             //Console.WriteLine("LedPos: {0}   LedCount:  {1}", SelectedPoint.LedPos, SelectedPoint.LedCount);
-            FillStripModel();
+            UpdateModel();
             
         }
         
