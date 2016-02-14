@@ -41,7 +41,7 @@
                             IsEnabled="False"
                             Orientation="Vertical"
                             SmallChange="1"
-                            ValueChanged="hsb_ValuesChanged" />
+                            ValueChanged="hsb_ValuesChanged" GotMouseCapture="hue_GotMouseCapture" />
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"
@@ -90,7 +90,7 @@
                             Maximum="100"
                             Orientation="Vertical"
                             SmallChange="1"
-                            ValueChanged="hsb_ValuesChanged" />
+                            ValueChanged="hsb_ValuesChanged" GotMouseCapture="hue_GotMouseCapture" />
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"
@@ -139,7 +139,7 @@
                             Maximum="100"
                             Orientation="Vertical"
                             SmallChange="1"
-                            ValueChanged="hsb_ValuesChanged" />
+                            ValueChanged="hsb_ValuesChanged" GotMouseCapture="hue_GotMouseCapture" IsMouseCapturedChanged="bri_IsMouseCapturedChanged"/>
                     <TextBlock Grid.Row="1"
                                Margin="0,5"
                                HorizontalAlignment="Center"

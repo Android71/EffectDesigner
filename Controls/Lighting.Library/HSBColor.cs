@@ -3,10 +3,33 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Media;
+//using System.Windows.Media;
+using System.Drawing;
 
 namespace Lighting.Library
 {
+
+    //System.Drawing.Color extension method
+
+    public static class ColorExtension
+    {
+        //public static HSBcolor HsbColor(this Color color)
+        //{
+        //    return new HSBcolor(color.GetHue(), color.GetSaturation(), color.GetBrightness());
+        //}
+
+        public static System.Windows.Media.SolidColorBrush Brush(this Color color)
+        {
+            return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
+        }
+
+        public static System.Windows.Media.Color MediaColor(this Color color)
+        {
+            return System.Windows.Media.Color.FromRgb(color.R, color.G, color.B);
+        }
+
+    }
+
     public class HSBcolor
     {
 
@@ -66,7 +89,10 @@ namespace Lighting.Library
             }
         }
 
-        public Color HsbToRgb()
+        public Color RgbColor
+            { get{ return ToRgb(); } }
+
+        public Color ToRgb()
         {
             double r = 0;
             double g = 0;
@@ -126,51 +152,63 @@ namespace Lighting.Library
             }
 
 
-            return System.Windows.Media.Color.FromRgb(
-                Convert.ToByte((r * 255.0)),
-                Convert.ToByte((g * 255.0)),
-                Convert.ToByte((b * 255.0))
+            return System.Drawing.Color.FromArgb(
+                //Convert.ToByte((r * 255.0)),
+                //Convert.ToByte((g * 255.0)),
+                //Convert.ToByte((b * 255.0))
+                (int)(r * 255.0),
+                (int)(g * 255.0),
+                (int)(b * 255.0)
                 );
 
-
         }
 
-        public static HSBcolor RgbToHsb(Color color)
+        public System.Windows.Media.Color MediaColor
         {
-            HSBcolor hsb = new HSBcolor();
-
-            double r = ((double)color.R / 255.0);
-            double g = ((double)color.G / 255.0);
-            double b = ((double)color.B / 255.0);
-
-            double max = Math.Max(r, Math.Max(g, b));
-            double min = Math.Min(r, Math.Min(g, b));
-
-            hsb.Hue = 0.0;
-            if (max == r && g >= b)
-            {
-                if (max - min == 0) hsb.Hue = 0.0;
-                else hsb.Hue = 60 * (g - b) / (max - min);
-            }
-            else if (max == r && g < b)
-            {
-                hsb.Hue = 60 * (g - b) / (max - min) + 360;
-            }
-            else if (max == g)
-            {
-                hsb.Hue = 60 * (b - r) / (max - min) + 120;
-            }
-            else if (max == b)
-            {
-                hsb.Hue = 60 * (r - g) / (max - min) + 240;
-            }
-
-            hsb.Saturation = (max == 0) ? 0.0 : (1.0 - ((double)min / (double)max));
-
-            hsb.Brightness = (double)max;
-
-            return hsb;
+            get { return ToRgb().MediaColor(); }
         }
+
+        //public System.Windows.Media.Color ToMediaColor()
+        //{
+        //    return ToRgb().MediaColor();
+        //}
+
+        //public static HSBcolor RgbToHsb(Color color)
+        //{
+        //    HSBcolor hsb = new HSBcolor();
+
+        //    double r = ((double)color.R / 255.0);
+        //    double g = ((double)color.G / 255.0);
+        //    double b = ((double)color.B / 255.0);
+
+        //    double max = Math.Max(r, Math.Max(g, b));
+        //    double min = Math.Min(r, Math.Min(g, b));
+
+        //    hsb.Hue = 0.0;
+        //    if (max == r && g >= b)
+        //    {
+        //        if (max - min == 0) hsb.Hue = 0.0;
+        //        else hsb.Hue = 60 * (g - b) / (max - min);
+        //    }
+        //    else if (max == r && g < b)
+        //    {
+        //        hsb.Hue = 60 * (g - b) / (max - min) + 360;
+        //    }
+        //    else if (max == g)
+        //    {
+        //        hsb.Hue = 60 * (b - r) / (max - min) + 120;
+        //    }
+        //    else if (max == b)
+        //    {
+        //        hsb.Hue = 60 * (r - g) / (max - min) + 240;
+        //    }
+
+        //    hsb.Saturation = (max == 0) ? 0.0 : (1.0 - ((double)min / (double)max));
+
+        //    hsb.Brightness = (double)max;
+
+        //    return hsb;
+        //}
     }
 
 }

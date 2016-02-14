@@ -14,6 +14,7 @@ namespace Lighting.Library
         object parameter, CultureInfo culture)
         {
             return (int)(System.Convert.ToDouble(value) * 255);
+            //return 255;
         }
 
         public object ConvertBack(object value, Type targetType,
