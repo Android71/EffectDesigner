@@ -192,7 +192,7 @@
                     <ItemsControl Height="255"
                                   Margin="10"
                                   ItemsSource="{Binding StripModel,
-                                                        RelativeSource={RelativeSource TemplatedParent}}">
+                    RelativeSource={RelativeSource TemplatedParent}}">
 
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
