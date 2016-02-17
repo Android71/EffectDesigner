@@ -1,16 +1,15 @@
 ﻿using System.Reflection;
+using System.Runtime.CompilerServices;
 using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Markup;
 
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("ED_UserControls")]
+[assembly: AssemblyTitle("Lighting.Library")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ED_UserControls")]
+[assembly: AssemblyProduct("Lighting.Library")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -21,19 +20,7 @@ using System.Windows.Markup;
 [assembly: ComVisible(false)]
 
 // Следующий GUID служит для идентификации библиотеки типов, если этот проект будет видимым для COM
-[assembly: Guid("2b34189f-b0c8-4ca5-ade4-36c0aa8e92d0")]
-
-[assembly: ThemeInfo(
-    ResourceDictionaryLocation.None, //где расположены словари ресурсов по конкретным тематикам
-                                     //(используется, если ресурс не найден на странице 
-                                     // или в словарях ресурсов приложения)
-    ResourceDictionaryLocation.SourceAssembly //где расположен словарь универсальных ресурсов
-                                              //(используется, если ресурс не найден на странице, 
-                                              // в приложении или в каких-либо словарях ресурсов для конкретной темы)
-)]
-
-[assembly: XmlnsPrefix("http://schemas.lighting.com/wpf/xaml/controls", "ed")]
-[assembly: XmlnsDefinition("http://schemas.lighting.com/wpf/xaml/controls", "ED_UserControls")]
+[assembly: Guid("bddb3429-3488-4aaf-b728-be5451a5cc3f")]
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

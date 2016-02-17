@@ -2,15 +2,11 @@
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:ed="http://schemas.lighting.com/wpf/xaml/controls"
-        xmlns:local="clr-namespace:EffectDesigner"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        Title="Effect Designer"
-        Width="900"
-        Height="481"
-        HorizontalAlignment="Center"
-        VerticalAlignment="Center"
-        mc:Ignorable="d">
+        xmlns:local="clr-namespace:EffectDesigner"
+        xmlns:ed="http://schemas.lighting.com/wpf/xaml/controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="475.797" Width="300">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -28,9 +24,15 @@
 
         <TabControl Grid.Row="1">
             <TabItem x:Name="StripPattern" Header="Шаблон">
-                <ed:HslSlider Height="25" Width="240"/>
+                <!--<ED_CustomControls:HslSlider x:Name="hslSlider" Height="150" Width="25"/>-->
+                <StackPanel Orientation="Horizontal">
+                    <ed:ColorPanel/>
+                    <ed:HslSlider x:Name="hslSlider" Height="150" Width="25" />
+                    
+                </StackPanel>
             </TabItem>
             <TabItem x:Name="StripEffect" Header="Эффект" />
+
         </TabControl>
 
     </Grid>

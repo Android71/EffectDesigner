@@ -1,7 +1,11 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ED_CustomControls">
 
-  <ResourceDictionary.MergedDictionaries>
-    <ResourceDictionary Source="ED_CustomControls;component/HslSlider.xaml" />
-  </ResourceDictionary.MergedDictionaries>
+    <ResourceDictionary.MergedDictionaries>
+        <!--<ResourceDictionary Source="Themes/HslSlider.xaml"/>-->
+        <ResourceDictionary Source="/ED_CustomControls;component/Themes/HslSlider.xaml"/>
+    </ResourceDictionary.MergedDictionaries>
+
+    
 </ResourceDictionary>

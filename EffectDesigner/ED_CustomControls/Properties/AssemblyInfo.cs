@@ -6,11 +6,11 @@ using System.Windows.Markup;
 // Управление общими сведениями о сборке осуществляется с помощью 
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
-[assembly: AssemblyTitle("ED_CustomControls")]
+[assembly: AssemblyTitle("ED_CustomSlider1")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Microsoft")]
-[assembly: AssemblyProduct("ED_CustomControls")]
+[assembly: AssemblyProduct("ED_CustomSlider1")]
 [assembly: AssemblyCopyright("Copyright © Microsoft 2016")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
@@ -41,6 +41,7 @@ using System.Windows.Markup;
 
 [assembly: XmlnsPrefix("http://schemas.lighting.com/wpf/xaml/controls", "ed")]
 [assembly: XmlnsDefinition("http://schemas.lighting.com/wpf/xaml/controls", "ED_CustomControls")]
+
 
 // Сведения о версии сборки состоят из следующих четырех значений:
 //

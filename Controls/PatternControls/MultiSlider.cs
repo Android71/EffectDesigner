@@ -328,8 +328,11 @@ namespace Xam.Wpf.Controls
             UpdateModel();
             
         }
-        
+
         #endregion
+
+        /************************************************************************/
+
         #region Constructors and Initilizers
         static MultiSlider()
         {
