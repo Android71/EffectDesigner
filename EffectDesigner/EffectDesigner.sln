@@ -7,8 +7,6 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EffectDesigner", "EffectDes
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ED_UserControls", "ED_UserControls\ED_UserControls.csproj", "{2B34189F-B0C8-4CA5-ADE4-36C0AA8E92D0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UnitComboLib", "UnitComboLib\UnitComboLib.csproj", "{525FAD28-A501-4B46-B7D6-06E9BD8C963A}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ED_CustomControls", "ED_CustomControls\ED_CustomControls.csproj", "{6E65614D-A623-4E70-BD92-504ED85ABEB5}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighting.Library", "Lighting.Library\Lighting.Library.csproj", "{BDDB3429-3488-4AAF-B728-BE5451A5CC3F}"
@@ -27,10 +25,6 @@ Global
 		{2B34189F-B0C8-4CA5-ADE4-36C0AA8E92D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2B34189F-B0C8-4CA5-ADE4-36C0AA8E92D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2B34189F-B0C8-4CA5-ADE4-36C0AA8E92D0}.Release|Any CPU.Build.0 = Release|Any CPU
-		{525FAD28-A501-4B46-B7D6-06E9BD8C963A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{525FAD28-A501-4B46-B7D6-06E9BD8C963A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{525FAD28-A501-4B46-B7D6-06E9BD8C963A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{525FAD28-A501-4B46-B7D6-06E9BD8C963A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{6E65614D-A623-4E70-BD92-504ED85ABEB5}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{6E65614D-A623-4E70-BD92-504ED85ABEB5}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6E65614D-A623-4E70-BD92-504ED85ABEB5}.Release|Any CPU.ActiveCfg = Release|Any CPU

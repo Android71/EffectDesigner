@@ -8,7 +8,7 @@ namespace Lighting.Library
 {
     public struct HslColor
     {
-            public HslColor(double h, double s, double l)
+        public HslColor(double h, double s, double l)
         {
             Hue = h;
             Saturation = s;
@@ -17,8 +17,21 @@ namespace Lighting.Library
 
         public double Hue { get; private set; }
 
+        public double Luminosity { get; private set; }
+
         public double Saturation { get; private set; }
 
-        public double Luminosity { get; private set; }
+        public static bool operator != (HslColor x, HslColor y)
+        {
+            if (x.Hue != y.Hue || x.Saturation != y.Saturation || x.Luminosity != y.Luminosity) return true;
+            return false;
+        }
+
+        public static bool operator == (HslColor x, HslColor y)
+        {
+            if (x.Hue == y.Hue && x.Saturation == y.Saturation && x.Luminosity == y.Luminosity) return true;
+            return false;
+        }
+
     }
 }

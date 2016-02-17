@@ -28,7 +28,9 @@
                 <StackPanel Orientation="Horizontal">
                     <ed:ColorPanel/>
                     <ed:HslSlider x:Name="hslSlider" Height="150" Width="25" />
-                    
+                    <StackPanel>
+                        
+                    </StackPanel>    
                 </StackPanel>
             </TabItem>
             <TabItem x:Name="StripEffect" Header="Эффект" />

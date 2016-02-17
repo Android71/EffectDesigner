@@ -3,7 +3,6 @@
                     xmlns:local="clr-namespace:ED_CustomControls">
 
     <ResourceDictionary.MergedDictionaries>
-        <!--<ResourceDictionary Source="Themes/HslSlider.xaml"/>-->
         <ResourceDictionary Source="/ED_CustomControls;component/Themes/HslSlider.xaml"/>
     </ResourceDictionary.MergedDictionaries>
 

@@ -38,6 +38,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -110,6 +111,10 @@
     <ProjectReference Include="..\ED_UserControls\ED_UserControls.csproj">
       <Project>{2b34189f-b0c8-4ca5-ade4-36c0aa8e92d0}</Project>
       <Name>ED_UserControls</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lighting.Library\Lighting.Library.csproj">
+      <Project>{bddb3429-3488-4aaf-b728-be5451a5cc3f}</Project>
+      <Name>Lighting.Library</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
