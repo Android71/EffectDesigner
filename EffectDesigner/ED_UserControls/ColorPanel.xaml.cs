@@ -2,6 +2,9 @@
 using System.Windows.Controls;
 using System.Windows.Input;
 using Media = System.Windows.Media;
+using Lighting.Library;
+using System.ComponentModel;
+using System;
 
 namespace ED_UserControls
 {
@@ -22,6 +25,57 @@ namespace ED_UserControls
         //bool suspendUpdate = false;
 
         #endregion
+
+        #region SelectedPoint DP
+        public PatternPoint SelectedPoint
+        {
+            get { return (PatternPoint)GetValue(SelectedPointProperty); }
+            set { SetValue(SelectedPointProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for SelectedPoint.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty SelectedPointProperty =
+                                DependencyProperty.Register("SelectedPoint", typeof(PatternPoint), typeof(ColorPanel),
+                                    new FrameworkPropertyMetadata(null, OnSelectedPointChanged));
+
+        private static void OnSelectedPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            ColorPanel panel = d as ColorPanel;
+            PatternPoint pp = (PatternPoint)e.OldValue;
+            //PatternPoint pp = (PatternPoint)e.NewValue;
+
+            ////HSBcolor hsb = HSBcolor.RgbToHsb(panel.SelectedPoint.PointColor);
+            //HSBcolor hsb = panel.SelectedPoint.HSB;
+            //int ix = panel.colorSelector.Children.Count - 2 - (int)(hsb.Hue / 30);
+            //panel.pointColorRange = (Border)panel.colorSelector.Children[ix];
+            //panel.hue.IsEnabled = true;
+            //panel.sat.IsEnabled = true;
+            //panel.bri.IsEnabled = true;
+            //panel.colorFromPattern = true;
+            //panel.SetColorRange(panel.SelectedPoint, panel.pointColorRange);
+            //panel.colorFromPattern = false;
+            if (pp != null)
+                (pp as INotifyPropertyChanged).PropertyChanged -= panel.OnColorChanged;
+            else
+                panel.OnColorChanged(null, new PropertyChangedEventArgs("PointColor"));
+            (panel.SelectedPoint as INotifyPropertyChanged).PropertyChanged += panel.OnColorChanged;
+            
+
+        }
+
+        private void OnColorChanged(object sender, PropertyChangedEventArgs e)
+        {
+            //int x = 0;
+            if (e.PropertyName == "PointColor")
+            {
+                briValue.Text = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0).ToString();
+                bri.Value = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0);
+            }
+        }
+
+        #endregion
+
+        /************************************************************************/
 
         public ColorPanel()
         {

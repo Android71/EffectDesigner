@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:EffectDesigner"
         xmlns:ed="http://schemas.lighting.com/wpf/xaml/controls"
         mc:Ignorable="d"
-        Title="MainWindow" Height="475.797" Width="300">
+        Title="MainWindow" Height="546.498" Width="403.185">
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto" />
@@ -25,11 +25,27 @@
         <TabControl Grid.Row="1">
             <TabItem x:Name="StripPattern" Header="Шаблон">
                 <!--<ED_CustomControls:HslSlider x:Name="hslSlider" Height="150" Width="25"/>-->
-                <StackPanel Orientation="Horizontal">
-                    <ed:ColorPanel/>
+                <StackPanel Orientation="Horizontal" Background="#FF4D4B4B">
+                    <ed:ColorPanel SelectedPoint="{Binding SelectedPoint}"/>
                     <ed:HslSlider x:Name="hslSlider" Height="150" Width="25" />
                     <StackPanel>
-                        
+                        <Grid >
+                            <Grid.RowDefinitions>
+                                <RowDefinition/>
+                                <RowDefinition/>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition/>
+                                <ColumnDefinition/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Row="0" Grid.Column="0" Width="100" Height="100" Background="{Binding SelectedPoint.PointBrush}"/>
+                            <Border Grid.Row="0" Grid.Column="1" Width="100" Height="100" Background="{Binding SelectedPoint.PureBrush}"/>
+                            <StackPanel Orientation="Horizontal" Grid.Row="1" Grid.Column="1">
+                            <!--<Slider Name="lightness" Orientation="Vertical"  Height="200" Maximum="1" TickFrequency="0" Value="{Binding SelectedPoint.PointLightness, Mode=TwoWay}"/>-->
+                            <Slider Name="mouseWheel" Orientation="Vertical" Height="200" Maximum="1" TickFrequency="0" Margin="25,0,0,0" Background="#FF6C6767" Value="0.5" ValueChanged="mouseWheel_ValueChanged" SmallChange="0.01"/>
+                            </StackPanel>
+                            <TextBlock Grid.Row="1" Grid.Column="0" Width="100" Height="25" VerticalAlignment="Bottom" Text="{Binding SelectedPoint.PointLightness}" TextAlignment="Center"/>
+                        </Grid>
                     </StackPanel>    
                 </StackPanel>
             </TabItem>

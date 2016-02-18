@@ -24,8 +24,8 @@ namespace Lighting.Library
             PointColor = color;
         }
 
-        protected Color _pointColor;
-        public virtual Color PointColor
+        private Color _pointColor;
+        public Color PointColor
         {
             get
             {
@@ -51,7 +51,7 @@ namespace Lighting.Library
             }
         }
 
-        protected HslColor _hsl;
+        private HslColor _hsl = new HslColor(0.0,0.0,0.0);
         public HslColor HslColor
         {
             get { return _hsl; }
@@ -74,7 +74,7 @@ namespace Lighting.Library
             }
         }
 
-        protected void OnColorChanged()
+        protected virtual void OnColorChanged()
         {
             OnPropertyChanged("PointColor");
         }
@@ -91,12 +91,12 @@ namespace Lighting.Library
         /// </summary>
         /// <param name="h">Hue, must be in [0, 360].</param>
         /// <param name="s">Saturation, must be in [0..1].</param>
-        /// <param name="l">Luminance, must be in [0..1].</param>
+        /// <param name="l">Lightness , must be in [0..1].</param>
         public static Color ToRGB(this HslColor c)
         {
             double h = c.Hue;
             double s = c.Saturation;
-            double l = c.Luminosity;
+            double l = c.Lightness;
             if (s == 0)
             {
                 // achromatic color (gray scale)
@@ -137,59 +137,11 @@ namespace Lighting.Library
                     
             }
         }
-        //public static Color ToRGB(this HslColor color)
-        //{
-        //    double r = 0, g = 0, b = 0;
-        //    if (color.Luminosity != 0)
-        //    {
-        //        if (color.Saturation == 0)
-        //            r = g = b = color.Luminosity;
-        //        else
-        //        {
-        //            double temp2;
-        //            if (color.Luminosity < 0.5)
-        //                temp2 = color.Luminosity * (1.0 + color.Saturation);
-        //            else
-        //                temp2 = color.Luminosity + color.Saturation - (color.Luminosity * color.Saturation);
 
-        //            double temp1 = 2.0 * color.Luminosity - temp2;
-
-        //            r = GetColorComponent(temp1, temp2, color.Hue + c13);
-        //            g = GetColorComponent(temp1, temp2, color.Hue);
-        //            b = GetColorComponent(temp1, temp2, color.Hue - c13);
-        //        }
-        //    }
-        //    return Color.FromArgb((int)(255 * r), (int)(255 * g), (int)(255 * b));
-        //}
-
-        //private static double GetColorComponent(double temp1, double temp2, double temp3)
-        //{
-        //    if (temp3 < 0.0)
-        //        temp3 += 1.0;
-        //    else if (temp3 > 1.0)
-        //        temp3 -= 1.0;
-
-        //    if (temp3 < c16)
-        //        return temp1 + (temp2 - temp1) * 6.0 * temp3;
-        //    else if (temp3 < 0.5)
-        //        return temp2;
-        //    else if (temp3 < c23)
-        //        return temp1 + ((temp2 - temp1) * (c23 - temp3) * 6.0);
-        //    else
-        //        return temp1;
-        //}
-
-
-
-        //public static System.Windows.Media.SolidColorBrush Brush(this Color color)
-        //{
-        //    return new System.Windows.Media.SolidColorBrush(System.Windows.Media.Color.FromRgb(color.R, color.G, color.B));
-        //}
-
-        //public static System.Windows.Media.Color MediaColor(this Color color)
-        //{
-        //    return System.Windows.Media.Color.FromRgb(color.R, color.G, color.B);
-        //}
+        public static System.Windows.Media.Color MediaColor(this Color color)
+        {
+            return System.Windows.Media.Color.FromRgb(color.R, color.G, color.B);
+        }
 
     }
 }

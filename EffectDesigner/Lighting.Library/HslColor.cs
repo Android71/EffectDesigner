@@ -12,24 +12,24 @@ namespace Lighting.Library
         {
             Hue = h;
             Saturation = s;
-            Luminosity = l;
+            Lightness = l;
         }
 
         public double Hue { get; private set; }
 
-        public double Luminosity { get; private set; }
+        public double Lightness { get; private set; }
 
         public double Saturation { get; private set; }
 
         public static bool operator != (HslColor x, HslColor y)
         {
-            if (x.Hue != y.Hue || x.Saturation != y.Saturation || x.Luminosity != y.Luminosity) return true;
+            if (x.Hue != y.Hue || x.Saturation != y.Saturation || x.Lightness != y.Lightness) return true;
             return false;
         }
 
         public static bool operator == (HslColor x, HslColor y)
         {
-            if (x.Hue == y.Hue && x.Saturation == y.Saturation && x.Luminosity == y.Luminosity) return true;
+            if (x.Hue == y.Hue && x.Saturation == y.Saturation && x.Lightness == y.Lightness) return true;
             return false;
         }
 
