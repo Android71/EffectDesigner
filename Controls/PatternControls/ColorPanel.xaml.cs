@@ -135,25 +135,7 @@ namespace PatternControls
             selectedColorRange.BorderThickness = new Thickness(1);
         }
         
-        private void SetColorRange(object source, Border colorRange)
-        {
-            //if (selectedColorRange != colorRange)
-            //{
-                if (selectedColorRange != null)
-                {
-                    selectedColorRange.Margin = new Thickness(3);
-                    selectedColorRange.BorderThickness = new Thickness(0);
-                }
-                colorRange.Margin = new Thickness(0);
-                colorRange.BorderThickness = new Thickness(1);
-                selectedColorRange = colorRange;
-                suspendUpdate = true;
-                hue.Minimum = ((System.Windows.Point)selectedColorRange.Tag).X;
-                hue.Maximum = ((System.Windows.Point)selectedColorRange.Tag).Y;
-                suspendUpdate = false;
-                SetValues(source);
-            //}
-        }
+        
         
         private void SetValues(object source)
         {
@@ -188,6 +170,26 @@ namespace PatternControls
                     SetColorRange(colorSelector, newColorRange);
                 }
             }
+        }
+
+        private void SetColorRange(object source, Border colorRange)
+        {
+            //if (selectedColorRange != colorRange)
+            //{
+            if (selectedColorRange != null)
+            {
+                selectedColorRange.Margin = new Thickness(3);
+                selectedColorRange.BorderThickness = new Thickness(0);
+            }
+            colorRange.Margin = new Thickness(0);
+            colorRange.BorderThickness = new Thickness(1);
+            selectedColorRange = colorRange;
+            suspendUpdate = true;
+            hue.Minimum = ((System.Windows.Point)selectedColorRange.Tag).X;
+            hue.Maximum = ((System.Windows.Point)selectedColorRange.Tag).Y;
+            suspendUpdate = false;
+            SetValues(source);
+            //}
         }
 
         bool isMouseCaptured = false;

@@ -60,7 +60,6 @@ namespace ED_UserControls
             if (pp != null)
                 (pp as INotifyPropertyChanged).PropertyChanged -= panel.OnColorChanged;
             else
-
                 panel.OnColorChanged(null, new PropertyChangedEventArgs("PointColor"));
             (panel.SelectedPoint as INotifyPropertyChanged).PropertyChanged += panel.OnColorChanged;
             

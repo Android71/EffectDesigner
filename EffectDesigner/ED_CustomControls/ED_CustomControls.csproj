@@ -49,8 +49,8 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BrightnessConverter.cs" />
-    <Compile Include="PatternPointDataTemplateSelector.cs" />
+    <Compile Include="XAML\BrightnessConverter.cs" />
+    <Compile Include="XAML\PatternPointDataTemplateSelector.cs" />
     <Compile Include="SliderItem.cs" />
     <Page Include="Themes\HslSlider.xaml">
       <SubType>Designer</SubType>
@@ -99,9 +99,7 @@
       <Name>Lighting.Library</Name>
     </ProjectReference>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="XAML\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

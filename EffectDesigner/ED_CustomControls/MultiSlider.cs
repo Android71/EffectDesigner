@@ -573,46 +573,46 @@ namespace ED_CustomControls
 
         private void UpdateModel()
         {
-            PatternPoint previousPoint = null;
+            //PatternPoint previousPoint = null;
 
-            Stopwatch watch = new Stopwatch();
-            watch.Start();
-
-
-            for (int i = 0; i < StripModel.Count; i++)
-                StripModel[i].PointColor = Color.Black;
+            //Stopwatch watch = new Stopwatch();
+            //watch.Start();
 
 
-            foreach (PatternPoint pp in Pattern)
-            {
-                if (previousPoint != null)
-                {
-                    if (pp.LedCount == 1)
-                    {
-                        // какая бы не была предыдуяя точка строим градиент
-                        MakeGradient( previousPoint, pp );
-                        previousPoint = pp; 
-                    }
-                    else
-                    {
-                        // диапазон
-                        MakeGradient(previousPoint, pp);
-                        for (int i = 0; i < pp.LedCount; i++)
-                            StripModel[pp.LedPos + i].PointColor = pp.PointColor;
-                        previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
-                    }
-                }
-                else
-                {
-                    // первая точка
-                    for (int i = 0; i < pp.LedPos; i++)
-                        StripModel[i].PointColor = Color.Black;
-                    previousPoint = pp;
-                }
-            }
+            //for (int i = 0; i < StripModel.Count; i++)
+            //    StripModel[i].PointColor = Color.Black;
 
-            watch.Stop();
-            Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
+
+            //foreach (PatternPoint pp in Pattern)
+            //{
+            //    if (previousPoint != null)
+            //    {
+            //        if (pp.LedCount == 1)
+            //        {
+            //            // какая бы не была предыдуяя точка строим градиент
+            //            MakeGradient( previousPoint, pp );
+            //            previousPoint = pp; 
+            //        }
+            //        else
+            //        {
+            //            // диапазон
+            //            MakeGradient(previousPoint, pp);
+            //            for (int i = 0; i < pp.LedCount; i++)
+            //                StripModel[pp.LedPos + i].PointColor = pp.PointColor;
+            //            previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
+            //        }
+            //    }
+            //    else
+            //    {
+            //        // первая точка
+            //        for (int i = 0; i < pp.LedPos; i++)
+            //            StripModel[i].PointColor = Color.Black;
+            //        previousPoint = pp;
+            //    }
+            //}
+
+            //watch.Stop();
+            //Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
         }
 
         private void MakeGradient(PatternPoint from, PatternPoint to)
