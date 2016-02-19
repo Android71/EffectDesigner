@@ -47,6 +47,7 @@
       <DependentUpon>LightPoint.cs</DependentUpon>
     </Compile>
     <Compile Include="LightPoint.cs" />
+    <Compile Include="ObservableNotifiableCollection.cs" />
     <Compile Include="PatternPoint.cs">
       <DependentUpon>LightPoint.cs</DependentUpon>
     </Compile>

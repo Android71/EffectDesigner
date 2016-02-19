@@ -60,6 +60,10 @@
     </Page>
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\ED_CustomControls\ED_CustomControls.csproj">
+      <Project>{6e65614d-a623-4e70-bd92-504ed85abeb5}</Project>
+      <Name>ED_CustomControls</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Lighting.Library\Lighting.Library.csproj">
       <Project>{bddb3429-3488-4aaf-b728-be5451a5cc3f}</Project>
       <Name>Lighting.Library</Name>

@@ -1,0 +1,364 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:local="clr-namespace:ED_CustomControls"
+                    xmlns:lib="clr-namespace:Lighting.Library;assembly=Lighting.Library">
+
+    <LinearGradientBrush x:Key="NormalThumbFillBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Offset="0" Color="White" />
+        <GradientStop Offset="0.5" Color="#FFEBEBEB" />
+        <GradientStop Offset="1" Color="#FFD6D6D6" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="MouseOverThumbFillBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Offset="0" Color="White" />
+        <GradientStop Offset="0.5" Color="#FFBBE3F9" />
+        <GradientStop Offset="1" Color="#FFB1E0F8" />
+    </LinearGradientBrush>
+
+    <LinearGradientBrush x:Key="PressedThumbFillBackground" StartPoint="0.5,0" EndPoint="0.5,1">
+        <GradientStop Offset="0" Color="White" />
+        <GradientStop Offset="0.5" Color="#FF5DB2E0" />
+        <GradientStop Offset="1" Color="#FF4F93BD" />
+    </LinearGradientBrush>
+
+    <Style x:Key="ThumbFocusVisualStyle">
+        <Setter Property="Control.Template">
+            <Setter.Value>
+                <ControlTemplate>
+                    <Rectangle Margin="-2"
+                               Stroke="Black"
+                               StrokeDashArray="1 2"
+                               StrokeThickness="1" />
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+
+    <!--  Thumb Templates  -->
+    <ControlTemplate x:Key="Normal" TargetType="{x:Type Thumb}">
+        <Grid Width="19"
+              Height="19"
+              Margin="0,3">
+            <Border Name="MainBorder"
+                    Background="#FFBFBFBF"
+                    BorderBrush="#FF5F5F5F"
+                    BorderThickness="2" />
+            <Ellipse Name="CenterDot"
+                     Width="6"
+                     Height="6"
+                     Fill="#FF5F5F5F"
+                     StrokeThickness="0" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </Trigger>
+
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="BorderBrush" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="LeftLimit" TargetType="{x:Type Thumb}">
+        <Grid Width="19"
+              Height="19"
+              Margin="0,3">
+            <Path Name="MainBorder"
+                  Data="M159.5,79.5 L199.5,119.5 159.5,159.5 z"
+                  Fill="#FFBFBFBF"
+                  Stretch="Fill"
+                  Stroke="#FF5F5F5F"
+                  StrokeThickness="2" />
+            <Ellipse Name="CenterDot"
+                     Height="6"
+                     Margin="3.839,6.457,9.161,6.542"
+                     Fill="#FF5F5F5F"
+                     RenderTransformOrigin="-5.25,0"
+                     Stroke="Black"
+                     StrokeThickness="0" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </Trigger>
+
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="Stroke" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+    <ControlTemplate x:Key="RightLimit" TargetType="{x:Type Thumb}">
+        <Grid Width="19"
+              Height="19"
+              Margin="0,3">
+            <Path Name="MainBorder"
+                  Data="M0,9.5 L18.875,-0.5 18.875,19.5 z"
+                  Fill="#FFBFBFBF"
+                  Stretch="Fill"
+                  Stroke="#FF5F5F5F"
+                  StrokeThickness="2" />
+            <Ellipse Name="CenterDot"
+                     Width="6"
+                     Height="6"
+                     Margin="0,6.626,3.437,6.374"
+                     HorizontalAlignment="Right"
+                     Fill="#FF5F5F5F"
+                     Stroke="Black"
+                     StrokeThickness="0" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </Trigger>
+
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="Stroke" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+
+
+
+
+    <ControlTemplate x:Key="SupportiveSliderTemplate" TargetType="local:SliderItem">
+        <ControlTemplate.Resources>
+            <Style TargetType="Thumb">
+                <Setter Property="HorizontalAlignment" Value="Stretch" />
+                <Setter Property="VerticalAlignment" Value="Center" />
+                <Setter Property="Template" Value="{StaticResource Normal}" />
+                <Style.Triggers>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=Variant}" Value="1">
+                        <Setter Property="Template" Value="{StaticResource LeftLimit}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=Variant}" Value="2">
+                        <Setter Property="Template" Value="{StaticResource RightLimit}" />
+                    </DataTrigger>
+                </Style.Triggers>
+            </Style>
+        </ControlTemplate.Resources>
+        <Grid>
+            <Track x:Name="PART_Track"
+                   Grid.Row="0"
+                   Orientation="{TemplateBinding Orientation}">
+                <Track.Thumb>
+                    <Thumb x:Name="thumb"
+                           Background="{TemplateBinding Background}"
+                           FocusVisualStyle="{StaticResource ThumbFocusVisualStyle}"
+                           Focusable="True" />
+                </Track.Thumb>
+            </Track>
+        </Grid>
+    </ControlTemplate>
+
+    <local:PatternPointDataTemplateSelector x:Key="dataTemplateSelector" />
+
+    <DataTemplate x:Key="gradientPoint">
+        <Grid Width="25" Height="20">
+            <Rectangle Margin="2"
+                       Fill="{Binding PureBrush}"
+                       Stroke="Black" />
+        </Grid>
+    </DataTemplate>
+
+    <DataTemplate x:Key="rangePoint">
+        <Grid Width="25" Height="20">
+            <Path Margin="2"
+                  Data="M0.5,0.5 L119.769,0.5 105.496,31.426 119.769,62.249 0.24600001,62.426001 18.496,31.926 z"
+                  Fill="{Binding PureBrush}"
+                  Stretch="Fill"
+                  Stroke="Black" />
+        </Grid>
+    </DataTemplate>
+
+    <local:BrightnessConverter x:Key="converter" />
+
+    <ControlTemplate x:Key="MultiSliderHorizontal" TargetType="local:MultiSlider">
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+            <StackPanel>
+
+                <!--
+                    ItemsSource="{Binding StripModel,
+                    RelativeSource={RelativeSource TemplatedParent}}">
+                -->
+                <StackPanel Height="275" Background="#FF595656">
+                    <ItemsControl Height="255"
+                                  Margin="10"
+                                  ItemsSource="{Binding StripModel,
+                    RelativeSource={RelativeSource TemplatedParent}}">
+
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <UniformGrid x:Name="PART_StripDisplay"
+                                             Rows="1"
+                                             SnapsToDevicePixels="False" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Rectangle Height="{Binding PointBrightness,
+                                                            Converter={StaticResource converter}}"
+                                           VerticalAlignment="Bottom"
+                                           Fill="{Binding PureBrush}" />
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                    <!--<UniformGrid x:Name="PART_StripGrid"
+                                 Height="255"
+                                 Margin="10"
+                                 Background="#FF686868"
+                                 Columns="288"
+                                 Rows="1">
+                        <Rectangle Width="5"
+                                   Height="255"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="220"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="190"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="160"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="130"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="100"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+                        <Rectangle Width="5"
+                                   Height="70"
+                                   VerticalAlignment="Bottom"
+                                   Fill="#FFF39090" />
+
+                    </UniformGrid>-->
+                </StackPanel>
+
+                <Grid x:Name="PART_Sliders" Margin="10,0">
+                    <Grid.Resources>
+                        <Style TargetType="local:SliderItem">
+                            <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
+                            <Setter Property="Grid.Row" Value="1" />
+                        </Style>
+                    </Grid.Resources>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="Auto" MinHeight="{TemplateBinding MinHeight}" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <Grid Name="PART_SliderGrid_Up" Grid.Row="0">
+                        <!--  Odd SliderItem instance get inserted here  -->
+                    </Grid>
+                    <!--  Background="{TemplateBinding TrackBrush}"  -->
+                    <Border x:Name="PART_Track"
+                            Grid.Row="1"
+                            Height="6"
+                            VerticalAlignment="Center"
+                            Background="#FF35DCDC"
+                            BorderBrush="#FF35DCDC"
+                            BorderThickness="2" />
+                    <Grid x:Name="PART_SliderGrid_Down" Grid.Row="2">
+                        <!--  Even SliderItem instance get inserted here  -->
+                    </Grid>
+                </Grid>
+
+                <DockPanel Margin="0,10,0,0">
+
+
+                    <Grid DockPanel.Dock="Right">
+                        <StackPanel Width="70">
+                            <Border BorderBrush="Black" BorderThickness="1">
+                                <TextBlock Name="PART_CurrentPosition"
+                                           HorizontalAlignment="Center"
+                                           VerticalAlignment="Center"
+                                           Foreground="#FFBDC6C6">
+                                    1240
+                                </TextBlock>
+                            </Border>
+                            <Button Name="PART_ModeBtn" Background="#FF8B9292">Точка</Button>
+                        </StackPanel>
+                    </Grid>
+
+                    <ListBox x:Name="listBox"
+                             Background="#FF686868"
+                             ItemTemplateSelector="{StaticResource dataTemplateSelector}"
+                             ItemsSource="{Binding Pattern,
+                                                   RelativeSource={RelativeSource TemplatedParent}}"
+                             ScrollViewer.HorizontalScrollBarVisibility="Auto"
+                             ScrollViewer.VerticalScrollBarVisibility="Disabled"
+                             SelectedIndex="{Binding SelectedPatternIx}"
+                             SelectedItem="{Binding SelectedPoint}">
+
+                        <ListBox.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <StackPanel Orientation="Horizontal" />
+                            </ItemsPanelTemplate>
+                        </ListBox.ItemsPanel>
+                    </ListBox>
+
+                </DockPanel>
+            </StackPanel>
+        </Border>
+    </ControlTemplate>
+
+    <!--<ControlTemplate x:Key="MultiSliderVertical" TargetType="lc:MultiSlider">
+        <Border Background="{TemplateBinding Background}"
+                BorderBrush="{TemplateBinding BorderBrush}"
+                BorderThickness="{TemplateBinding BorderThickness}">
+
+            <Grid>
+                <Grid.Resources>
+                    <Style TargetType="lc:SliderItem">
+                        <Setter Property="Template" Value="{StaticResource SupportiveSliderTemplate}" />
+                        <Setter Property="Grid.Column" Value="1" />
+                    </Style>
+                </Grid.Resources>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" MinWidth="{TemplateBinding MinWidth}" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <Border Grid.Column="1"
+                        Width="4"
+                        HorizontalAlignment="Center"
+                        BorderBrush="{TemplateBinding TrackBrush}"
+                        BorderThickness="2" />
+                <Grid x:Name="PART_SliderGrid" Grid.Column="1">
+
+    -->
+    <!--  SliderItem instance get inserted here  -->
+    <!--
+
+                </Grid>
+            </Grid>
+        </Border>
+    </ControlTemplate>-->
+
+    <Style TargetType="local:MultiSlider">
+        <Setter Property="HorizontalAlignment" Value="Stretch" />
+        <Setter Property="VerticalAlignment" Value="Center" />
+        <Setter Property="Template" Value="{StaticResource MultiSliderHorizontal}" />
+
+        <Style.Triggers>
+            <Trigger Property="Orientation" Value="Vertical">
+                <Setter Property="Template" Value="{StaticResource MultiSliderVertical}" />
+                <Setter Property="HorizontalAlignment" Value="Center" />
+                <Setter Property="VerticalAlignment" Value="Stretch" />
+            </Trigger>
+        </Style.Triggers>
+    </Style>
+</ResourceDictionary>

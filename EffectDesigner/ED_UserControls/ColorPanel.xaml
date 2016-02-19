@@ -4,7 +4,7 @@
              xmlns:add_on="http://schemas.lighting.com/wpf/xaml/add_on"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:ED_UserControls"
-             
+             xmlns:ed="http://schemas.lighting.com/wpf/xaml/controls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              d:DesignHeight="375.29"
              d:DesignWidth="300"
@@ -42,16 +42,16 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Slider x:Name="hue"
+                        <ed:HslSlider
+                            x:Name="hue"
                                 Grid.Row="0"
                                 Height="255"
                                 Margin="10,10,10,0"
                                 HorizontalAlignment="Center"
-                                GotMouseCapture="OnGotMouseCapture"
-                                IsEnabled="False"
-                                Orientation="Vertical"
-                                SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged" />
+                            IsEnabled="False"
+                            SmallChange="1"
+                                ValueChanged="hsb_ValuesChanged" Maximum="30"
+                            />
                         <TextBlock Grid.Row="1"
                                    Margin="0,5"
                                    HorizontalAlignment="Center"
@@ -91,7 +91,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Slider x:Name="sat"
+                        <ed:HslSlider x:Name="sat" ColorScale="S"
+                                      Height="255"
+                                Margin="10,10,10,0"
+                                HorizontalAlignment="Center"
+                                      IsEnabled="False"
+                                Maximum="100"
+                                      SmallChange="1"
+                                ValueChanged="hsb_ValuesChanged"/>
+                        <!--<Slider x:Name="sat"
                                 Grid.Row="0"
                                 Height="255"
                                 Margin="10,10,10,0"
@@ -101,7 +109,7 @@
                                 Maximum="100"
                                 Orientation="Vertical"
                                 SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged" />
+                                ValueChanged="hsb_ValuesChanged" />-->
                         <TextBlock Grid.Row="1"
                                    Margin="0,5"
                                    HorizontalAlignment="Center"
@@ -141,7 +149,19 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <Slider x:Name="bri"
+                        <ed:HslSlider
+                            x:Name="bri"
+                            ColorScale="L"
+                                Grid.Row="0"
+                                Height="255"
+                                Margin="10,10,10,0"
+                                HorizontalAlignment="Center"
+                            IsEnabled="False"
+                                Maximum="100"
+                            SmallChange="1"
+                                ValueChanged="hsb_ValuesChanged"
+                            />
+                        <!--<Slider x:Name="bri"
                                 Grid.Row="0"
                                 Height="255"
                                 Margin="10,10,10,0"
@@ -151,12 +171,12 @@
                                 Maximum="100"
                                 Orientation="Vertical"
                                 SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged" />
+                                ValueChanged="hsb_ValuesChanged" />-->
                         <TextBlock Grid.Row="1"
                                    Margin="0,5"
                                    HorizontalAlignment="Center"
                                    FontWeight="Bold"
-                                   Text="B" />
+                                   Text="L" />
                         <Border Grid.Row="2"
                                 Margin="5,0"
                                 BorderBrush="#FF595656"

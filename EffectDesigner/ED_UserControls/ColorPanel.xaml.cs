@@ -24,6 +24,9 @@ namespace ED_UserControls
         bool colorFromPattern = true;       // управление режимами hsb_ValuesChanged
         bool suspendUpdate = false;
 
+        enum ColorChangeMode { None, Lightness, Slider, ColorSelector, Pattern };
+        ColorChangeMode colorChangeMode = ColorChangeMode.None;
+
         #endregion
 
         #region SelectedPoint DP
@@ -66,20 +69,37 @@ namespace ED_UserControls
 
         private void OnColorChanged(object sender, PropertyChangedEventArgs e)
         {
-            //int x = 0;
-            if (e.PropertyName == "PointColor")
+            if (e.PropertyName == "PointColor" || e.PropertyName == "PointLightness")
             {
-                briValue.Text = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0).ToString();
-                bri.Value = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0);
-                satValue.Text = Math.Round(SelectedPoint.HslColor.Saturation * 100, 0).ToString();
-                sat.Value = Math.Round(SelectedPoint.HslColor.Saturation * 100, 0);
-                hueValue.Text = Math.Round(SelectedPoint.HslColor.Hue, 0).ToString();
-                hue.Value = Math.Round(SelectedPoint.HslColor.Hue, 0);
-                rValue.Text = SelectedPoint.PointColor.R.ToString();
-                gValue.Text = SelectedPoint.PointColor.G.ToString();
-                bValue.Text = SelectedPoint.PointColor.B.ToString();
+                SetColorMetrics();
+                SetSliders();
+                if (colorFromPattern)
+                    colorFromPattern = false;
             }
         }
+
+        private void SetColorMetrics()
+        {
+            briValue.Text = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0).ToString();
+            satValue.Text = Math.Round(SelectedPoint.HslColor.Saturation * 100, 0).ToString();
+            hueValue.Text = Math.Round(SelectedPoint.HslColor.Hue, 0).ToString();
+            rValue.Text = SelectedPoint.PointColor.R.ToString();
+            gValue.Text = SelectedPoint.PointColor.G.ToString();
+            bValue.Text = SelectedPoint.PointColor.B.ToString();
+        }
+
+        private void SetSliders()
+        {
+            if (!hue.IsActive && !hue.IsActive && !bri.IsActive)
+            {
+                hue.Value = Math.Round(SelectedPoint.HslColor.Hue, 0);
+                //if (!sat.IsActive)
+                sat.Value = Math.Round(SelectedPoint.HslColor.Saturation * 100, 0);
+                //if (!bri.IsActive)
+                bri.Value = Math.Round(SelectedPoint.HslColor.Lightness * 100, 0);
+            }
+        }
+
 
         #endregion
 
@@ -151,7 +171,7 @@ namespace ED_UserControls
         {
             Media.Color clr = (colorRange.Background as Media.SolidColorBrush).Color;
             System.Drawing.Color rgb = System.Drawing.Color.FromArgb(clr.R, clr.G, clr.B);
-            
+
             //if (selectedColorRange != colorRange)
             //{
             if (selectedColorRange != null)
@@ -162,12 +182,18 @@ namespace ED_UserControls
             colorRange.Margin = new Thickness(0);
             colorRange.BorderThickness = new Thickness(1);
             selectedColorRange = colorRange;
+
+            double fromHue = ((System.Windows.Point)selectedColorRange.Tag).X;
+            double toHue = ((System.Windows.Point)selectedColorRange.Tag).Y;
+
             suspendUpdate = true;
-            hue.Minimum = ((System.Windows.Point)selectedColorRange.Tag).X;
-            hue.Maximum = ((System.Windows.Point)selectedColorRange.Tag).Y;
-            
+            hue.Minimum = fromHue;
+            hue.Maximum = toHue;
             suspendUpdate = false;
-            SelectedPoint.HslColor = new HslColor(hue.Minimum + (hue.Maximum - hue.Minimum) / 2.0, rgb.GetSaturation(), rgb.GetBrightness());
+
+            hue.ScaleRange = new Point(fromHue, toHue);
+            sat.HueValue = fromHue + (toHue - fromHue) / 2.0;
+            SelectedPoint.HslColor = new HslColor(sat.HueValue, rgb.GetSaturation(), rgb.GetBrightness());
             //SetValues(source);
             //SelectedPoint.PointColor = System.Drawing.Color.FromArgb(clr.R, clr.G, clr.B);
             //}
@@ -180,10 +206,12 @@ namespace ED_UserControls
 
         private void hsb_ValuesChanged(object sender, RoutedPropertyChangedEventArgs<double> e)
         {
-            //HSBcolor hsb;
-            //Color rgb;
-            //Slider s = sender as Slider;
+            HslColor hsl;
+            
+            Slider s = sender as Slider;
             //isMouseCaptured = s.IsMouseCaptured;
+            if (s == hue)
+                sat.HueValue = hue.Value;
             if (!suspendUpdate)
             {
                 //hsb = new HSBcolor();
@@ -197,6 +225,8 @@ namespace ED_UserControls
                 //rValue.Text = hsb.RgbColor.R.ToString();
                 //gValue.Text = hsb.RgbColor.G.ToString();
                 //bValue.Text = hsb.RgbColor.B.ToString();
+                if(!colorFromPattern)
+                    SelectedPoint.HslColor = new HslColor(hue.Value, sat.Value/100.0, bri.Value/100.0);
             }
         }
     }
