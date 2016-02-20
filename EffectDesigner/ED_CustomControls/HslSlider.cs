@@ -157,10 +157,5 @@ namespace ED_CustomControls
             //Console.WriteLine("End changing");
         }
 
-        protected override void OnValueChanged(double oldValue, double newValue)
-        {
-            base.OnValueChanged(oldValue, newValue);
-            //Console.WriteLine("Value changed");
-        }
     }
 }

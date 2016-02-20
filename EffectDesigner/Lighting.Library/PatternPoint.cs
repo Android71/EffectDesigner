@@ -42,10 +42,13 @@ namespace Lighting.Library
 
         protected override void OnColorChanged()
         {
+            double lightness = HslColor.Lightness;
             base.OnColorChanged();
             PointLightness = HslColor.Lightness;
             PointBrush.Color = PointColor.MediaColor();
-            HslColor hsl = new HslColor(HslColor.Hue, HslColor.Saturation, 0.5);
+            if (HslColor.Lightness < 0.2)
+                lightness = 0.2;
+            HslColor hsl = new HslColor(HslColor.Hue, HslColor.Saturation, lightness);
             PureBrush.Color = hsl.ToRGB().MediaColor();
         }
 

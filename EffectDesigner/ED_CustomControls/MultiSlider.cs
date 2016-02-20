@@ -509,7 +509,7 @@ namespace ED_CustomControls
 
         private void OnSliderClick(object sender, MouseButtonEventArgs e)
         {
-            if (e.ClickCount == 2)
+            if (e.ClickCount == 2)      // DoubleClick
             {
 
                 //Color clr = GetColorAtMouse();
@@ -573,68 +573,68 @@ namespace ED_CustomControls
 
         private void UpdateModel()
         {
-            //PatternPoint previousPoint = null;
+            PatternPoint previousPoint = null;
 
-            //Stopwatch watch = new Stopwatch();
-            //watch.Start();
-
-
-            //for (int i = 0; i < StripModel.Count; i++)
-            //    StripModel[i].PointColor = Color.Black;
+            Stopwatch watch = new Stopwatch();
+            watch.Start();
 
 
-            //foreach (PatternPoint pp in Pattern)
-            //{
-            //    if (previousPoint != null)
-            //    {
-            //        if (pp.LedCount == 1)
-            //        {
-            //            // какая бы не была предыдуяя точка строим градиент
-            //            MakeGradient( previousPoint, pp );
-            //            previousPoint = pp; 
-            //        }
-            //        else
-            //        {
-            //            // диапазон
-            //            MakeGradient(previousPoint, pp);
-            //            for (int i = 0; i < pp.LedCount; i++)
-            //                StripModel[pp.LedPos + i].PointColor = pp.PointColor;
-            //            previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        // первая точка
-            //        for (int i = 0; i < pp.LedPos; i++)
-            //            StripModel[i].PointColor = Color.Black;
-            //        previousPoint = pp;
-            //    }
-            //}
+            for (int i = 0; i < StripModel.Count; i++)
+                StripModel[i].PointColor = Color.Black;
 
-            //watch.Stop();
-            //Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
+
+            foreach (PatternPoint pp in Pattern)
+            {
+                if (previousPoint != null)
+                {
+                    if (pp.LedCount == 1)
+                    {
+                        // какая бы не была предыдуяя точка строим градиент
+                        MakeGradient(previousPoint, pp);
+                        previousPoint = pp;
+                    }
+                    else
+                    {
+                        // диапазон
+                        MakeGradient(previousPoint, pp);
+                        for (int i = 0; i < pp.LedCount; i++)
+                            StripModel[pp.LedPos + i].PointColor = pp.PointColor;
+                        previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
+                    }
+                }
+                else
+                {
+                    // первая точка
+                    for (int i = 0; i < pp.LedPos; i++)
+                        StripModel[i].PointColor = Color.Black;
+                    previousPoint = pp;
+                }
+            }
+
+            watch.Stop();
+            Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
         }
 
         private void MakeGradient(PatternPoint from, PatternPoint to)
         {
-            //HSBcolor hsb;
-            ////Color from = fromPoint.PointColor;
-            ////Color to = toPoint.PointColor;
-            //int stepCount = to.LedPos - from.LedPos; 
-            ////Console.WriteLine("From: {0}     To: {1}", from.LedPos, to.LedPos);
-            //double deltaHue = (to.Hue - from.Hue) / stepCount; 
-            //double deltaSat = (to.Saturation - from.Saturation) / stepCount; 
-            //double deltaBri = (to.Brightness - from.Brightness) / stepCount; 
-            //StripModel[from.LedPos - 1].PointColor = from.PointColor;
-            //StripModel[to.LedPos - 1].PointColor = to.PointColor;
+            HslColor hsb;
+            //Color from = fromPoint.PointColor;
+            //Color to = toPoint.PointColor;
+            int stepCount = to.LedPos - from.LedPos;
+            //Console.WriteLine("From: {0}     To: {1}", from.LedPos, to.LedPos);
+            double deltaHue = (to.HslColor.Hue - from.HslColor.Hue) / stepCount;
+            double deltaSat = (to.HslColor.Saturation - from.HslColor.Saturation) / stepCount;
+            double deltaBri = (to.HslColor.Lightness - from.HslColor.Lightness) / stepCount;
+            StripModel[from.LedPos - 1].PointColor = from.PointColor;
+            StripModel[to.LedPos - 1].PointColor = to.PointColor;
 
-            //for (int i = 1; i < stepCount; i++)
-            //{
-            //    hsb = new HSBcolor(from.Hue + i * deltaHue,
-            //                       from.Saturation + i * deltaSat,
-            //                       from.Brightness + i * deltaBri);
-            //    StripModel[from.LedPos + i - 1].PointColor = hsb.RgbColor;
-            //}
+            for (int i = 1; i < stepCount; i++)
+            {
+                hsb = new HslColor(from.HslColor.Hue + i * deltaHue,
+                                   from.HslColor.Saturation + i * deltaSat,
+                                   from.HslColor.Lightness + i * deltaBri);
+                StripModel[from.LedPos + i - 1].PointColor = hsb.ToRGB();
+            }
         }
         
         #endregion

@@ -48,8 +48,8 @@ namespace EffectDesigner
 
             ObservableNotifiableCollection<PatternPoint> stripModel = new ObservableNotifiableCollection<PatternPoint>();
             for (int i = 0; i < 170; i++)
-                stripModel.Add(new PatternPoint(Color.Black, i));
-            //StripModel = stripModel;
+                stripModel.Add(new PatternPoint(Color.Red, i));
+            StripModel = stripModel;
         }
 
         private ObservableNotifiableCollection<PatternPoint> _pattern;
@@ -71,6 +71,13 @@ namespace EffectDesigner
         {
             get { return _selectedPoint; }
             set { if (_selectedPoint != value) _selectedPoint = value; OnPropertyChanged("SelectedPoint"); }
+        }
+
+        private int _selectedPatternIx = -1;
+        public int SelectedPatternIx
+        {
+            get { return _selectedPatternIx; }
+            set { if (_selectedPatternIx != value) _selectedPatternIx = value; OnPropertyChanged("SelectedPatternIx"); }
         }
     }
 }

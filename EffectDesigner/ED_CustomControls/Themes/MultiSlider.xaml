@@ -188,7 +188,7 @@
                     RelativeSource={RelativeSource TemplatedParent}}">
                 -->
                 <StackPanel Height="275" Background="#FF595656">
-                    <ItemsControl Height="255"
+                    <ItemsControl Height="255" x:Name="PART_Display"
                                   Margin="10"
                                   ItemsSource="{Binding StripModel,
                     RelativeSource={RelativeSource TemplatedParent}}">
@@ -202,7 +202,7 @@
                         </ItemsControl.ItemsPanel>
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
-                                <Rectangle Height="{Binding PointBrightness,
+                                <Rectangle Height="{Binding PointLightness,
                                                             Converter={StaticResource converter}}"
                                            VerticalAlignment="Bottom"
                                            Fill="{Binding PureBrush}" />
