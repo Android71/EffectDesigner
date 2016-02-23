@@ -104,6 +104,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\ArtNet\ArtNet.csproj">
+      <Project>{8b970909-22dd-48c5-a23d-9cb5682c4d33}</Project>
+      <Name>ArtNet</Name>
+    </ProjectReference>
     <ProjectReference Include="..\ED_CustomControls\ED_CustomControls.csproj">
       <Project>{6e65614d-a623-4e70-bd92-504ed85abeb5}</Project>
       <Name>ED_CustomControls</Name>

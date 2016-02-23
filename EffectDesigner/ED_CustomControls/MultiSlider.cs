@@ -35,12 +35,13 @@ namespace ED_CustomControls
         SliderItem selectedSliderItem = null;
         int clickedIx = -1;
 
+        ItemsControl display;
         Grid sliderGridDown;
         Grid sliderGridUp;
         Grid sliderArea;
         TextBlock valueLabel;
 
-        enum Mode { Point, Range};
+        enum Mode { Point, Range, Color};
 
         Mode workMode = Mode.Point;
         Button modeBtn;
@@ -97,6 +98,25 @@ namespace ED_CustomControls
         // Using a DependencyProperty as the backing store for StripModel.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty StripModelProperty =
             DependencyProperty.Register("StripModel", typeof(ObservableNotifiableCollection<PatternPoint>), typeof(MultiSlider), new PropertyMetadata(null, OnStripModelChanged));
+
+
+
+        #endregion
+
+        #region StripPoint DP
+
+
+        public PatternPoint StripPoint
+        {
+            get { return (PatternPoint)GetValue(StripPointProperty); }
+            set { SetValue(StripPointProperty, value); }
+        }
+
+        // Using a DependencyProperty as the backing store for StripPoint.  This enables animation, styling, binding, etc...
+        public static readonly DependencyProperty StripPointProperty =
+            DependencyProperty.Register("StripPoint", typeof(PatternPoint), typeof(MultiSlider), new PropertyMetadata(null, OnStripPointChanged));
+
+        
 
 
 
@@ -205,8 +225,8 @@ namespace ED_CustomControls
             int ix;
             PatternPoint pp = (PatternPoint)e.OldValue;
             MultiSlider ms = d as MultiSlider;
-            //if (ms.clickedIx == -1)
-            //{
+            if (e.NewValue as PatternPoint != null)
+                ms.StripPoint = null;
             ix = ms.Pattern.IndexOf(ms.SelectedPoint);
             if (ms.selectedSliderItem != null)
                 ms.selectedSliderItem.IsSelected = false;
@@ -231,7 +251,15 @@ namespace ED_CustomControls
                 UpdateModel();
         }
 
-        
+        private static void OnStripPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        {
+            //throw new NotImplementedException();
+            MultiSlider ms = d as MultiSlider;
+            if (e.NewValue as PatternPoint != null)
+                ms.SelectedPoint = null;
+        }
+
+
         private static void OnStripModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
             MultiSlider ms = (MultiSlider)d;
@@ -350,6 +378,7 @@ namespace ED_CustomControls
             base.OnApplyTemplate();
             //if (Pattern != null)
             //    InsertSliders(); 
+            display = Template.FindName("PART_Display", this) as ItemsControl;
             sliderGridDown = Template.FindName("PART_SliderGrid_Down", this) as Grid;
             sliderGridUp = Template.FindName("PART_SliderGrid_Up", this) as Grid;
             sliderArea = Template.FindName("PART_Sliders", this) as Grid;
@@ -439,58 +468,73 @@ namespace ED_CustomControls
 
         #region Input Handlers
 
+        protected override void OnKeyDown(KeyEventArgs e)
+        {
+            PatternPoint pp;
+            base.OnKeyDown(e);
+            if (e.Key == Key.Delete)
+            {
+                if (SelectedPoint != null)
+                {
+                    pp = Pattern.FirstOrDefault(p => p.LedPos == SelectedPoint.LedPos);
+                    Pattern.Remove(pp);
+                    InsertSliders();
+                    UpdateModel();
+                }
+            }
+        }
+
         protected override void OnMouseWheel(MouseWheelEventArgs e)
         {
-            //HSBcolor hsb = null;
-            //base.OnMouseWheel(e);
-            ////Color color;
-            //if (SelectedPoint != null)
-            //{
-            //    //color = SelectedPoint.PointColor;
-            //    //PatternPoint pp = StripModel[SelectedPoint.LedPos - 1];
-            //    hsb = new HSBcolor(SelectedPoint.Hue, SelectedPoint.Saturation, SelectedPoint.Brightness);
-            //    int bri = (int)(hsb.Brightness * 100.0);
-            //    if (e.Delta > 0)
-            //    {
-            //        if (bri + 5 > 100)
-            //        {
-            //            //hsb = color.HsbColor();
+            PatternPoint pp = SelectedPoint;
+            base.OnMouseWheel(e);
+            //Color color;
+            if (SelectedPoint != null)
+            {
+                int bri = (int)Math.Round(pp.HslColor.Lightness * 100.0, 0);
+                if (e.Delta > 0)
+                {
+                    if (bri + 1 > 100)
+                    {
+                        //hsb = color.HsbColor();
 
-            //            hsb.Brightness = 1.0;
-            //            //pp.PointBrightness = 1.0;
-            //            //SelectedPoint.PointBrightness = 1.0;
-            //            //SelectedPoint.HSB.Brightness = 1;
-            //            //hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, 1);
-            //            //pp.PointColor = hsb.RgbColor;
-            //            SelectedPoint.PointColor = hsb.RgbColor;
-            //        }
-            //        else
-            //        {
-            //            hsb.Brightness = (bri + 5.0) / 100.0;
-            //            //pp.PointBrightness = hsb.Brightness;
-            //            //SelectedPoint.PointBrightness = hsb.Brightness;
-            //            //hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, (bri + 5.0) / 100.0);
-            //            //pp.PointColor = hsb.RgbColor;
-            //            SelectedPoint.PointColor = hsb.RgbColor;
-            //        }
-            //    }
-            //    else
-            //    {
-            //        if (bri - 5 < 1)
-            //        {
-            //            hsb.Brightness = 0.01;
-            //            //pp.PointColor = hsb.RgbColor;
-            //            SelectedPoint.PointColor = hsb.RgbColor;
-            //        }
-            //        else
-            //        {
-            //            hsb.Brightness = (bri - 5.0) / 100.0;
-            //            //pp.PointColor = hsb.RgbColor;
-            //            SelectedPoint.PointColor = hsb.RgbColor;
-            //        }
-            //    }
-            //    UpdateModel();
-            //}
+                        pp.HslColor = new HslColor(pp.HslColor.Hue, pp.HslColor.Saturation, 1.0);
+                        //pp.PointBrightness = 1.0;
+                        //SelectedPoint.PointBrightness = 1.0;
+                        //SelectedPoint.HSB.Brightness = 1;
+                        //hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, 1);
+                        //pp.PointColor = hsb.RgbColor;
+                        //SelectedPoint.PointColor = hsb.RgbColor;
+                    }
+                    else
+                    {
+                        pp.HslColor = new HslColor(pp.HslColor.Hue, pp.HslColor.Saturation, (bri + 1.0) / 100.0);
+                        //pp.PointBrightness = hsb.Brightness;
+                        //SelectedPoint.PointBrightness = hsb.Brightness;
+                        //hsb = new HSBcolor(SelectedPoint.HSB.Hue, SelectedPoint.HSB.Saturation, (bri + 5.0) / 100.0);
+                        //pp.PointColor = hsb.RgbColor;
+                        //SelectedPoint.PointColor = hsb.RgbColor;
+                    }
+                }
+                else
+                {
+                    if (bri - 1 < 0)
+                    {
+                        pp.HslColor = new HslColor(pp.HslColor.Hue, pp.HslColor.Saturation, 0.01);
+                        //hsb.Brightness = 0.01;
+                        ////pp.PointColor = hsb.RgbColor;
+                        //SelectedPoint.PointColor = hsb.RgbColor;
+                    }
+                    else
+                    {
+                        //hsb.Brightness = (bri - 1.0) / 100.0;
+                        pp.HslColor = new HslColor(pp.HslColor.Hue, pp.HslColor.Saturation, (bri - 1.0) / 100.0);
+                        //pp.PointColor = hsb.RgbColor;
+                        //SelectedPoint.PointColor = hsb.RgbColor;
+                    }
+                }
+                UpdateModel();
+            }
         }
 
         private void ModeButton_Click(object sender, RoutedEventArgs e)
@@ -499,21 +543,27 @@ namespace ED_CustomControls
             {
                 workMode = Mode.Range;
                 modeBtn.Content = "Диапазон";
+                return;
             }
-            else
+            if (workMode == Mode.Range)
+            {
+                workMode = Mode.Color;
+                modeBtn.Content = "Цвет";
+                return;
+            }
+            if (workMode == Mode.Color)
             {
                 workMode = Mode.Point;
                 modeBtn.Content = "Точка";
+                return;
             }
         }
 
         private void OnSliderClick(object sender, MouseButtonEventArgs e)
         {
+            PatternPoint pp1;
             if (e.ClickCount == 2)      // DoubleClick
             {
-
-                //Color clr = GetColorAtMouse();
-
                 System.Windows.Point pt = e.GetPosition((UIElement)sender);
                 //Console.WriteLine("X: {0} Y: {1}", pt.X, pt.Y);
                 //Console.WriteLine("ActualWidth: {0}", sliderArea.ActualWidth);
@@ -534,19 +584,23 @@ namespace ED_CustomControls
                         rightPoint = Pattern[i];
                 }
 
-                // первая точка
+                // если первая точка в Pattern
                 if (leftPoint == null)
                 {
-                    Pattern.Insert(0, new PatternPoint(Color.Aquamarine, ledPos) { LedCount = 1 });
+                    pp1 = new PatternPoint(Color.Black, ledPos) { LedCount = 1 };
+                    Pattern.Insert(0, pp1);
                     InsertSliders();
+                    SelectedPoint = pp1;
                     return;
                 }
 
-                // последняя точка
+                // если последняя точка в Pattern
                 if (rightPoint == null)
                 {
-                    Pattern.Add(new PatternPoint(Color.Aquamarine, ledPos) { LedCount = 1 });
+                    pp1 = new PatternPoint(Color.Black, ledPos) { LedCount = 1 };
+                    Pattern.Add(pp1);
                     InsertSliders();
+                    SelectedPoint = pp1;
                     return;
                 }
 
@@ -557,10 +611,13 @@ namespace ED_CustomControls
                         return;
                 }
 
+                Color c = (display.Items[ledPos] as PatternPoint).PointColor;
                 int ix = Pattern.IndexOf(rightPoint);
-                Pattern.Insert(ix, new PatternPoint(Color.Aquamarine, ledPos) { LedCount = 1 });
+                pp1 = new PatternPoint(c, ledPos) { LedCount = 1 };
+                Pattern.Insert(ix, pp1);
 
                 InsertSliders();
+                SelectedPoint = pp1;
             }
         }
 
@@ -610,7 +667,8 @@ namespace ED_CustomControls
                     previousPoint = pp;
                 }
             }
-
+            if (SendPacket != null)
+                SendPacket(null, null);
             watch.Stop();
             Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
         }
@@ -754,6 +812,8 @@ namespace ED_CustomControls
         }
 
         #endregion
+
+        public event EventHandler SendPacket;
 
     }
 }

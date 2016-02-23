@@ -195,7 +195,7 @@
 
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
-                                <UniformGrid x:Name="PART_StripDisplay"
+                                <UniformGrid 
                                              Rows="1"
                                              SnapsToDevicePixels="False" />
                             </ItemsPanelTemplate>

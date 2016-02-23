@@ -33,6 +33,11 @@ namespace Lighting.Library
             set { if (_ledCount != value) { _ledCount = value; OnPropertyChanged("LedCount"); } }
         }
 
+        // 0 - GradientPoint
+        // 1 - RangePoint
+        // 2 - LightnessPoint
+        public int Variant { get; set; }
+
         double _pointLightness;
         public double PointLightness
         {

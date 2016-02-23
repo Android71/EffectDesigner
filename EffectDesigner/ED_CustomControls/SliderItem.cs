@@ -64,7 +64,9 @@ namespace ED_CustomControls
         //}
 
 
-
+        // Variant = 0 GradientStop
+        // Variant = 1 Range
+        // variant = 2 Lightness control
         public int Variant
         {
             get { return (int)GetValue(VariantProperty); }

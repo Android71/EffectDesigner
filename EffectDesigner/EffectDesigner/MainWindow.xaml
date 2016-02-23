@@ -20,7 +20,7 @@
                 <Label Content="IP:"  />
                 <TextBox Width="100" Text="2.0.0.2" VerticalAlignment="Center" />
                 <Label Content="Universe:" />
-                <TextBox Width="100" Text="0" VerticalAlignment="Center" />
+                <TextBox x:Name="uni" Width="100" Text="2" VerticalAlignment="Center" />
             </StackPanel>
         <TabControl Grid.Row="1" Background="#FF686868">
             <TabItem x:Name="StripPattern" Header="Шаблон">
@@ -40,7 +40,7 @@
         <!--  StripModel="{Binding StripModel}"  -->
         <!--TrackBrush="#FFC8C9C9"-->
         <StackPanel Grid.Column="1">
-            <ed:MultiSlider Margin="10"
+            <ed:MultiSlider Margin="10" x:Name="multiSlider"
                                   Background="#FF686868"
                                   Maximum="170"
                                   Pattern="{Binding Pattern}"

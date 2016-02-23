@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Lighting.Library", "Lightin
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XamlAdd_on", "XamlAdd_on\XamlAdd_on.csproj", "{3A779941-E9DE-4ACF-8460-DBFD28DFD649}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ArtNet", "..\ArtNet\ArtNet.csproj", "{8B970909-22DD-48C5-A23D-9CB5682C4D33}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{3A779941-E9DE-4ACF-8460-DBFD28DFD649}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{3A779941-E9DE-4ACF-8460-DBFD28DFD649}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{3A779941-E9DE-4ACF-8460-DBFD28DFD649}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8B970909-22DD-48C5-A23D-9CB5682C4D33}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8B970909-22DD-48C5-A23D-9CB5682C4D33}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8B970909-22DD-48C5-A23D-9CB5682C4D33}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8B970909-22DD-48C5-A23D-9CB5682C4D33}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

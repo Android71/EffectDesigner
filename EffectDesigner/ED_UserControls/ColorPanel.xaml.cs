@@ -62,6 +62,8 @@ namespace ED_UserControls
             {
                 SetColorMetrics();
                 realColor.Background = SelectedPoint.PointBrush;
+                if (e.PropertyName == "PointLightness")
+                    SetSliders();
             }
         }
 
