@@ -15,6 +15,7 @@ namespace Lighting.Library
         public PatternPoint(Color color, int ledPosition) : base(color)
         {
             _ledPos = ledPosition;
+            Variant = 0;
         }
 
         private int _ledPos;

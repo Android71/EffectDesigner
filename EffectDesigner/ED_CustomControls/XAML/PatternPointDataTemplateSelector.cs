@@ -13,14 +13,21 @@ namespace ED_CustomControls
             PatternPoint pp = item as PatternPoint;
             var myResourceDictionary = new ResourceDictionary();
             myResourceDictionary.Source = new Uri("/ED_CustomControls;component/Themes/Generic.xaml", UriKind.RelativeOrAbsolute);
-            if (pp.LedCount == 1)
-            {
+            if (pp.Variant ==0)
                 return myResourceDictionary["gradientPoint"] as DataTemplate;
-            }
-            else
-            {
+            if (pp.Variant == 1)
                 return myResourceDictionary["rangePoint"] as DataTemplate;
-            }
+            if (pp.Variant == 2)
+                return myResourceDictionary["lightnessPoint"] as DataTemplate;
+            return null;
+            //if (pp.LedCount == 1)
+            //{
+            //    return myResourceDictionary["gradientPoint"] as DataTemplate;
+            //}
+            //else
+            //{
+            //    return myResourceDictionary["rangePoint"] as DataTemplate;
+            //}
         }
     }
 

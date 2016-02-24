@@ -121,6 +121,32 @@
             </DataTrigger>
         </ControlTemplate.Triggers>
     </ControlTemplate>
+    
+    <ControlTemplate x:Key="LightnessControl" TargetType="{x:Type Thumb}">
+        <Grid Width="19"
+              Height="19"
+              Margin="0,3">
+            <Ellipse Name="MainBorder"
+                    Fill="#FFBFBFBF"
+                    Stroke="#FF5F5F5F"
+                    StrokeThickness="2" />
+            <Ellipse Name="CenterDot"
+                     Width="6"
+                     Height="6"
+                     Fill="#FF5F5F5F"
+                     StrokeThickness="0" />
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </Trigger>
+
+            <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=IsSelected}" Value="true">
+                <Setter TargetName="MainBorder" Property="Fill" Value="#FF242424" />
+                <Setter TargetName="CenterDot" Property="Fill" Value="#FF242424" />
+            </DataTrigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
 
 
 
@@ -137,6 +163,9 @@
                     </DataTrigger>
                     <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=Variant}" Value="2">
                         <Setter Property="Template" Value="{StaticResource RightLimit}" />
+                    </DataTrigger>
+                    <DataTrigger Binding="{Binding RelativeSource={RelativeSource AncestorType={x:Type local:SliderItem}}, Path=Variant}" Value="3">
+                        <Setter Property="Template" Value="{StaticResource LightnessControl}" />
                     </DataTrigger>
                 </Style.Triggers>
             </Style>
@@ -172,6 +201,14 @@
                   Fill="{Binding PureBrush}"
                   Stretch="Fill"
                   Stroke="Black" />
+        </Grid>
+    </DataTemplate>
+    
+    <DataTemplate x:Key="lightnessPoint">
+        <Grid Width="25" Height="20" Visibility="Collapsed">
+            <Rectangle Margin="2"
+                       Fill="{Binding PureBrush}"
+                       Stroke="Black" />
         </Grid>
     </DataTemplate>
 

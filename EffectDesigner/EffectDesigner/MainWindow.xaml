@@ -42,7 +42,7 @@
         <StackPanel Grid.Column="1">
             <ed:MultiSlider Margin="10" x:Name="multiSlider"
                                   Background="#FF686868"
-                                  Maximum="170"
+                                  
                                   Pattern="{Binding Pattern}"
                                   
                                   SelectedPoint="{Binding SelectedPoint,
