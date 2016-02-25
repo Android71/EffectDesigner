@@ -12,6 +12,9 @@ namespace ED_CustomControls
     /// <summary>
     /// Represents a slider within the MultiSlider control.
     /// </summary>
+
+    public enum SliderVariant { Gradient, RangeLeftLimit, RangeRightLimit, Lightness};
+
     public class SliderItem : Slider
     {
         #region Private vars
@@ -68,15 +71,15 @@ namespace ED_CustomControls
         // Variant = 1 Range Left Limit
         // Variant = 2 Range Right Limit
         // Variant = 3 Lightness control
-        public int Variant
+        public SliderVariant Variant
         {
-            get { return (int)GetValue(VariantProperty); }
+            get { return (SliderVariant)GetValue(VariantProperty); }
             set { SetValue(VariantProperty, value); }
         }
 
         // Using a DependencyProperty as the backing store for Variant.  This enables animation, styling, binding, etc...
         public static readonly DependencyProperty VariantProperty =
-            DependencyProperty.Register("Variant", typeof(int), typeof(SliderItem), new FrameworkPropertyMetadata(0));
+            DependencyProperty.Register("Variant", typeof(SliderVariant), typeof(SliderItem), new FrameworkPropertyMetadata(SliderVariant.Gradient));
 
 
         public int PatternIx

@@ -33,6 +33,7 @@ namespace ED_CustomControls
         private List<SliderItem> sliders;
 
         SliderItem selectedSliderItem = null;
+        int selectedPointIx = -1;
         int clickedIx = -1;
 
         ItemsControl display;
@@ -106,15 +107,15 @@ namespace ED_CustomControls
         #region StripPoint DP
 
 
-        public PatternPoint StripPoint
-        {
-            get { return (PatternPoint)GetValue(StripPointProperty); }
-            set { SetValue(StripPointProperty, value); }
-        }
+        //public PatternPoint StripPoint
+        //{
+        //    get { return (PatternPoint)GetValue(StripPointProperty); }
+        //    set { SetValue(StripPointProperty, value); }
+        //}
 
-        // Using a DependencyProperty as the backing store for StripPoint.  This enables animation, styling, binding, etc...
-        public static readonly DependencyProperty StripPointProperty =
-            DependencyProperty.Register("StripPoint", typeof(PatternPoint), typeof(MultiSlider), new PropertyMetadata(null, OnStripPointChanged));
+        //// Using a DependencyProperty as the backing store for StripPoint.  This enables animation, styling, binding, etc...
+        //public static readonly DependencyProperty StripPointProperty =
+        //    DependencyProperty.Register("StripPoint", typeof(PatternPoint), typeof(MultiSlider), new PropertyMetadata(null, OnStripPointChanged));
 
         
 
@@ -222,25 +223,25 @@ namespace ED_CustomControls
 
         private static void OnSelectedPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
         {
-            int ix;
-            PatternPoint pp = (PatternPoint)e.OldValue;
+            
+            PatternPoint ppOld = (PatternPoint)e.OldValue;
+            
             MultiSlider ms = d as MultiSlider;
-            if (e.NewValue as PatternPoint != null)
-                ms.StripPoint = null;
-            ix = ms.Pattern.IndexOf(ms.SelectedPoint);
+            
+            ms.selectedPointIx = ms.Pattern.IndexOf(ms.SelectedPoint);
             if (ms.selectedSliderItem != null)
                 ms.selectedSliderItem.IsSelected = false;
-            if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == 2))
-                ms.selectedSliderItem = ms.sliders[ix + 1];
+            if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == SliderVariant.RangeRightLimit))
+                ms.selectedSliderItem = ms.sliders[ms.selectedPointIx + 1];
             else
-                ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ix);
+                ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
             ms.selectedSliderItem.IsSelected = true;
-            //}
+            
             ms.clickedIx = -1;
             ms.valueLabel.Text = ((int)ms.selectedSliderItem.Value).ToString();
 
-            if (pp != null)
-                (pp as INotifyPropertyChanged).PropertyChanged -= ms.OnPointColorChanged;
+            if (ppOld != null)
+                (ppOld as INotifyPropertyChanged).PropertyChanged -= ms.OnPointColorChanged;
             (ms.SelectedPoint as INotifyPropertyChanged).PropertyChanged += ms.OnPointColorChanged;
 
         }
@@ -248,16 +249,36 @@ namespace ED_CustomControls
         private void OnPointColorChanged(object sender, PropertyChangedEventArgs e)
         {
             if (e.PropertyName == "PointColor")
-                UpdateModel();
+                if (SelectedPoint.Variant == PointVariant.Lightness)
+                    UpdateModel();
+                else
+                    RecalcLightnessPoint();
         }
 
-        private static void OnStripPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        private void RecalcLightnessPoint()
         {
-            //throw new NotImplementedException();
-            MultiSlider ms = d as MultiSlider;
-            if (e.NewValue as PatternPoint != null)
-                ms.SelectedPoint = null;
+            PatternPoint leftGradientPoint;
+            PatternPoint rightGradientPoint;
+            PatternPoint pp;
+
+            if (selectedPointIx != 0)
+            {
+                // не первая точка. определяем GradientPoint или RangePoint слева
+                // попутно формируем List<PatternPoint> для возможных LightnessPoint
+                for ( int i = selectedPointIx - 1; i >= 0; i--)
+                {
+
+                }
+            }
         }
+
+        //private static void OnStripPointChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+        //{
+        //    //throw new NotImplementedException();
+        //    MultiSlider ms = d as MultiSlider;
+        //    if (e.NewValue as PatternPoint != null)
+        //        ms.SelectedPoint = null;
+        //}
 
 
         private static void OnStripModelChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
@@ -347,11 +368,11 @@ namespace ED_CustomControls
                 }
             }
             valueLabel.Text = ((int)s.Value).ToString();
-            if (( s.Variant == 1)||(s.Variant == 0))
+            if (( s.Variant == SliderVariant.RangeLeftLimit)||(s.Variant == SliderVariant.Gradient))
                 SelectedPoint.LedPos = (int)s.Value;
-            if (s.Variant == 1)
+            if (s.Variant == SliderVariant.RangeLeftLimit)
                 SelectedPoint.LedCount = (int)(sliders[ix + 1].Value - s.Value + 1);
-            if(s.Variant == 2)
+            if(s.Variant == SliderVariant.RangeRightLimit)
                 SelectedPoint.LedCount = (int)s.Value - (int)sliders[ix - 1].Value  + 1;
             //Console.WriteLine("LedPos: {0}   LedCount:  {1}", SelectedPoint.LedPos, SelectedPoint.LedCount);
             UpdateModel();
@@ -440,14 +461,14 @@ namespace ED_CustomControls
                     s.Value = Pattern[k].LedPos;
                     if (( num == 2 ) && ( j == 0))
 
-                        s.Variant = 1;
+                        s.Variant = SliderVariant.RangeLeftLimit;
                     if ((num == 2) && (j == 1))
                     {
-                        s.Variant = 2;
+                        s.Variant = SliderVariant.RangeRightLimit;
                         s.Value = Pattern[k].LedPos + Pattern[k].LedCount - 1;
                     }
-                    if (Pattern[k].Variant == 2)
-                        s.Variant = 3;
+                    if (Pattern[k].Variant == PointVariant.Lightness)
+                        s.Variant = SliderVariant.Lightness;
                     s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
                     s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
                     i++;
@@ -651,24 +672,26 @@ namespace ED_CustomControls
                     if (pp.LedCount == 1)
                     {
                         // какая бы не была предыдуяя точка строим градиент
-                        if (pp.Variant == 0)
-                        {
-                            if (lightnessCurve.Count == 0)
-                            {
-                                MakeGradient(previousPoint, pp);
-                                previousPoint = pp;
-                            }
-                            else
-                            {
-                                MakeComplexGradient(previousPoint, pp, lightnessCurve);
-                                previousPoint = pp;
-                                lightnessCurve = new List<PatternPoint>();
-                            }
-                        }
-                        else
-                        {
-                            lightnessCurve.Add(pp);
-                        }
+                        MakeGradient(previousPoint, pp);
+                        previousPoint = pp;
+                        //if (pp.Variant == 0)
+                        //{
+                        //    if (lightnessCurve.Count == 0)
+                        //    {
+                        //        MakeGradient(previousPoint, pp);
+                        //        previousPoint = pp;
+                        //    }
+                        //    else
+                        //    {
+                        //        MakeComplexGradient(previousPoint, pp, lightnessCurve);
+                        //        previousPoint = pp;
+                        //        lightnessCurve = new List<PatternPoint>();
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    lightnessCurve.Add(pp);
+                        //}
                     }
                     else
                     {
@@ -690,7 +713,7 @@ namespace ED_CustomControls
             if (SendPacket != null)
                 SendPacket(null, null);
             watch.Stop();
-            Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
+            //Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
         }
 
         private void MakeGradient(PatternPoint from, PatternPoint to)
@@ -701,6 +724,7 @@ namespace ED_CustomControls
             double deltaSat = (to.HslColor.Saturation - from.HslColor.Saturation) / stepCount;
             double deltaBri = (to.HslColor.Lightness - from.HslColor.Lightness) / stepCount;
             StripModel[from.LedPos - 1].PointColor = from.PointColor;
+            //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos, from.HslColor.Hue, from.HslColor.Lightness);
             StripModel[to.LedPos - 1].PointColor = to.PointColor;
 
             for (int i = 1; i < stepCount; i++)
@@ -709,7 +733,9 @@ namespace ED_CustomControls
                                    from.HslColor.Saturation + i * deltaSat,
                                    from.HslColor.Lightness + i * deltaBri);
                 StripModel[from.LedPos + i - 1].PointColor = hsl.ToRGB();
+                //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos + i, hsl.Hue, hsl.Lightness);
             }
+            //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", to.LedPos, to.HslColor.Hue, to.HslColor.Lightness);
         }
 
         private void MakeComplexGradient(PatternPoint from, PatternPoint to, List<PatternPoint> lightnessCurve)
@@ -724,6 +750,7 @@ namespace ED_CustomControls
             double deltaSat = (to.HslColor.Saturation - from.HslColor.Saturation) / (to.LedPos - from.LedPos);
 
             StripModel[from.LedPos - 1].PointColor = from.PointColor;
+            Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos, from.HslColor.Hue, from.HslColor.Lightness);
             StripModel[to.LedPos - 1].PointColor = to.PointColor;
 
             for (int k = 0; k <= lightnessCurve.Count; k++)
@@ -745,10 +772,12 @@ namespace ED_CustomControls
                                        tmpFrom.HslColor.Saturation + i * deltaSat,
                                        tmpFrom.HslColor.Lightness + i * deltaBri);
                     StripModel[tmpFrom.LedPos + i - 1].PointColor = hsl.ToRGB();
+                    Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", tmpFrom.LedPos + i, hsl.Hue, hsl.Lightness);
                 }
                 if (k != lightnessCurve.Count)
                     tmpFrom = lightnessCurve[k]; 
             }
+            Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", to.LedPos, to.HslColor.Hue, to.HslColor.Lightness);
         }
 
         #endregion
