@@ -159,10 +159,19 @@ namespace ED_CustomControls
         /************************************************************************/
 
         #region Constructor
-        public SliderItem(MultiSlider owner, int position)
+        public SliderItem(MultiSlider owner, int position, SliderVariant variant, int value, int patternIx)
             : base()
         {
             //this.owner = owner;
+            PatternIx = patternIx;
+            Value = value;
+            Variant = variant;
+
+            Minimum = 1;
+            SmallChange = 1;
+            TickFrequency = 1;
+            LargeChange = 1;
+            IsSnapToTickEnabled = true;
             Position = position;
             lastValue = Double.NaN;
         }

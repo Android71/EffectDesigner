@@ -3,14 +3,15 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:add_on="http://schemas.lighting.com/wpf/xaml/add_on"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:local="clr-namespace:ED_UserControls"
              xmlns:ed="http://schemas.lighting.com/wpf/xaml/controls"
+             xmlns:local="clr-namespace:ED_UserControls"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             Height="462.273"
              d:DesignWidth="300"
-             mc:Ignorable="d" Height="462.273">
+             mc:Ignorable="d">
 
     <UserControl.Resources>
-        <local:DoubleRoundConverter x:Key="roundConverter"/>
+        <local:DoubleRoundConverter x:Key="roundConverter" />
     </UserControl.Resources>
 
     <Grid>
@@ -41,16 +42,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ed:HslSlider
-                            x:Name="hue"
-                                Grid.Row="0"
-                                Height="255"
-                                Margin="10,10,10,0"
-                                HorizontalAlignment="Center"
-                            IsEnabled="False"
-                            SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged" Maximum="30"
-                            />
+                        <ed:HslSlider x:Name="hue"
+                                      Grid.Row="0"
+                                      Height="255"
+                                      Margin="10,10,10,0"
+                                      HorizontalAlignment="Center"
+                                      IsEnabled="False"
+                                      Maximum="30"
+                                      SmallChange="1"
+                                      ValueChanged="hsb_ValuesChanged" />
                         <TextBlock Grid.Row="1"
                                    Margin="0,5"
                                    HorizontalAlignment="Center"
@@ -90,14 +90,15 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ed:HslSlider x:Name="sat" ColorScale="S"
+                        <ed:HslSlider x:Name="sat"
                                       Height="255"
-                                Margin="10,10,10,0"
-                                HorizontalAlignment="Center"
+                                      Margin="10,10,10,0"
+                                      HorizontalAlignment="Center"
+                                      ColorScale="S"
                                       IsEnabled="False"
-                                Maximum="100"
+                                      Maximum="100"
                                       SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged"/>
+                                      ValueChanged="hsb_ValuesChanged" />
                         <!--<Slider x:Name="sat"
                                 Grid.Row="0"
                                 Height="255"
@@ -148,18 +149,16 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        <ed:HslSlider
-                            x:Name="bri"
-                            ColorScale="L"
-                                Grid.Row="0"
-                                Height="255"
-                                Margin="10,10,10,0"
-                                HorizontalAlignment="Center"
-                            IsEnabled="False"
-                                Maximum="100"
-                            SmallChange="1"
-                                ValueChanged="hsb_ValuesChanged"
-                            />
+                        <ed:HslSlider x:Name="bri"
+                                      Grid.Row="0"
+                                      Height="255"
+                                      Margin="10,10,10,0"
+                                      HorizontalAlignment="Center"
+                                      ColorScale="L"
+                                      IsEnabled="False"
+                                      Maximum="100"
+                                      SmallChange="1"
+                                      ValueChanged="hsb_ValuesChanged" />
                         <!--<Slider x:Name="bri"
                                 Grid.Row="0"
                                 Height="255"
@@ -182,9 +181,8 @@
                                 BorderThickness="1">
                             <TextBlock x:Name="briValue"
                                        Margin="0"
-                                       HorizontalAlignment="Center"
-                                        />
-                            <!--Text="{Binding Source={local:Root}, Path=SelectedPoint.HslColor.Lightness, Converter={StaticResource  roundConverter}}"-->
+                                       HorizontalAlignment="Center" />
+                            <!--  Text="{Binding Source={local:Root}, Path=SelectedPoint.HslColor.Lightness, Converter={StaticResource  roundConverter}}"  -->
 
 
                         </Border>
@@ -205,10 +203,11 @@
                     </Grid>
                 </StackPanel>
             </Grid>
-            <Border Name="realColor" Grid.Row="1"
+            <Border Name="realColor"
+                    Grid.Row="1"
                     Grid.Column="1"
-                    Height="50" Margin="10,10,10,0"
-                     />
+                    Height="50"
+                    Margin="10,10,10,0" />
         </Grid>
 
     </Grid>

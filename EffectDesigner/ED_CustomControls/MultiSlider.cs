@@ -30,7 +30,7 @@ namespace ED_CustomControls
 
         #region Private Fields Vars Enums
 
-        private List<SliderItem> sliders;
+        private List<SliderItem> sliders = new List<SliderItem>();
 
         SliderItem selectedSliderItem = null;
         int selectedPointIx = -1;
@@ -43,9 +43,9 @@ namespace ED_CustomControls
         Grid sliderArea;
         TextBlock valueLabel;
 
-        enum Mode { Point, Range, Color};
+        enum Mode { Gradient, Range, Lightness};
 
-        Mode workMode = Mode.Point;
+        Mode workMode = Mode.Gradient;
         Button modeBtn;
         
 
@@ -226,33 +226,42 @@ namespace ED_CustomControls
         {
             
             PatternPoint ppOld = (PatternPoint)e.OldValue;
-            
+            //PatternPoint ppNew = (PatternPoint)e.NewValue;
+
             MultiSlider ms = d as MultiSlider;
-            
             ms.selectedPointIx = ms.Pattern.IndexOf(ms.SelectedPoint);
+
             if (ms.selectedSliderItem != null)
-                ms.selectedSliderItem.IsSelected = false;
-            if ((ms.clickedIx != -1) && (ms.sliders[ms.clickedIx].Variant == SliderVariant.RangeRightLimit))
-                ms.selectedSliderItem = ms.sliders[ms.selectedPointIx + 1];
+            {
+                if (ms.selectedSliderItem.PatternIx != ms.selectedPointIx)
+                {
+                    ms.selectedSliderItem.IsSelected = false;
+                    ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
+                    ms.selectedSliderItem.IsSelected = true;
+                }
+            }
             else
+            {
                 ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
-            ms.selectedSliderItem.IsSelected = true;
-            
-            ms.clickedIx = -1;
+                ms.selectedSliderItem.IsSelected = true;
+            }
+
             ms.valueLabel.Text = ((int)ms.selectedSliderItem.Value).ToString();
 
             if (ppOld != null)
                 (ppOld as INotifyPropertyChanged).PropertyChanged -= ms.OnPointColorChanged;
-            (ms.SelectedPoint as INotifyPropertyChanged).PropertyChanged += ms.OnPointColorChanged;
+            if (ms.SelectedPoint != null)
+                (ms.SelectedPoint as INotifyPropertyChanged).PropertyChanged += ms.OnPointColorChanged;
 
         }
 
         private void OnPointColorChanged(object sender, PropertyChangedEventArgs e)
         {
+            PatternPoint pp = SelectedPoint;
             if (!blockOnPointColorChanged)
             {
                 if (e.PropertyName == "PointColor")
-                    if (SelectedPoint.Variant == PointVariant.Lightness)
+                    //if (SelectedPoint.Variant == PointVariant.Lightness)
                         UpdateModel();
             }
                 //else
@@ -323,7 +332,7 @@ namespace ED_CustomControls
         #region Other Methods (private)
 
 
-        private void SliderItemGotMouseCapture(object sender, System.Windows.Input.MouseEventArgs e)
+        private void SliderItemGotMouseCapture(object sender, MouseEventArgs e)
         {
             if (selectedSliderItem != null)
                 selectedSliderItem.IsSelected = false;
@@ -408,51 +417,53 @@ namespace ED_CustomControls
         /// </summary>
         private void InsertSliders()
         {
-            //int sliderCount = Pattern.Count;
-            sliders = new List<SliderItem>();
+            
             if ((sliderGridDown == null) || (sliderGridUp == null)) return;
             sliderGridDown.Children.Clear();
             sliderGridUp.Children.Clear();
+            if (sliders.Count != 0)
+            {
+                for (int k = 0; k < sliders.Count; k++)
+                {
+                    sliders[k].GotMouseCapture -= new MouseEventHandler(SliderItemGotMouseCapture);
+                    sliders[k].ValueChanged -= new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
+                }
+                sliders.Clear();
+            }
 
             int i = 0;
-            SliderItem s;
-            //SliderItem s0;
+            SliderItem s = null;
 
-            for (int k = 0; k < Pattern.Count; k++)
+            foreach (PatternPoint pp in Pattern)
             {
-                int num = 1;
-                if (Pattern[k].LedCount != 1)
-                    num = 2;
-                for ( int j = 0; j < num; j++)
+                if (pp.Variant == PointVariant.Range)
                 {
-                    s = new SliderItem(this, i);
+                    s = new SliderItem(this, i, SliderVariant.RangeLeftLimit, pp.LedPos, Pattern.IndexOf(pp));
                     sliders.Add(s);
-                    s.Minimum = Minimum;
-                    s.Maximum = Maximum;
-                    s.SmallChange = 1;
-                    s.TickFrequency = 1;
-                    s.LargeChange = 1;
-                    s.IsSnapToTickEnabled = true;
-                    s.PatternIx = k;
-                    s.Value = Pattern[k].LedPos;
-                    if (( num == 2 ) && ( j == 0))
-
-                        s.Variant = SliderVariant.RangeLeftLimit;
-                    if ((num == 2) && (j == 1))
-                    {
-                        s.Variant = SliderVariant.RangeRightLimit;
-                        s.Value = Pattern[k].LedPos + Pattern[k].LedCount - 1;
-                    }
-                    if (Pattern[k].Variant == PointVariant.Lightness)
-                        s.Variant = SliderVariant.Lightness;
-                    s.GotMouseCapture += new System.Windows.Input.MouseEventHandler(SliderItemGotMouseCapture);
-                    s.ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
                     i++;
+                    s = new SliderItem(this, i, SliderVariant.RangeRightLimit, pp.LedPos + pp.LedCount - 1, Pattern.IndexOf(pp));
+                    goto M1;
                 }
+                if (pp.Variant == PointVariant.Gradient)
+                {
+                    s = new SliderItem(this, i, SliderVariant.Gradient, pp.LedPos, Pattern.IndexOf(pp));
+                    goto M1;
+                }
+                if (pp.Variant == PointVariant.Lightness)
+                {
+                    s = new SliderItem(this, i, SliderVariant.Lightness, pp.LedPos, Pattern.IndexOf(pp));
+                    goto M1;
+                }
+                M1:
+                sliders.Add(s);
+                i++;
             }
 
             for (int k = 0; k < sliders.Count; k++)
-            { 
+            {
+                sliders[k].Maximum = Maximum;
+                sliders[k].GotMouseCapture += new MouseEventHandler(SliderItemGotMouseCapture);
+                sliders[k].ValueChanged += new RoutedPropertyChangedEventHandler<double>(OnSliderItemValueChanged);
                 if (k % 2 == 0)
                     // чётный 
                     sliderGridUp.Children.Add(sliders[k]);
@@ -480,6 +491,7 @@ namespace ED_CustomControls
                     Pattern.Remove(pp);
                     InsertSliders();
                     UpdateModel();
+                    SelectedPoint = Pattern[0];
                 }
             }
         }
@@ -539,78 +551,125 @@ namespace ED_CustomControls
 
         private void ModeButton_Click(object sender, RoutedEventArgs e)
         {
-            if (workMode == Mode.Point)
+            if (workMode == Mode.Gradient)
             {
                 workMode = Mode.Range;
-                modeBtn.Content = "Диапазон";
+                modeBtn.Content = "Range";
                 return;
             }
             if (workMode == Mode.Range)
             {
-                workMode = Mode.Color;
-                modeBtn.Content = "Цвет";
+                workMode = Mode.Lightness;
+                modeBtn.Content = "Lightness";
                 return;
             }
-            if (workMode == Mode.Color)
+            if (workMode == Mode.Lightness)
             {
-                workMode = Mode.Point;
-                modeBtn.Content = "Точка";
+                workMode = Mode.Gradient;
+                modeBtn.Content = "Point";
                 return;
             }
         }
 
         private void OnSliderClick(object sender, MouseButtonEventArgs e)
         {
-            PatternPoint pp1;
+            PatternPoint pp1 = null;
             if (e.ClickCount == 2)      // DoubleClick
             {
                 System.Windows.Point pt = e.GetPosition((UIElement)sender);
                 //Console.WriteLine("X: {0} Y: {1}", pt.X, pt.Y);
                 //Console.WriteLine("ActualWidth: {0}", sliderArea.ActualWidth);
                 int ledPos = (int)(pt.X * Maximum / sliderArea.ActualWidth);
+                if (ledPos < 1)
+                    ledPos = 1;
                 //Console.WriteLine("LedPos: {0}", ledPos);
-                PatternPoint leftPoint = null;
+                //PatternPoint leftPoint = null;
                 PatternPoint rightPoint = null;
-                foreach (PatternPoint pp in Pattern)
-                {
-                    if (ledPos > pp.LedPos)
-                        leftPoint = pp;
-                    //if (ledPos < pp.LedPos)
-                    //    rightPos = pp;
-                }
-                for (int i = Pattern.Count - 1; i >= 0; i--)
-                {
-                    if (ledPos < Pattern[i].LedPos)
-                        rightPoint = Pattern[i];
-                }
+
+                //foreach (PatternPoint pp in Pattern)
+                //{
+                //    if (ledPos > pp.LedPos)
+                //        leftPoint = pp;
+                //}
+
+                //for (int i = Pattern.Count - 1; i >= 0; i--)
+                //{
+                //    if (ledPos < Pattern[i].LedPos)
+                //        rightPoint = Pattern[i];
+                //}
 
                 // если первая точка в Pattern
-                if (leftPoint == null)
+                if (ledPos < sliders[0].Value)
                 {
-                    pp1 = new PatternPoint(Color.Black, ledPos) { LedCount = 1 };
+                    switch (workMode)
+                    {
+                        case Mode.Range:
+                            if ((sliders[0].Value - ledPos) >= 2)
+                            {
+                                pp1 = new PatternPoint(Pattern[0].PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
+                            }
+                            else
+                                return;
+                            break;
+                        case Mode.Lightness:
+                            return;
+                        default:
+                            pp1 = new PatternPoint(Pattern[0].PointColor, ledPos) { LedCount = 1 };
+                            break;
+                    }
+                    
                     Pattern.Insert(0, pp1);
+                    if (selectedSliderItem != null)
+                        selectedSliderItem = null;
                     InsertSliders();
+                    UpdateModel();
                     SelectedPoint = pp1;
                     return;
                 }
 
                 // если последняя точка в Pattern
-                if (rightPoint == null)
+                if (ledPos > sliders[sliders.Count - 1].Value)
                 {
-                    pp1 = new PatternPoint(Color.Black, ledPos) { LedCount = 1 };
+                    switch (workMode)
+                    {
+                        case Mode.Range:
+                            if ((Maximum - ledPos) >= 2)
+                            {
+                                pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
+                            }
+                            else
+                                return;
+                            break;
+                        case Mode.Lightness:
+                            return;
+                        default:
+                            pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 1 };
+                            break;
+                    }
                     Pattern.Add(pp1);
+                    if (selectedSliderItem != null)
+                        selectedSliderItem = null;
                     InsertSliders();
+                    UpdateModel();
                     SelectedPoint = pp1;
                     return;
                 }
 
-                // елси внутри диапазона
-                if (leftPoint.LedCount != 1)
+                for ( int i = 0; i < sliders.Count - 2; i++)
                 {
-                    if (ledPos <= leftPoint.LedPos + leftPoint.LedCount - 1)
-                        return;
-                }
+                    if (ledPos > sliders[i].Value && ledPos < sliders[i + 1].Value)
+                    {
 
+                    }
+                }
+                // елси внутри RangePoint ничего не вставляем
+                //if (leftPoint.LedCount != 1)
+                //{
+                //    if (ledPos <= leftPoint.LedPos + leftPoint.LedCount - 1)
+                //        return;
+                //}
+
+                // между точками
                 Color c = (display.Items[ledPos] as PatternPoint).PointColor;
                 int ix = Pattern.IndexOf(rightPoint);
                 pp1 = new PatternPoint(c, ledPos) { LedCount = 1 };
@@ -632,6 +691,8 @@ namespace ED_CustomControls
         {
             PatternPoint previousPoint = null;
             bool haveLightnessCurve = false;
+            //PatternPoint tmpPnt = null;
+            //PatternPoint to = null;
 
             Stopwatch watch = new Stopwatch();
             watch.Start();
@@ -643,81 +704,76 @@ namespace ED_CustomControls
             {
                 if (previousPoint != null)
                 {
-                    if (pp.Variant != PointVariant.Range)
-                    {
-                        if (pp.Variant == PointVariant.Lightness)
-                            haveLightnessCurve = true;
-                        else
-                        {
-                            if (haveLightnessCurve)
-                                UpdateGradient(previousPoint, pp, GetLightnessCurve(previousPoint, pp));
-                            else
-                                MakeGradient(previousPoint, pp);
-                            haveLightnessCurve = false;
-                            previousPoint = pp;
-                        }
-                        
-                        
-                    }
+                    //if (pp.Variant != PointVariant.Range)
+                    //{
+                    if (pp.Variant == PointVariant.Lightness)
+                        haveLightnessCurve = true;
                     else
                     {
-                        // диапазон
-                        MakeGradient(previousPoint, pp);
-                        for (int i = 0; i < pp.LedCount; i++)
-                            StripModel[pp.LedPos + i].PointColor = pp.PointColor;
-                        previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
+                        if (haveLightnessCurve)
+                            UpdateGradient(previousPoint, pp, GetLightnessCurve(previousPoint, pp));
+                        else
+                            MakeGradient(previousPoint, pp);
+                        haveLightnessCurve = false;
+                        previousPoint = pp;
                     }
+                    //}
+                    //else
+                    //{
+                    //    // диапазон
+                    //    MakeGradient(previousPoint, pp);
+                    //    for (int i = 0; i < pp.LedCount; i++)
+                    //        StripModel[pp.LedPos + i].PointColor = pp.PointColor;
+                    //    previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
+                    //}
                 }
                 else
                     previousPoint = pp;
             }
-
-            watch.Stop();
-            //Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
-
-
-            //foreach (PatternPoint pp in Pattern)
+            //foreach (SliderItem si in sliders)
             //{
             //    if (previousPoint != null)
             //    {
-            //        if (pp.LedCount == 1)
-            //        {
-            //            // какая бы не была предыдуяя точка строим градиент
-            //            MakeGradient(previousPoint, pp);
-            //            previousPoint = pp;
 
-            //        }
-            //        else
-            //        {
-            //            // диапазон
-            //            MakeGradient(previousPoint, pp);
-            //            for (int i = 0; i < pp.LedCount; i++)
-            //                StripModel[pp.LedPos + i].PointColor = pp.PointColor;
-            //            previousPoint = new PatternPoint(pp.PointColor, pp.LedPos + pp.LedCount - 1);
-            //        }
             //    }
             //    else
             //    {
-            //        // первая точка
-            //        for (int i = 0; i < pp.LedPos; i++)
-            //            StripModel[i].PointColor = Color.Black;
-            //        previousPoint = pp;
+            //        if (si.Variant == SliderVariant.RangeLeftLimit)
+            //        {
+            //            tmpPnt = Pattern[si.PatternIx];
+            //            previousPoint = new PatternPoint(tmpPnt.PointColor, tmpPnt.LedPos + tmpPnt.LedCount - 1);
+            //        }
             //    }
             //}
-            //if (SendPacket != null)
-            //    SendPacket(null, null);
-            //watch.Stop();
-            //Console.WriteLine("Measured time: " + watch.Elapsed.TotalMilliseconds + " ms.");
+
+            watch.Stop();
         }
 
         private void MakeGradient(PatternPoint from, PatternPoint to)
         {
             HslColor hsl;
-            int stepCount = to.LedPos - from.LedPos;
-            double deltaHue = (to.HslColor.Hue - from.HslColor.Hue) / stepCount;
-            double deltaSat = (to.HslColor.Saturation - from.HslColor.Saturation) / stepCount;
-            double deltaBri = (to.HslColor.Lightness - from.HslColor.Lightness) / stepCount;
-            StripModel[from.LedPos - 1].PointColor = from.PointColor;
+            int stepCount = 0;
+            PatternPoint tmpFrom = null;
+
+            if (to.Variant == PointVariant.Range)
+                for (int i = 0; i < to.LedCount; i++)
+                    StripModel[to.LedPos + i - 1].PointColor = to.PointColor;
+
+            if (from.Variant == PointVariant.Range)
+            {
+                for (int i = 0; i < from.LedCount; i++)
+                    StripModel[from.LedPos + i - 1].PointColor = from.PointColor;
+                tmpFrom = new PatternPoint(from.PointColor, from.LedPos + from.LedCount - 1);
+            }
+            else
+                tmpFrom = from;
+
+            stepCount = to.LedPos - tmpFrom.LedPos;
+            double deltaHue = (to.HslColor.Hue - tmpFrom.HslColor.Hue) / stepCount;
+            double deltaSat = (to.HslColor.Saturation - tmpFrom.HslColor.Saturation) / stepCount;
+            double deltaBri = (to.HslColor.Lightness - tmpFrom.HslColor.Lightness) / stepCount;
+
+            StripModel[tmpFrom.LedPos - 1].PointColor = tmpFrom.PointColor;
             //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos, from.HslColor.Hue, from.HslColor.Lightness);
             StripModel[to.LedPos - 1].PointColor = to.PointColor;
 
@@ -726,50 +782,8 @@ namespace ED_CustomControls
                 hsl = new HslColor(from.HslColor.Hue + i * deltaHue,
                                    from.HslColor.Saturation + i * deltaSat,
                                    from.HslColor.Lightness + i * deltaBri);
-                StripModel[from.LedPos + i - 1].PointColor = hsl.ToRGB();
+                StripModel[tmpFrom.LedPos + i - 1].PointColor = hsl.ToRGB();
                 //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos + i, hsl.Hue, hsl.Lightness);
-            }
-            //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", to.LedPos, to.HslColor.Hue, to.HslColor.Lightness);
-        }
-
-        private void MakeComplexGradient(PatternPoint from, PatternPoint to, List<PatternPoint> lightnessCurve)
-        {
-            HslColor hsl;
-            int stepCount;
-            double deltaBri;
-            PatternPoint tmpFrom;
-
-            tmpFrom = from;
-            double deltaHue = (to.HslColor.Hue - from.HslColor.Hue) / (to.LedPos - from.LedPos);
-            double deltaSat = (to.HslColor.Saturation - from.HslColor.Saturation) / (to.LedPos - from.LedPos);
-
-            StripModel[from.LedPos - 1].PointColor = from.PointColor;
-            //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", from.LedPos, from.HslColor.Hue, from.HslColor.Lightness);
-            StripModel[to.LedPos - 1].PointColor = to.PointColor;
-
-            for (int k = 0; k <= lightnessCurve.Count; k++)
-            {
-                if (k == lightnessCurve.Count)
-                {
-                    stepCount = to.LedPos - tmpFrom.LedPos;
-                    deltaBri = (to.HslColor.Lightness - tmpFrom.HslColor.Lightness) / stepCount;
-                }
-                else
-                {
-                    stepCount = lightnessCurve[k].LedPos - tmpFrom.LedPos + 1;
-                    deltaBri = (lightnessCurve[k].HslColor.Lightness - tmpFrom.HslColor.Lightness) / stepCount;
-                }
-
-                for (int i = 1; i < stepCount; i++)
-                {
-                    hsl = new HslColor(tmpFrom.HslColor.Hue + i * deltaHue,
-                                       tmpFrom.HslColor.Saturation + i * deltaSat,
-                                       tmpFrom.HslColor.Lightness + i * deltaBri);
-                    StripModel[tmpFrom.LedPos + i - 1].PointColor = hsl.ToRGB();
-                    //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", tmpFrom.LedPos + i, hsl.Hue, hsl.Lightness);
-                }
-                if (k != lightnessCurve.Count)
-                    tmpFrom = lightnessCurve[k]; 
             }
             //Console.WriteLine("Pos: {0}  Hue: {1},  Lightness: {2}", to.LedPos, to.HslColor.Hue, to.HslColor.Lightness);
         }
@@ -828,76 +842,76 @@ namespace ED_CustomControls
             MakeGradient(tmpFrom, to);
         }
 
-        private void RecalcLightnessPoint()
-        {
-            PatternPoint leftGradientPoint = null;
-            PatternPoint rightGradientPoint = null;
-            //PatternPoint pp;
-            List<PatternPoint> leftLightCurve = new List<PatternPoint>();
-            List<PatternPoint> rightLightCurve = new List<PatternPoint>();
+        //private void RecalcLightnessPoint()
+        //{
+        //    PatternPoint leftGradientPoint = null;
+        //    PatternPoint rightGradientPoint = null;
+        //    //PatternPoint pp;
+        //    List<PatternPoint> leftLightCurve = new List<PatternPoint>();
+        //    List<PatternPoint> rightLightCurve = new List<PatternPoint>();
 
-            double deltaHue = 0.0;
-            double deltaSaturation = 0.0;
-            double deltaLightness = 0.0;
-            int stepCount = 0;
-            int baseLedPos = 0;
+        //    double deltaHue = 0.0;
+        //    double deltaSaturation = 0.0;
+        //    double deltaLightness = 0.0;
+        //    int stepCount = 0;
+        //    int baseLedPos = 0;
 
-            HslColor hsl;
+        //    HslColor hsl;
 
-            if (selectedPointIx != 0)
-            {
-                // определяем GradientPoint или RangePoint слева
-                // попутно формируем List<PatternPoint> для возможных LightnessPoint
-                for (int i = selectedPointIx - 1; i >= 0; i--)
-                {
-                    if (Pattern[i].Variant == PointVariant.Gradient || Pattern[i].Variant == PointVariant.Range)
-                    {
-                        leftGradientPoint = Pattern[i];
-                        break;
-                    }
-                    else
-                        leftLightCurve.Add(Pattern[i]);
-                }
+        //    if (selectedPointIx != 0)
+        //    {
+        //        // определяем GradientPoint или RangePoint слева
+        //        // попутно формируем List<PatternPoint> для возможных LightnessPoint
+        //        for (int i = selectedPointIx - 1; i >= 0; i--)
+        //        {
+        //            if (Pattern[i].Variant == PointVariant.Gradient || Pattern[i].Variant == PointVariant.Range)
+        //            {
+        //                leftGradientPoint = Pattern[i];
+        //                break;
+        //            }
+        //            else
+        //                leftLightCurve.Add(Pattern[i]);
+        //        }
 
 
-                // теперь справа
-                for (int i = selectedPointIx + 1; i <= Pattern.Count; i++)
-                {
-                    if (Pattern[i].Variant == PointVariant.Gradient || Pattern[i].Variant == PointVariant.Range)
-                    {
-                        rightGradientPoint = Pattern[i];
-                        break;
-                    }
-                    else
-                        rightLightCurve.Add(Pattern[i]);
-                }
-                // корректируем левую часть
-                if (leftGradientPoint != null)
-                {
-                    if (leftGradientPoint.Variant == PointVariant.Range)
-                    {
-                        baseLedPos = leftGradientPoint.LedPos + leftGradientPoint.LedCount - 1;
-                        stepCount = SelectedPoint.LedPos - baseLedPos;
-                    }
-                    else
-                    {
-                        baseLedPos = leftGradientPoint.LedPos;
-                        stepCount = SelectedPoint.LedPos - baseLedPos;
-                    }
+        //        // теперь справа
+        //        for (int i = selectedPointIx + 1; i <= Pattern.Count; i++)
+        //        {
+        //            if (Pattern[i].Variant == PointVariant.Gradient || Pattern[i].Variant == PointVariant.Range)
+        //            {
+        //                rightGradientPoint = Pattern[i];
+        //                break;
+        //            }
+        //            else
+        //                rightLightCurve.Add(Pattern[i]);
+        //        }
+        //        // корректируем левую часть
+        //        if (leftGradientPoint != null)
+        //        {
+        //            if (leftGradientPoint.Variant == PointVariant.Range)
+        //            {
+        //                baseLedPos = leftGradientPoint.LedPos + leftGradientPoint.LedCount - 1;
+        //                stepCount = SelectedPoint.LedPos - baseLedPos;
+        //            }
+        //            else
+        //            {
+        //                baseLedPos = leftGradientPoint.LedPos;
+        //                stepCount = SelectedPoint.LedPos - baseLedPos;
+        //            }
 
-                    deltaHue = (SelectedPoint.HslColor.Hue - leftGradientPoint.HslColor.Hue) / stepCount;
-                    deltaSaturation = (SelectedPoint.HslColor.Saturation - leftGradientPoint.HslColor.Saturation) / stepCount;
+        //            deltaHue = (SelectedPoint.HslColor.Hue - leftGradientPoint.HslColor.Hue) / stepCount;
+        //            deltaSaturation = (SelectedPoint.HslColor.Saturation - leftGradientPoint.HslColor.Saturation) / stepCount;
 
-                    foreach (PatternPoint pp in leftLightCurve)
-                    {
-                        hsl = new HslColor(leftGradientPoint.HslColor.Hue + (pp.LedPos - baseLedPos) * deltaHue,
-                                           leftGradientPoint.HslColor.Saturation + (pp.LedPos - baseLedPos) * deltaSaturation,
-                                           pp.HslColor.Lightness);
-                        pp.HslColor = hsl;
-                    }
-                }
-            }
-        }
+        //            foreach (PatternPoint pp in leftLightCurve)
+        //            {
+        //                hsl = new HslColor(leftGradientPoint.HslColor.Hue + (pp.LedPos - baseLedPos) * deltaHue,
+        //                                   leftGradientPoint.HslColor.Saturation + (pp.LedPos - baseLedPos) * deltaSaturation,
+        //                                   pp.HslColor.Lightness);
+        //                pp.HslColor = hsl;
+        //            }
+        //        }
+        //    }
+        //}
 
         #endregion
 
