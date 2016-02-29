@@ -655,19 +655,46 @@ namespace ED_CustomControls
                     return;
                 }
 
+                // между PatternPoint
+                PatternPoint before;
+                PatternPoint after;
                 for ( int i = 0; i < sliders.Count - 2; i++)
                 {
                     if (ledPos > sliders[i].Value && ledPos < sliders[i + 1].Value)
                     {
+                        if ((sliders[i].Variant == SliderVariant.RangeLeftLimit) &&
+                            (sliders[i + 1].Variant == SliderVariant.RangeRightLimit))
+                            // внутри Range не может быть точек
+                            return;
 
+                        before = Pattern[sliders[i].PatternIx];
+                        after = Pattern[sliders[i + 1].PatternIx];
+                        switch (workMode)
+                        {
+                            case Mode.Range:
+                                if ((sliders[i + 1].Value - ledPos) > 2)
+                                {
+                                    pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
+                                }
+                                else
+                                    return;
+                                break;
+                            case Mode.Lightness:
+                                return;
+                            default:
+                                pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 1 };
+                                break;
+                        }
+                        Pattern.Add(pp1);
+                        if (selectedSliderItem != null)
+                            selectedSliderItem = null;
+                        InsertSliders();
+                        UpdateModel();
+                        SelectedPoint = pp1;
+                        return;
                     }
                 }
-                // елси внутри RangePoint ничего не вставляем
-                //if (leftPoint.LedCount != 1)
-                //{
-                //    if (ledPos <= leftPoint.LedPos + leftPoint.LedCount - 1)
-                //        return;
-                //}
+                
 
                 // между точками
                 Color c = (display.Items[ledPos] as PatternPoint).PointColor;
