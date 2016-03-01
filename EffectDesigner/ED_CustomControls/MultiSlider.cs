@@ -229,29 +229,32 @@ namespace ED_CustomControls
             //PatternPoint ppNew = (PatternPoint)e.NewValue;
 
             MultiSlider ms = d as MultiSlider;
-            ms.selectedPointIx = ms.Pattern.IndexOf(ms.SelectedPoint);
-
-            if (ms.selectedSliderItem != null)
+            if (ms.SelectedPoint != null)
             {
-                if (ms.selectedSliderItem.PatternIx != ms.selectedPointIx)
+                ms.selectedPointIx = ms.Pattern.IndexOf(ms.SelectedPoint);
+
+                if (ms.selectedSliderItem != null)
                 {
-                    ms.selectedSliderItem.IsSelected = false;
+                    if (ms.selectedSliderItem.PatternIx != ms.selectedPointIx)
+                    {
+                        ms.selectedSliderItem.IsSelected = false;
+                        ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
+                        ms.selectedSliderItem.IsSelected = true;
+                    }
+                }
+                else
+                {
                     ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
                     ms.selectedSliderItem.IsSelected = true;
                 }
-            }
-            else
-            {
-                ms.selectedSliderItem = ms.sliders.FirstOrDefault(p => p.PatternIx == ms.selectedPointIx);
-                ms.selectedSliderItem.IsSelected = true;
-            }
 
-            ms.valueLabel.Text = ((int)ms.selectedSliderItem.Value).ToString();
-
+                ms.valueLabel.Text = ((int)ms.selectedSliderItem.Value).ToString();
+            }
             if (ppOld != null)
                 (ppOld as INotifyPropertyChanged).PropertyChanged -= ms.OnPointColorChanged;
             if (ms.SelectedPoint != null)
                 (ms.SelectedPoint as INotifyPropertyChanged).PropertyChanged += ms.OnPointColorChanged;
+
 
         }
 
@@ -366,7 +369,7 @@ namespace ED_CustomControls
                 }
             }
             valueLabel.Text = ((int)s.Value).ToString();
-            if (( s.Variant == SliderVariant.RangeLeftLimit)||(s.Variant == SliderVariant.Gradient))
+            if (( s.Variant == SliderVariant.RangeLeftLimit) || (s.Variant == SliderVariant.Gradient) || (s.Variant == SliderVariant.Lightness))
                 SelectedPoint.LedPos = (int)s.Value;
             if (s.Variant == SliderVariant.RangeLeftLimit)
                 SelectedPoint.LedCount = (int)(sliders[ix + 1].Value - s.Value + 1);
@@ -489,6 +492,8 @@ namespace ED_CustomControls
                 {
                     pp = Pattern.FirstOrDefault(p => p.LedPos == SelectedPoint.LedPos);
                     Pattern.Remove(pp);
+                    if (selectedSliderItem != null)
+                        selectedSliderItem = null;
                     InsertSliders();
                     UpdateModel();
                     SelectedPoint = Pattern[0];
@@ -584,7 +589,7 @@ namespace ED_CustomControls
                     ledPos = 1;
                 //Console.WriteLine("LedPos: {0}", ledPos);
                 //PatternPoint leftPoint = null;
-                PatternPoint rightPoint = null;
+                //PatternPoint rightPoint = null;
 
                 //foreach (PatternPoint pp in Pattern)
                 //{
@@ -658,7 +663,7 @@ namespace ED_CustomControls
                 // между PatternPoint
                 PatternPoint before;
                 PatternPoint after;
-                for ( int i = 0; i < sliders.Count - 2; i++)
+                for ( int i = 0; i < sliders.Count - 1; i++)
                 {
                     if (ledPos > sliders[i].Value && ledPos < sliders[i + 1].Value)
                     {
@@ -674,18 +679,20 @@ namespace ED_CustomControls
                             case Mode.Range:
                                 if ((sliders[i + 1].Value - ledPos) > 2)
                                 {
-                                    pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
+                                    //pp1 = new PatternPoint(before.PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
+                                    pp1 = new PatternPoint(StripModel[ledPos - 1].PointColor, ledPos) { LedCount = 2, Variant = PointVariant.Range };
                                 }
                                 else
                                     return;
                                 break;
                             case Mode.Lightness:
-                                return;
+                                pp1 = new PatternPoint(StripModel[ledPos - 1].PointColor, ledPos) { LedCount = 1, Variant = PointVariant.Lightness };
+                                break;
                             default:
-                                pp1 = new PatternPoint(Pattern[Pattern.Count - 1].PointColor, ledPos) { LedCount = 1 };
+                                pp1 = new PatternPoint(StripModel[ledPos - 1].PointColor, ledPos) { LedCount = 1 };
                                 break;
                         }
-                        Pattern.Add(pp1);
+                        Pattern.Insert(Pattern.IndexOf(after), pp1);
                         if (selectedSliderItem != null)
                             selectedSliderItem = null;
                         InsertSliders();
@@ -697,13 +704,13 @@ namespace ED_CustomControls
                 
 
                 // между точками
-                Color c = (display.Items[ledPos] as PatternPoint).PointColor;
-                int ix = Pattern.IndexOf(rightPoint);
-                pp1 = new PatternPoint(c, ledPos) { LedCount = 1 };
-                Pattern.Insert(ix, pp1);
+                //Color c = (display.Items[ledPos] as PatternPoint).PointColor;
+                //int ix = Pattern.IndexOf(rightPoint);
+                //pp1 = new PatternPoint(c, ledPos) { LedCount = 1 };
+                //Pattern.Insert(ix, pp1);
 
-                InsertSliders();
-                SelectedPoint = pp1;
+                //InsertSliders();
+                //SelectedPoint = pp1;
             }
         }
 

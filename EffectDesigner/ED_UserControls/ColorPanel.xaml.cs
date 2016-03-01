@@ -44,25 +44,28 @@ namespace ED_UserControls
             PatternPoint pp = (PatternPoint)e.OldValue;
             panel.pointFromPattern = true;
 
-            if (panel.SelectedPoint.Variant == PointVariant.Lightness)
+            if (panel.SelectedPoint != null)
             {
-                panel.hue.IsEnabled = false;
-                panel.sat.IsEnabled = false;
-                panel.bri.IsEnabled = true;
+                if (panel.SelectedPoint.Variant == PointVariant.Lightness)
+                {
+                    panel.hue.IsEnabled = false;
+                    panel.sat.IsEnabled = false;
+                    panel.bri.IsEnabled = true;
+                }
+                else
+                {
+                    panel.hue.IsEnabled = true;
+                    panel.sat.IsEnabled = true;
+                    panel.bri.IsEnabled = true;
+                }
+
+                if (pp != null)
+                    (pp as INotifyPropertyChanged).PropertyChanged -= panel.OnColorChanged;
+                (panel.SelectedPoint as INotifyPropertyChanged).PropertyChanged += panel.OnColorChanged;
+                panel.SetColorMetrics();
+                panel.SetColorRange();
+                panel.realColor.Background = panel.SelectedPoint.PointBrush;
             }
-            else
-            {
-                panel.hue.IsEnabled = true;
-                panel.sat.IsEnabled = true;
-                panel.bri.IsEnabled = true;
-            }
-            
-            if (pp != null)
-                (pp as INotifyPropertyChanged).PropertyChanged -= panel.OnColorChanged;
-            (panel.SelectedPoint as INotifyPropertyChanged).PropertyChanged += panel.OnColorChanged;
-            panel.SetColorMetrics();
-            panel.SetColorRange();
-            panel.realColor.Background = panel.SelectedPoint.PointBrush;
         }
 
         private void OnColorChanged(object sender, PropertyChangedEventArgs e)
